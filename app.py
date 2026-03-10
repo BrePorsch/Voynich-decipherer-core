@@ -11,18 +11,18 @@ class WilkenKeyEngine:
         
          #100% AUTHENTIC Mapping to Yale Archive IDs (Verified against MS 408)
         self.image_map = {
-            "f1r": "1006139",  Intro / Erased signature
-            "f1v": "1006140",  The Lobed-Leaf Plant (MS 408 f1v)
-            "f2r": "1006141",  The Serrated/Forked Anchor
+            "f1r": "1006139",  #Intro / Erased signature
+            "f1v": "1006140",  #The Lobed-Leaf Plant (MS 408 f1v)
+            "f2r": "1006141",  #The Serrated/Forked Anchor
             "f2v": "1006142",
             "f3r": "1006143",
             "f5r": "1006147", 
             "f17r": "1006159", 
-            "f33v": "1006176",  Triple Root / Winter Storage
+            "f33v": "1006176",  #Triple Root / Winter Storage
             "f49v": "1006188", 
-            "f86v": "1006237",  THE ROSETTA MAP Schematic
-            "f88r": "1006244",  Inventory Jars System
-            "f116v": "1006243"  Authorization and certification
+            "f86v": "1006237",  #THE ROSETTA MAP Schematic
+            "f88r": "1006244",  #Inventory Jars System
+            "f116v": "1006243"  #Authorization and certification
         }
         
          #8-Sentence Deep-Dive Archive (Authentic References)
