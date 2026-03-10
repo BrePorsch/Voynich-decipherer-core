@@ -1,18 +1,12 @@
 import streamlit as st
- ==========================================
- THE brea VOYNICH ENGINE v2.0 (STREAMLIT CORE)
- ==========================================
 class WilkenEngine:
     def __init__(self):
-         The 12-Slot Glyph Mapping
         self.glyphs = {
             "qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface",
             "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap",
             "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
             "r": "Dose/Measure", "dy": "Lock/Finish"
         }
-        
-         The Master Folio Database (Folios 1-116v)
         self.folios = {
             "1r": {"title": "General Protocol", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
             "1v": {"title": "The Tear-Root", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
@@ -21,23 +15,18 @@ class WilkenEngine:
             "86v": {"title": "The Rosettes Map", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory).", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
             "88r": {"title": "The Pharma Jars", "words": ["otol", "qokedy"], "desc": "The 12-slot storage jars for all decoctions.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
             "116v": {"title": "The Master Authorization", "words": ["michiton", "ams", "oladaba"], "desc": "Signatures of the Authors: ‘Michiton’ and ‘Ams’ of the Brotherhood.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"}
-             ... All other 100+ folios we built are mapped to these keys
         }
     def decipher_word(self, word):
         components = [self.glyphs[c] for c in word if c in self.glyphs]
         return " + ".join(components) if components else "Proprietary Label"
- --- UI SETUP ---
 st.set_page_config(page_title="brea Voynich Engine", layout="wide", page_icon="🌿")
 engine = WilkenEngine()
- Sidebar Navigation
 st.sidebar.title("🧬 Navigator")
 page = st.sidebar.radio("Go to:", ["The Decipherer", "Archive Notes", "About the App"])
 if page == "The Decipherer":
     st.title("🌿 The brea Voynich Decipherment Core")
     st.markdown(" Decoding the world's most mysterious medical manuscript.")
-    
     query = st.text_input("Enter Folio ID (e.g., 1r, 1v, 70v, 88r, 116v):").strip().lower()
-    
     if query:
         if query in engine.folios:
             data = engine.folios[query]
@@ -61,8 +50,7 @@ elif page == "Archive Notes":
     st.write("A Functional Medical Field Manual. It is not a book of magic, but a collection of SOPs (Standard Operating Procedures) for 15th-century apothecary science.")
     st.markdown(" 3. THE KEY REVEAL")
     st.write("The text is written in 'Tokenized Commands'. Each word identifies a plant part (Anchor), its state (Flow), and the chemical action needed (Strike).")
-elif page == "About the App":
-    st.title("💻 The Wilken-Irish Digital Engine")
+elif page == "About the App":st.title("💻 The Wilken-Irish Digital Engine")
     st.info("This app bridges the visual and textual data of the Yale Beinecke Archive using Recursive Analysis.")
     st.write("Capabilities:")
     st.write("- Maps 116+ Folios to functional medical protocols.")
