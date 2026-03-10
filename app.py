@@ -2,43 +2,40 @@ import streamlit as st
 def apply_style():
     st.markdown("""
         
+        <style>
         .stApp {
-            background-color: f4ece1 !important;
+            background-color: #f4ece1 !important;
             background-image: url("https://www.transparenttextures.com/patterns/papyrus.png") !important;
             background-size: cover !important;
             background-attachment: fixed !important;
         }
         [data-testid="stSidebar"] {
-            background-color: 3e2723 !important;
-            border-right: 2px solid 8d6e63 !important;
+            background-color: #3e2723 !important;
+            border-right: 2px solid #8d6e63 !important;
         }
         [data-testid="stSidebar"]  {
-            color: d7ccc8 !important;
+            color: #d7ccc8 !important;
             font-family: 'Georgia', serif !important;
         }
         h1, h2, h3, p, span, label, .stMarkdown {
-            color: 2d2926 !important;
+            color: #2d2926 !important;
             font-family: 'Georgia', serif !important;
         }
         .stAlert {
-            background-color: fff9f0 !important;
-            border: 1px solid d7ccc8 !important;
-            border-left: 10px solid 8d6e63 !important;
+            background-color: #fff9f0 !important;
+            border: 1px solid #d7ccc8 !important;
+            border-left: 10px solid #8d6e63 !important;
             box-shadow: 2px 2px 8px rgba(0,0,0,0.1) !important;
         }
         div[data-baseweb="select"], div[data-baseweb="input"] {
-            background-color: ffffff !important;
-            border: 1px solid 8d6e63 !important;
+            background-color: #ffffff !important;
+            border: 1px solid #8d6e63 !important;
         }
-    """, unsafe_allow_html=True)
+    </style>
+      """, unsafe_allow_html=True)
+ 
 class WilkenKeyEngine:
-    def __init__(self):
-        self.glyphs = {
-            "qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface",
-            "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap",
-            "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
-            "r": "Dose/Measure", "dy": "Lock/Finish", "ol": "Flow/Release"
-        }
+   def __init__(self):
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
             98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
