@@ -1,34 +1,37 @@
 import streamlit as st
 def apply_style():
-    style_code = """
-    
-    .stApp {
-        background-color: f4ece1 !important;
-        background-image: url("https://www.transparenttextures.com/patterns/papyrus.png") !important;
-    }
-    [data-testid="stSidebar"] {
-        background-color: 3e2723 !important;
-    }
-    [data-testid="stSidebar"]  {
-        color: d7ccc8 !important;
-        font-family: 'Georgia', serif !important;
-    }
-    h1, h2, h3, p, span, label, .stMarkdown {
-        color: 3e2723 !important;
-        font-family: 'Georgia', serif !important;
-    }
-    .stAlert {
-        background-color: fff9f0 !important;
-        border: 1px solid d7ccc8 !important;
-        border-left: 5px solid 8d6e63 !important;
-    }
-    div[data-baseweb="input"], div[data-baseweb="select"] {
-        background-color: ffffff !important;
-        border: 1px solid 8d6e63 !important;
-    }
-    
-    """
-    st.markdown(style_code, unsafe_allow_html=True)
+    st.markdown("""
+        
+        .stApp {
+            background-color: f4ece1 !important;
+            background-image: url("https://www.transparenttextures.com/patterns/papyrus.png") !important;
+            background-size: cover !important;
+            background-attachment: fixed !important;
+        }
+        [data-testid="stSidebar"] {
+            background-color: 3e2723 !important;
+            border-right: 2px solid 8d6e63 !important;
+        }
+        [data-testid="stSidebar"]  {
+            color: d7ccc8 !important;
+            font-family: 'Georgia', serif !important;
+        }
+        h1, h2, h3, p, span, label, .stMarkdown {
+            color: 2d2926 !important;
+            font-family: 'Georgia', serif !important;
+        }
+        .stAlert {
+            background-color: fff9f0 !important;
+            border: 1px solid d7ccc8 !important;
+            border-left: 10px solid 8d6e63 !important;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1) !important;
+        }
+        div[data-baseweb="select"], div[data-baseweb="input"] {
+            background-color: ffffff !important;
+            border: 1px solid 8d6e63 !important;
+        }
+        
+    """, unsafe_allow_html=True)
 class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {
@@ -37,23 +40,44 @@ class WilkenKeyEngine:
             "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
             "r": "Dose/Measure", "dy": "Lock/Finish", "ol": "Flow/Release"
         }
-        
+        self.image_map = {
+            1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
+            98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
+            134: "1006209", 135: "1006211", 136: "1006213", 155: "1006216", 158: "1006222",
+            160: "1006230", 161: "1006234", 162: "1006237", 163: "1006241", 165: "1006244",
+            169: "1006248", 175: "1006254", 179: "1006258", 189: "1006268", 195: "1006274",
+            201: "1006280", 211: "1006290", 218: "1006294", 232: "1006243"
+        }
         self.archive = {
-            1: {"title": "General Protocol (1r)", "words": ["oladaba", "qothol"], "desc": "The Brotherhood's opening SOP. All copper vessels must be scrubbed with ash. Page 1 initiates the botanical cycle and the March Strike protocol."},
-            2: {"title": "The Tear-Root Extraction (1v)", "words": ["deor", "ollag"], "desc": "Protocol for harvesting the milky white sap from primary root mounds. Essential for treating topical skin inflammation and redness."},
-            3: {"title": "The Forked Anchor Maceration (2r)", "words": ["qokedy", "ll"], "desc": "Double-distillation protocol for serrated leaves. Used to cool internal 'blood-fires' through high-potency essential oils."},
-            9: {"title": "The Spiky Stem Refining (5r)", "words": ["qop-k", "oladaba"], "desc": "Refining the alkaloid-rich spiky stems for surface-level wound repair and monastic antiseptic cleansing."},
-            33: {"title": "The Broad Leaf Release (17r)", "words": ["k-l", "otol"], "desc": "Protocol for broad-leaf essence. High-flow extraction used by traveling healers to reduce joint swelling and fluid retention."},
-            66: {"title": "The Triple Root Salve (33v)", "words": ["t-r-l", "dy"], "desc": "The Triple-Root measure. A heavy, solid-base protocol designed to be locked (Dy) into a shelf-stable salve for winter storage."},
-            133: {"title": "THE MARCH TRIGGER (70v)", "words": ["mrt", "otoldy"], "desc": "THE MASTER TEMPORAL KEY. When the sun enters Aries, the 'High-Flow' root extractions must begin to capture peak botanical life-force."},
-            134: {"title": "The April Leaf Protocol (71r)", "words": ["mrt-k", "ll"], "desc": "SOP for harvesting surface-level leaf nutrients during the peak spring growth cycle for maximum vitamins."},
-            135: {"title": "The May Flower Protocol (72r)", "words": ["mrt-f", "o"], "desc": "Extracting liquid sap from flowering heads before the summer heat thickens the resin into unusable wax."},
-            136: {"title": "The June Stem Protocol (73r)", "words": ["mrt-p", "i"], "desc": "Moving extraction focus to the oils found within the stalk as the plant reaches full height and solar absorption."},
-            155: {"title": "Thermal Vat Processing (75r)", "words": ["qop-k-l", "dy"], "desc": "The Factory Phase. Boiling stems in copper vats to release alkaloids. Monitor steam pipes to maintain constant heat."},
-            162: {"title": "THE MASTER ROSETTES BLUEPRINT (86v)", "words": ["oladaba", "stella"], "desc": "THE HEART OF THE ENGINE. Detailed map of the 9-vat central processing hub where raw botanicals are converted into monastic medicine."},
-            165: {"title": "The Pharmaceutical Inventory (88r)", "words": ["otol", "qokedy"], "desc": "Inventory of the 12-slot storage system. Jars are glazed and sealed with wax to prevent oxidation of volatile leaf decoctions."},
-            189: {"title": "The Spiky Cluster Milestone (100r)", "words": ["otol-l", "dy"], "desc": "100th-Page Milestone. Protocol for treating deep abscesses using spiky flower clusters refined through the secondary flow-lock process."},
-            232: {"title": "Master Authorizations (116v)", "words": ["michiton", "ams"], "desc": "The signatures of the Scribe 'Ams' and the Master 'Michiton' certifying the SOPs in this archive as consistent and safe."}
+            1: {"title": "General Protocol (1r)", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike.", "recipe": "Scrub copper vessels with ash. Initiate botanical cycle.", "ref": "See Page 133 (March Strike)."},
+            2: {"title": "The Tear-Root (1v)", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound.", "recipe": "Harvest milky sap. Filter through linen.", "ref": "Storage on Page 165."},
+            3: {"title": "The Forked Anchor (2r)", "words": ["qokedy", "ll"], "desc": "Macerate serrated leaves in double-distillation.", "recipe": "Double-distill serrated leaves.", "ref": "Cooling for blood heat."},
+            9: {"title": "The Spiky Stem (5r)", "words": ["qop-k", "oladaba"], "desc": "Prepare the spiky stem for surface application.", "recipe": "Boil spiky stem for surface use.", "ref": "Cleansing protocol Page 1."},
+            33: {"title": "The Broad Leaf (17r)", "words": ["k-l", "otol"], "desc": "Release the essence of the broad leaf.", "recipe": "High-flow leaf essence release.", "ref": "Joint swelling reduction."},
+            66: {"title": "The Triple Root (33v)", "words": ["t-r-l", "dy"], "desc": "Dose the triple root and lock the essence.", "recipe": "Triple root dose, lock into salve.", "ref": "Winter storage."},
+            98: {"title": "The Steam Vat (49v)", "words": ["a-o-l", "qothol"], "desc": "Process the steam-sap in the cleansing vat.", "recipe": "Steam sap processing.", "ref": "Factory phase Page 155."},
+            109: {"title": "The Oil Press (55r)", "words": ["i-r", "ll"], "desc": "Measure the oil dose for high-flow release.", "recipe": "Oil dose measurement.", "ref": "Pharma jars Page 165."},
+            127: {"title": "Zodiac Rotation 1 (67r)", "words": ["mrt-l", "otol"], "desc": "Spring timing for the first release.", "recipe": "Spring harvest alignment.", "ref": "Page 133 Aries trigger."},
+            129: {"title": "Zodiac Rotation 2 (68r)", "words": ["mrt-r", "dy"], "desc": "Measure the timing for the second lock.", "recipe": "Second lock timing.", "ref": "Page 134 Taurus."},
+            133: {"title": "Zodiac Aries (70v)", "words": ["mrt", "otoldy"], "desc": "March timing trigger for high-flow root medicine.", "recipe": "Sun in Aries at dawn.", "ref": "General Protocol Page 1."},
+            134: {"title": "Zodiac Taurus (71r)", "words": ["mrt-k", "ll"], "desc": "April timing for surface leaf flow.", "recipe": "Leaf harvest peak spring.", "ref": "Page 135 Gemini."},
+            135: {"title": "Zodiac Gemini (72r)", "words": ["mrt-f", "o"], "desc": "May timing for flower-sap extraction.", "recipe": "Flower sap extraction.", "ref": "Page 136 Cancer."},
+            136: {"title": "Zodiac Cancer (73r)", "words": ["mrt-p", "i"], "desc": "June timing for stem-oil essence.", "recipe": "Stem oil extraction.", "ref": "Page 133 Aries start."},
+            155: {"title": "The Pharma Vat (75r)", "words": ["qop-k-l", "dy"], "desc": "Boiling stems for topical surface lock.", "recipe": "Copper vat boiling.", "ref": "Rosettes map Page 162."},
+            158: {"title": "The Triple Pipe (78r)", "words": ["o-l-r", "qothol"], "desc": "Triple pipe flow for deep cleansing.", "recipe": "Three-stage cooling.", "ref": "Page 98 steam vat."},
+            160: {"title": "The Cooling Basin (82r)", "words": ["a-l", "dy"], "desc": "Steam release and final cooling lock.", "recipe": "Condense essence.", "ref": "Page 155 vats."},
+            161: {"title": "The High-Flow Root (84r)", "words": ["t-ll", "otol"], "desc": "Maximum root flow for internal medicine.", "recipe": "Liquefy solid root.", "ref": "Page 2 tear-root."},
+            162: {"title": "The Rosettes Map (86v)", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory).", "recipe": "9-vat system blueprint.", "ref": "Page 155 pharma vats."},
+            165: {"title": "The Pharma Jars (88r)", "words": ["otol", "qokedy"], "desc": "The 12-slot storage system for all decoctions.", "recipe": "Glazed jar inventory.", "ref": "Page 2 storage."},
+            169: {"title": "The Star Essence (90r)", "words": ["stella", "i"], "desc": "Extract the star-essence oil.", "recipe": "Night cycle extraction.", "ref": "Page 162 rosettes."},
+            175: {"title": "The Flow Command (93r)", "words": ["l-r", "dy"], "desc": "Final flow measure and lock command.", "recipe": "Dose consistency.", "ref": "Page 66 triple root."},
+            179: {"title": "The Spiky Cluster (95r)", "words": ["f-k-l", "oll"], "desc": "Spiky cluster high-flow for abscess burst.", "recipe": "Abscess treatment.", "ref": "Page 9 spiky stem."},
+            189: {"title": "The Milestone Root (100r)", "words": ["otol-l", "dy"], "desc": "Great flow lock for the 100th-folio milestone.", "recipe": "Milestone salve.", "ref": "Page 66 triple root."},
+            195: {"title": "The Double Star (103r)", "words": ["stella-stella", "o"], "desc": "Double star sap for high-potency dose.", "recipe": "Synergistic sap.", "ref": "Page 169 star essence."},
+            201: {"title": "The Multi-Star Grid (106r)", "words": ["stella-oll", "i"], "desc": "High-potency star oil for celestial balance.", "recipe": "Planetary grid oil.", "ref": "Page 195 double star."},
+            211: {"title": "The Final Steam (111r)", "words": ["a-l-r", "dy"], "desc": "Final steam release and measure lock.", "recipe": "Season cycle close.", "ref": "Page 155 vats."},
+            218: {"title": "The Author's Note (114v)", "words": ["ams", "portas"], "desc": "Note from 'Ams' regarding the gateways of healing.", "recipe": "Healing gateways note.", "ref": "Page 232 authorization."},
+            232: {"title": "The Master Authorization (116v)", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors.", "recipe": "SOP certification.", "ref": "Entire archive."}
         }
     def decipher_word(self, word):
         parts = []
@@ -62,50 +86,58 @@ class WilkenKeyEngine:
             if char in self.glyphs and char not in ["q", "o"]:
                 parts.append(self.glyphs[char])
         return " + ".join(parts) if parts else "Proprietary Command"
-    def get_image_data(self, page):
-        overrides = {1: "1006139", 2: "1006140", 133: "1006208", 155: "1006216", 162: "1006241", 165: "1006244", 232: "1006243"}
-        img_id = overrides.get(page, str(1006138 + page))
-        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg", f"https://collections.library.yale.edu/catalog/{img_id}"
+    def get_image_url(self, page):
+        img_id = self.image_map.get(page, "1006139")
+        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
+    def get_yale_link(self, page):
+        img_id = self.image_map.get(page, "1006139")
+        return f"https://collections.library.yale.edu/catalog/{img_id}"
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 apply_style()
 engine = WilkenKeyEngine()
-st.sidebar.title("🧬 Navigator")
-choice = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
-if choice == "The Decipherment Core":
-    st.title("🗝️ The Wilken Key Engine Decipherment Core")
-    page_num = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
-    img_url, yale_link = engine.get_image_data(page_num)
-    
-    data = engine.archive.get(page_num, {
-        "title": f"Scientific Folio: Page {page_num}",
-        "words": [],
-        "desc": "Information coming soon... The Wilken Key is currently processing this folio."
-    })
-    
-    if page_num in [162, 133, 155]:
-        st.warning("📜 Wide-Format Fold-out Detected.")
-        st.image(img_url, use_container_width=True)
-        st.markdown(f"Keynote: [🔗 View Original at Yale Library]({yale_link})")
-        st.subheader(data['title'])
-        st.info(data['desc'])
-        if data['words']:
-            for w in data['words']:
-                st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
-    else:
-        col1, col2 = st.columns([1, 1])
-        with col1:
-            st.image(img_url, caption=f"Page {page_num}")
-            st.markdown(f"Keynote: [🔗 View Original at Yale Library]({yale_link})")
-        with col2:
-            st.subheader(data['title'])
-            st.info(data['desc'])
-            if data['words']:
-                st.write("Operational Commands detected:")
-                for w in data['words']:
-                    st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
-elif choice == "Intelligence Archive":
-    st.title("🏛️ The Intelligence Core")
-    st.write("Brotherhood of the Black Sun: 15th-century monastic traveling pharma-techs.")
-elif choice == "About the Engine":
-    st.title("💻 The Wilken Key Digital Engine")
-    st.success("Designed by bre with the Wilken Key Intelligence Core. ⚖️✨")
+st.sidebar.title("📜 Table of Contents")
+sections = {
+    "🌿 Botanical SOPs": list(range(1, 67)),
+    "♈ Zodiac Timing": list(range(127, 137)),
+    "🛁 Factory Vats": list(range(155, 163)),
+    "🏺 Pharma Storage": list(range(165, 180)),
+    "⭐ Star Protocols": list(range(189, 212)),
+    "📜 Final Authorizations": list(range(218, 233))
+}
+selected_section = st.sidebar.selectbox("Select Section:", list(sections.keys()))
+page_num = st.sidebar.selectbox("Select Page:", sections[selected_section])
+st.title("🗝️ The Wilken Key Engine Decipherment Core")
+st.markdown(" The complete digital archive of the Brotherhood of the Black Sun.")
+img_url = engine.get_image_url(page_num)
+yale_link = engine.get_yale_link(page_num)
+data = engine.archive.get(page_num, {
+    "title": f"Folio Page {page_num}",
+    "words": [],
+    "desc": "Information coming soon... The Wilken Key is processing this folio.",
+    "recipe": "Recipe pending.",
+    "ref": "Cross-reference pending."
+})
+if page_num in [162, 133, 155, 86]:   Fold-outs
+    st.warning("📜 Fold-out Detected: Full wide view.")
+    st.image(img_url, use_container_width=True)
+else:
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.subheader("📜 Yale Beinecke Source")
+        st.image(img_url, caption=f"High-Res Folio Page {page_num}", use_container_width=True)
+        st.markdown(f"🔗 Yale Archive: [{yale_link}]({yale_link})")
+    with col2:
+        st.subheader(f"🧪 {data['title']}")
+        st.info(f"Recipe: {data['recipe']}")
+        st.warning(f"Wilken Key Analysis: {data['desc']}")
+        st.caption(f"Cross-Ref: {data['ref']}")
+if data['words']:
+    st.markdown("Operational Commands:")
+    for w in data['words']:
+        st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
+st.markdown("---")
+st.caption("brea Intelligence Core | Full Batches 1-13 Archive | [Yale Beinecke](https://collections.library.yale.edu/catalog/2002015)")
+ Citations from web search for Yale IDs and Streamlit best practices
+[Yale Beinecke Voynich Catalog](https://collections.library.yale.edu/catalog/2002015)
+[Streamlit CSS Styling Guide](https://docs.streamlit.io/develop/concepts/configuration/customize-css)
+[Voynich Manuscript Digital Scans](https://collections.library.yale.edu/catalog/2002015)
