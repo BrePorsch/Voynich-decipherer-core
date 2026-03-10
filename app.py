@@ -60,7 +60,7 @@ class WilkenKeyEngine:
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
- Sections now use actual Folio References
+ #Sections now use actual Folio References
 sections = {
     "🌿 Botanical SOPs": ["f1r", "f1v", "f2r", "f5r", "f17r", "f33v"],
     "🛁 Factory Protocols": ["f49v", "f75r", "f78r", "f82r", "f84r", "f86v"],
