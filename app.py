@@ -91,7 +91,7 @@ data = engine.archive.get(page_num, {
 col1, col2 = st.columns([1, 1])
 with col1:
     st.subheader(f"📜 Yale Folio: {page_num}")
-     Display the high-res image
+     #Display the high-res image
     st.image(img_url, caption=f"High-Res Scan: Yale MS 408 ({page_num})", use_container_width=True)
     st.markdown(f"🔗 [Direct Yale Link]({yale_link})")
 with col2:
