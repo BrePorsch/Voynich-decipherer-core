@@ -1,5 +1,5 @@
 import streamlit as st
- --- THE MANUSCRIPT STYLING ENGINE ---
+--- THE MANUSCRIPT STYLING ENGINE ---
 def apply_custom_style():
     st.markdown(
         """
