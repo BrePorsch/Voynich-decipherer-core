@@ -12,7 +12,7 @@ class WilkenKeyEngine:
          #100% PRECISION Mapping to Yale Archive IDs (MS 408)
          #Verified against Yale Catalog 2002046
         self.image_map = {
-             Image 3: #Intro / Erased signature
+             #Image 3: Intro / Erased signature
             "f1r": "1006139", 
              Image 4: #THE LOBED-LEAF PLANT (Photo 1)
             "f1v": "1006140", 
