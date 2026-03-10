@@ -1,5 +1,50 @@
 import streamlit as st
-class WilkenEngine:
+ --- THE MANUSCRIPT STYLING ENGINE ---
+def apply_custom_style():
+    st.markdown(
+        """
+        
+        / Background of the main app (Parchment/Vellum color) /
+        .stApp {
+            background-color: f4ece1;
+            background-image: url("https://www.transparenttextures.com/patterns/papyrus.png");
+        }
+        
+        / Sidebar styling (Darker Oak/Ink color) /
+        section[data-testid="stSidebar"] {
+            background-color: 3e2723 !important;
+        }
+        section[data-testid="stSidebar"] .stMarkdown, section[data-testid="stSidebar"] label {
+            color: d7ccc8 !important;
+        }
+        / Titles and Headers (Old World Ink color) /
+        h1, h2, h3 {
+            color: 2d2926;
+            font-family: 'Georgia', serif;
+            border-bottom: 1px solid 8d6e63;
+        }
+        / Text color (Ink Black) /
+        .stMarkdown, p, span {
+            color: 3e2723;
+            font-family: 'Georgia', serif;
+        }
+        / Success/Info Boxes (Aged Paper style) /
+        .stAlert {
+            background-color: fff9f0 !important;
+            border: 1px solid d7ccc8 !important;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+        / Input Bar (Clean Vellum) /
+        input {
+            background-color: ffffff !important;
+            border: 1px solid 8d6e63 !important;
+        }
+        
+        """,
+        unsafe_allow_html=True
+    )
+class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {
             "qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface",
@@ -7,33 +52,41 @@ class WilkenEngine:
             "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
             "r": "Dose/Measure", "dy": "Lock/Finish"
         }
-        self.folios = {
-            "1r": {"title": "General Protocol", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "1v": {"title": "The Tear-Root", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "2r": {"title": "The Forked Anchor", "words": ["qokedy", "ll"], "desc": "Macerate serrated leaves in double-distillation.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "70v": {"title": "Zodiac - Aries", "words": ["mrt", "otoldy"], "desc": "March timing trigger for high-flow root medicine.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "86v": {"title": "The Rosettes Map", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory).", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "88r": {"title": "The Pharma Jars", "words": ["otol", "qokedy"], "desc": "The 12-slot storage jars for all decoctions.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"},
-            "116v": {"title": "The Master Authorization", "words": ["michiton", "ams", "oladaba"], "desc": "Signatures of the Authors: ‘Michiton’ and ‘Ams’ of the Brotherhood.", "img": "https://api.hkhappymobile.com/cf/e456b/0b8f0ec4-1e48-44c3-b62d-f77c58e53059/gs_01KKB5Q9740NTVJR4146GPWJXE_f.webp"}
+        self.image_map = {
+            "1r": "1006139", "1v": "1006140", "2r": "1006141", "2v": "1006142",
+            "70v": "1006208", "86v": "1006241", "88r": "1006244", "116v": "1006243"
         }
+        self.folios = {
+            "1r": {"title": "General Protocol", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike."},
+            "1v": {"title": "The Tear-Root", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound."},
+            "86v": {"title": "The Rosettes Map", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory)."},
+            "116v": {"title": "The Master Authorization", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors."}
+        }
+    def get_image_url(self, folio):
+        img_id = self.image_map.get(folio, "1006139")
+        return f"https://collections.library.yext.yale.edu/iiif/2/{img_id}/full/!800,800/0/default.jpg"
     def decipher_word(self, word):
         components = [self.glyphs[c] for c in word if c in self.glyphs]
         return " + ".join(components) if components else "Proprietary Label"
-st.set_page_config(page_title="brea Voynich Engine", layout="wide", page_icon="🌿")
-engine = WilkenEngine()
+ --- LAUNCH THE ENGINE ---
+st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
+apply_custom_style()
+engine = WilkenKeyEngine()
 st.sidebar.title("🧬 Navigator")
-page = st.sidebar.radio("Go to:", ["The Decipherer", "Archive Notes", "About the App"])
-if page == "The Decipherer":
-    st.title("🌿 The brea Voynich Decipherment Core")
+page = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
+if page == "The Decipherment Core":
+    st.title("🗝️ The Wilken Key Engine Decipherment Core")
     st.markdown(" Decoding the world's most mysterious medical manuscript.")
-    query = st.text_input("Enter Folio ID (e.g., 1r, 1v, 70v, 88r, 116v):").strip().lower()
+    
+    query = st.text_input("Enter Folio ID (e.g., 1r, 70v, 86v, 116v):").strip().lower()
+    
     if query:
         if query in engine.folios:
             data = engine.folios[query]
             col1, col2 = st.columns([1, 1])
             with col1:
-                st.subheader("📜 Manuscript Source")
-                st.image(data['img'], caption=f"Yale Beinecke MS 408 - Folio {query}")
+                st.subheader("📜 Yale Beinecke Source")
+                st.image(f"https://collections.library.yale.edu/iiif/2/{engine.image_map[query]}/full/!800,800/0/default.jpg", caption=f"Folio {query}")
             with col2:
                 st.subheader(f"🧪 {data['title']}")
                 st.info(f"Description: {data['desc']}")
@@ -42,19 +95,16 @@ if page == "The Decipherer":
                     st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
         else:
             st.error("Folio ID not found in the 'Locked' database.")
-elif page == "Archive Notes":
+elif page == "Intelligence Archive":
     st.title("🏛️ The Intelligence Core")
     st.markdown(" 1. WHO ARE THE AUTHORS?")
-    st.write("The 'Brotherhood of the Black Sun' (Alpine-Irish Monastics). Traveling healers who protected their proprietary medicinal formulas using the 12-Slot Phonetic Cipher.")
+    st.write("The 'Brotherhood of the Black Sun' (Alpine-Irish Monastics). Traveling scholars who used a 12-Slot Phonetic Cipher to protect medicinal intellectual property.")
     st.markdown(" 2. WHAT IS THE MANUSCRIPT?")
-    st.write("A Functional Medical Field Manual. It is not a book of magic, but a collection of SOPs (Standard Operating Procedures) for 15th-century apothecary science.")
-    st.markdown(" 3. THE KEY REVEAL")
-    st.write("The text is written in 'Tokenized Commands'. Each word identifies a plant part (Anchor), its state (Flow), and the chemical action needed (Strike).")
-elif page == "About the App":
-    st.title("💻 The Wilken-Irish Digital Engine")
-    st.info("This app bridges the visual and textual data of the Yale Beinecke Archive using Recursive Analysis.")
+    st.write("A Functional Medical Field Manual. This is a collection of SOPs (Standard Operating Procedures) for 15th-century pharmaceutical science.")
+elif page == "About the Engine":
+    st.title("💻 The Wilken Key Digital Engine")
+    st.info("This application bridges the visual and textual data of MS 408 using Recursive Phonetic Analysis.")
     st.write("Capabilities:")
-    st.write("- Maps 116+ Folios to functional medical protocols.")
+    st.write("- Automated Image Linking to Yale's High-Res Archive.")
     st.write("- Deciphers phonemes into 'Source + Action' commands.")
-    st.write("- Provides 100% self-consistent scientific translation.")
-    st.success("Designed by bre with the 'brea' Intelligence Engine. ⚖️✨")
+    st.success("Designed by bre with the Wilken Key Intelligence Core. ⚖️✨")
