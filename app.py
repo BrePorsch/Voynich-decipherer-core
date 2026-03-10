@@ -67,7 +67,7 @@ class WilkenKeyEngine:
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
- Sections based on authentic Yale MS 408 structure
+ #Sections based on authentic Yale MS 408 structure
 sections = {
     "🌿 Early Botanicals": ["f1r", "f1v", "f2r", "f2v", "f3r", "f5r", "f17r", "f33v"],
     "🛁 Monastic Factory": ["f49v", "f75r", "f78r", "f82r", "f84r", "f86v"],
