@@ -50,7 +50,7 @@ class WilkenKeyEngine:
     def get_yale_link(self, page):
         img_id = self.image_map.get(page, "1006139")
         return f"https://collections.library.yale.edu/catalog/{img_id}"
- Standard Interface
+ #Standard Interface
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
