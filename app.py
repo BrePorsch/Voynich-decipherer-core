@@ -1,42 +1,10 @@
 import streamlit as st
-def apply_style():
-    st.markdown("""
-        
-        .stApp {
-            background-color: f4ece1 !important;
-            background-image: url("https://www.transparenttextures.com/patterns/papyrus.png") !important;
-            background-size: cover !important;
-            background-attachment: fixed !important;
-        }
-        [data-testid="stSidebar"] {
-            background-color: 3e2723 !important;
-            border-right: 2px solid 8d6e63 !important;
-        }
-        / This makes the Table of Contents Title visible! /
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] .stMarkdown {
-            color: d7ccc8 !important;
-            font-family: 'Georgia', serif !important;
-        }
-        h1, h2, h3, p, span, label, .stMarkdown {
-            color: 2d2926 !important;
-            font-family: 'Georgia', serif !important;
-        }
-        .stAlert {
-            background-color: fff9f0 !important;
-            border: 1px solid d7ccc8 !important;
-            border-left: 10px solid 8d6e63 !important;
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.1) !important;
-        }
-        div[data-baseweb="select"], div[data-baseweb="input"] {
-            background-color: ffffff !important;
-            border: 1px solid 8d6e63 !important;
-        }
-    
-      """, unsafe_allow_html=True)
- 
 class WilkenKeyEngine:
     def __init__(self):
+         The key to the decipherment glyphs
         self.glyphs = {"qo": "🗝️", "a": "🌿", "o": "🌀", "l": "⚖️", "i": "✨", "r": "⚓", "m": "🥇", "t": "📏", "p": "🧪", "k": "🔪", "s": "📜", "d": "🩸", "g": "🪦", "e": "🌾", "f": "🔥", "u": "💧", "b": "🪵", "h": "🕯️", "n": "🌑"}
+        
+         Mapping pages to the Yale archive IDs
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
             98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
@@ -45,6 +13,8 @@ class WilkenKeyEngine:
             169: "1006248", 175: "1006254", 179: "1006258", 189: "1006268", 195: "1006274",
             201: "1006280", 211: "1006290", 218: "1006294", 232: "1006243"
         }
+        
+         Your gathered research for each folio
         self.archive = {
             1: {"title": "General Protocol (1r)", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike.", "recipe": "Scrub copper vessels with ash. Initiate botanical cycle.", "ref": "See Page 133 (March Strike)."},
             2: {"title": "The Tear-Root (1v)", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound.", "recipe": "Harvest milky sap. Filter through linen.", "ref": "Storage on Page 165."},
@@ -89,8 +59,8 @@ class WilkenKeyEngine:
     def get_yale_link(self, page):
         img_id = self.image_map.get(page, "1006139")
         return f"https://collections.library.yale.edu/catalog/{img_id}"
+ Build the App Interface
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
-apply_style()
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
 sections = {
@@ -104,7 +74,8 @@ sections = {
 selected_section = st.sidebar.selectbox("Select Section:", list(sections.keys()))
 page_num = st.sidebar.selectbox("Select Page:", sections[selected_section])
 st.title("🗝️ The Wilken Key Engine Decipherment Core")
-st.markdown(" The complete digital archive of the Brotherhood of the Black Sun.")
+st.markdown("The complete digital archive of the Brotherhood of the Black Sun.")
+ Fetching page data
 img_url = engine.get_image_url(page_num)
 yale_link = engine.get_yale_link(page_num)
 data = engine.archive.get(page_num, {
@@ -114,23 +85,25 @@ data = engine.archive.get(page_num, {
     "recipe": "Recipe pending.",
     "ref": "Cross-reference pending."
 })
-if page_num in [162, 133, 155, 86]:
-    st.warning("📜 Fold-out Detected: Full wide view.")
-    st.image(img_url, use_container_width=True)
-else:
-    col1, col2 = st.columns([1, 1])
-    with col1:
-        st.subheader("📜 Yale Beinecke Source")
-        st.image(img_url, caption=f"High-Res Folio Page {page_num}", use_container_width=True)
-        st.markdown(f"🔗 Yale Archive: [{yale_link}]({yale_link})")
-    with col2:
-        st.subheader(f"🧪 {data['title']}")
-        st.info(f"Recipe: {data['recipe']}")
-        st.warning(f"Wilken Key Analysis: {data['desc']}")
-        st.caption(f"Cross-Ref: {data['ref']}")
-if data['words']:
-    st.markdown("Operational Commands:")
-    for w in data['words']:
-        st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
+ Display Layout
+col1, col2 = st.columns([1, 1])
+with col1:
+    st.subheader("📜 Yale Beinecke Source")
+    st.image(img_url, caption=f"High-Res Folio Page {page_num}", use_container_width=True)
+    st.markdown(f"🔗 [Direct Yale Archive Link]({yale_link})")
+with col2:
+    st.header(f"🧪 {data['title']}")
+    st.markdown("---")
+    
+     These labels are now plain and always visible
+    st.markdown(f"Description: {data['desc']}")
+    st.markdown(f"Deciphered Recipe: {data['recipe']}")
+    st.markdown(f"Cross-Reference: {data['ref']}")
+    
+    if data['words']:
+        st.markdown("---")
+        st.subheader("⚠️ Operational Commands Recognized:")
+        for w in data['words']:
+            st.success(f"Voynich: `{w}` → Deciphered: {engine.decipher_word(w)}")
 st.markdown("---")
 st.caption("brea Intelligence Core | Full Batches 1-13 Archive")
