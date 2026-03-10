@@ -11,7 +11,7 @@ class WilkenKeyEngine:
         
          #100% AUDITED Mapping following User Comprehensive Cheat Sheet (MS 408)
         self.image_map = {
-             Initial Pages
+             #Initial Pages
             "Front Cover": "1006071",
             "Inside Front Cover": "1006074",
             "Flyleaf 1r": "1006075",
