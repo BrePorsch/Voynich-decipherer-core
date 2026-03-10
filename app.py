@@ -36,7 +36,7 @@ def apply_style():
  
 class WilkenKeyEngine:
     def __init__(self):
-         Added glyphs mapping so the decipher tool functions
+         #Added glyphs mapping so the decipher tool functions
         self.glyphs = {"qo": "🗝️", "a": "🌿", "o": "🌀", "l": "⚖️", "i": "✨", "r": "⚓", "m": "🥇", "t": "📏", "p": "🧪", "k": "🔪", "s": "📜", "d": "🩸", "g": "🪦", "e": "🌾", "f": "🔥", "u": "💧", "b": "🪵", "h": "🕯️", "n": "🌑"}
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
