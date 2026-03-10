@@ -1,5 +1,5 @@
 import streamlit as st
-def apply_custom_style():
+def apply_manuscript_style():
     st.markdown("""
         
         .stApp {
@@ -31,9 +31,8 @@ def apply_custom_style():
 class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {"qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface", "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap", "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow", "r": "Dose/Measure", "dy": "Lock/Finish"}
-        
         self.archive = {
-            1: {"title": "General Protocol (1r)", "desc": "The Brotherhood's opening SOP. All copper tools must be scrubbed with ash. Page 1 initiates the botanical cycle and the March Strike protocol."},
+            1: {"title": "General Protocol (1r)", "desc": "The Brotherhood's opening SOP. All copper vessels must be scrubbed with ash. Page 1 initiates the botanical cycle and the March Strike protocol."},
             2: {"title": "The Tear-Root Extraction (1v)", "desc": "Protocol for harvesting the milky white sap from primary root mounds. Essential for treating topical skin inflammation and redness."},
             3: {"title": "The Forked Anchor Maceration (2r)", "desc": "Double-distillation protocol for serrated leaves. Used to cool internal 'blood-fires' through high-potency essential oils."},
             9: {"title": "The Spiky Stem Refining (5r)", "desc": "Refining the alkaloid-rich spiky stems for surface-level wound repair and monastic antiseptic cleansing."},
@@ -53,53 +52,43 @@ class WilkenKeyEngine:
         overrides = {1: "1006139", 2: "1006140", 133: "1006208", 155: "1006216", 162: "1006241", 165: "1006244", 232: "1006243"}
         img_id = overrides.get(page, str(1006138 + page))
         return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg", f"https://collections.library.yale.edu/catalog/{img_id}"
-    def get_generic_desc(self, page_num):
+    def get_deep_desc(self, page_num):
         if page_num <= 130: return "🌿 Botanical Phase: This page details the primary root and leaf extractions. The Wilken Key identifies the 'Anchor' (Plant Part) and the 'Flow' (Chemical State) required for this specific medicinal formula."
-        elif 131 <= page_num <= 150: return "♈ Timing Phase: Astronomical synchronization. These pages determine the 'Strike' time—the exact seasonal window when plant potency is at its maximum for the Brotherhood's harvest."
+        elif 131 <= page_num <= 150: return "♈ Timing Phase: Astronomical synchronization. These pages determine the 'Strike' time—the exact seasonal window when plant potency is at its maximum."
         elif 151 <= page_num <= 170: return "🛁 Processing Phase: The 'Factory' protocols. Refinement of raw botanicals into pharmaceutical-grade oils and essences using thermal vats and steam-distillation pipes."
-        else: return "🏺 Storage Phase: The Apothecary's Inventory. Detailed SOPs for glazed storage jars, wax seals, and final monastic authorizations for the Brotherhood's mobile medicine chest."
+        else: return "🏺 Storage Phase: The Apothecary's Inventory. Detailed SOPs for glazed storage jars, wax seals, and final monastic authorizations for the Brotherhood's medicine chest."
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
-apply_custom_style()
+apply_manuscript_style()
 engine = WilkenKeyEngine()
 st.sidebar.title("🧬 Navigator")
 choice = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
 if choice == "The Decipherment Core":
     st.title("🗝️ The Wilken Key Engine Decipherment Core")
     st.markdown(" Decoding the world's most mysterious medical manuscript by Page Number.")
+    selected_page = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
+    img_url, yale_link = engine.get_image_data(selected_page)
+    data = engine.archive.get(selected_page, {"title": f"Scientific Folio: Page {selected_page}", "desc": engine.get_deep_desc(selected_page)})
     
-    page_num = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
-    img_url, yale_link = engine.get_image_data(page_num)
-    
-     Fetch specific data or generate smart generic data
-    data = engine.archive.get(page_num, {"title": f"Scientific Folio: Page {page_num}", "desc": engine.get_generic_desc(page_num)})
-    
-    if page_num in [162, 133, 155]:  Wide view for fold-outs
+    if selected_page in [162, 133, 155]:
         st.warning("📜 Wide-Format Fold-out Detected: Displaying Full Architectural View.")
         st.image(img_url, use_container_width=True)
         st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
         st.subheader(f"🧪 {data['title']}")
         st.info(f"Wilken Key Analysis: {data['desc']}")
-        st.success("Operational Commands: Phoneme 'Qo' (Boil) | 'O-L' (Flow) | 'Dy' (Lock)")
     else:
         col1, col2 = st.columns([1, 1])
         with col1:
             st.subheader("📜 Manuscript Source")
-            st.image(img_url, caption=f"Wilken Key Engine Scan: Page {page_num}")
+            st.image(img_url, caption=f"Wilken Key Engine Scan: Page {selected_page}")
             st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
         with col2:
             st.subheader(f"🧪 {data['title']}")
             st.info(f"Wilken Key Analysis: {data['desc']}")
             st.write("Operational Commands detected:")
-            st.success("Phoneme 'Qo' → Prepared/Boiled")
-            st.success("Phoneme 'O-L' → Liquid Flow Release")
-            st.success("Phoneme 'Dy' → Final Lock/Finish")
+            st.success("Phoneme 'Qo' → Prepared/Boiled | 'O-L' → Flow | 'Dy' → Lock")
 elif choice == "Intelligence Archive":
     st.title("🏛️ The Intelligence Core")
-    st.markdown(" THE BROTHERHOOD OF THE BLACK SUN")
-    st.write("A 15th-century monastic order of traveling pharma-techs. They used the Wilken Key phonetic cipher to protect their proprietary medicinal formulas from rival guilds.")
-    st.markdown(" RECURSIVE PHONETIC ANALYSIS")
-    st.write("The Wilken Key proves the manuscript is not a language, but a Tokenized Command System. Each 'word' is a set of chemical instructions for an apothecary.")
+    st.write("A 15th-century monastic order of traveling pharma-techs. They used the Wilken Key phonetic cipher to protect their proprietary medicinal formulas.")
 elif choice == "About the Engine":
     st.title("💻 The Wilken Key Digital Engine")
-    st.info("Bridges the visual and textual data of MS 408 using Recursive Phonetic Analysis.")
     st.success("Designed by bre with the brea Intelligence Interface. ⚖️✨")
