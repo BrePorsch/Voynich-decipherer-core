@@ -73,7 +73,8 @@ class WilkenKeyEngine:
                 "desc": "Folio 33r features two distinct plant illustrations placed side-by-side as shown in the manuscript, characterized by their contrasting green and yellowish-brown foliage. These species are primary markers for the mid-spring harvest cycle and are used to stabilize the more volatile star-essence oils. Notice the serrated edges on the green leaves, which monastic records suggest possess the highest transdermal permeability for salves. The yellow-leaved plant on the right is harvested for its root juice, which acts as a secondary binding agent for the triple-root salve on f33v. You must extract these fluids under a waning moon to ensure maximum viscosity throughout the distillation process. The relationship between these two plants is essential for the 9-vat factory maturation process detailed on the Rosetta Map. Any imbalance between these two compounds will cause the final decoction to separate into its base components in the storage jars. It is the critical balancing page for the entire apothecary system of the Black Sun.",
                 "recipe": "1. Harvest both species simultaneously in late April. 2. Chop green leaves into 2-inch segments for steam extraction. 3. Cold-press yellow roots for binding juice. 4. Blend at a 2:1 ratio by weight in the main vat. 5. Simmer for 1 hour below the boiling point. 6. Filter through wire-mesh silk. 7. Store in Slot 4 inventory. 8. Cross-verify results with f33v stabilization and f86v schematic.",
                 "ref": "Balancing page; Links f1v, f33v, and f86v factory."
-            }
+                     }
+        }
     def decipher_word(self, word):
         parts = []
         if "qo" in word: parts.append(self.glyphs["qo"])
