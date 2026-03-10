@@ -50,7 +50,8 @@ elif page == "Archive Notes":
     st.write("A Functional Medical Field Manual. It is not a book of magic, but a collection of SOPs (Standard Operating Procedures) for 15th-century apothecary science.")
     st.markdown(" 3. THE KEY REVEAL")
     st.write("The text is written in 'Tokenized Commands'. Each word identifies a plant part (Anchor), its state (Flow), and the chemical action needed (Strike).")
-elif page == "About the App":st.title("💻 The Wilken-Irish Digital Engine")
+elif page == "About the App":
+    st.title("💻 The Wilken-Irish Digital Engine")
     st.info("This app bridges the visual and textual data of the Yale Beinecke Archive using Recursive Analysis.")
     st.write("Capabilities:")
     st.write("- Maps 116+ Folios to functional medical protocols.")
