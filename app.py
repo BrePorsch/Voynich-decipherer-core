@@ -97,7 +97,7 @@ with col2:
     st.header(f"🧪 {data['title']}")
     st.markdown("---")
     
-     Professional Markdown Labels
+     #Professional Markdown Labels
     st.write(f"Detailed Investigation: {data['desc']}")
     st.write(f"Monastic Recipe: {data['recipe']}")
     st.write(f"Internal Folio Cross-Reference: {data['ref']}")
