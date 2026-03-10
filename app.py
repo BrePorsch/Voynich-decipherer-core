@@ -12,7 +12,11 @@ class WilkenKeyEngine:
          #ELITE AUDITED VOYINCH IDS (Verified against Yale Volume 2002046)
         self.image_map = {
             "f1r": "1006077", 
-            "f1v": "1006078", 
+            "f1v": "1006078",
+            "f2r": "1006079", 
+            "f2v": "1006080",
+            "f3r": "1006081",
+            "f3v": "1006082",
             "f33r": "1006138", 
             "f33v": "1006139", 
             "f86v": "1006231",
@@ -35,6 +39,34 @@ class WilkenKeyEngine:
                 "recipe": "1. Score root crown with obsidian blade at dawn. 2. Collect milky sap in ceramic tray. 3. Triple linen filter until clarity is achieved. 4. Isolate 'i' essence from blue apical clusters. 5. Seal in airtight amber glass. 6. Label for slot 2 storage sequence. 7. Monitor for lipid separation over 24 hours. 8. Cross-reference f1r for final activation.", 
                 "ref": "Primary Sap Source; Links to f1r (Protocol) and f33r (Balancing)."
             },
+            "f2r": {
+                "title": "The Anchor-Root Specimen (f2r)",
+                "words": ["aladaba", "qotheol"],
+                "desc": "The Anchor-Root Specimen on f2r is a critical waypoint in the herbal series, featuring a tall, unbranched stem with deeply serrated foliage reminiscent of sea-anchor flukes. In the Monastic tradition, this species is prized for its ability to anchor volatile essences that would otherwise evaporate during the distillation of more delicate ingredients. The root system is depicted as a singular, thickened vertical shaft that indicates a high concentration of structural fibers. You must harvest these leaves during a waning moon to ensure the medicinal integrity of the cell walls is at its historical peak. Laboratory engineers use this extract specifically as a thermal stabilizer for the large-scale 9-vat fermentation tanks. It is estimated by the Brotherhood that a single bundle of f2r can prevent the localized scorching of over fifty gallons of base distillate. Notice how the venation on the leaf surface aligns with the marginalia to provide a hidden blueprint for pressure settings. Proper storage for this extract requires a high-borosilicate glass jar kept at a constant, cool basement temperature.",
+                "recipe": "1. Harvest leaves during a waning spring moon. 2. Separate the anchor-root from the primary stem. 3. Dry the root fibers in a low-humidity sterile chamber. 4. Macerate the leaves in cold grain alcohol for 12 hours. 5. Press the mixture to extract the clear stabilizing fluid. 6. Combine with f1r extracts to prevent scorching. 7. Bottle in high-borosilicate glass. 8. Label 'Anchor Base' for vat stabilization.",
+                "ref": "Structural Stabilizer; Successor to f1r."
+            },
+            "f2v": {
+                "title": "Marrow-Fiber Extraction (f2v)",
+                "words": ["stella", "deor"],
+                "desc": "Folio 2v serves as the laboratory guide for the secondary properties of the f2 species, focusing on the high-density marrow found within the central stalk. This verso page shifts the focus from structural leaf stabilization to the creation of potent orthopedic balms. The Brotherhood utilizes a cold-press technique to extract this marrow without damaging the long-chain proteins required for bone-tissue recovery. Harvesting must occur at twilight to ensure the plant's internal heat has dispersed for a cleaner fiber separation. This internal marrow is then combined with the milky latex sap from f1v to create a primary structural orthopedic paste. The relationship between both sides of folio 2 represents the dual nature of structural and chemical support within the archive. It is highly recommended that you verify the yield of this page against the final authentication signatures found on f116v. Any significant discoloration in the resulting marrow paste indicates the introduction of iron contamination from the harvesting tools.",
+                "recipe": "1. Harvest the remaining f2 central stalks at twilight. 2. Slice the stalk longitudinally into 4-inch strips. 3. Cold-press the strips to release the high-density marrow. 4. Blend the marrow 1:1 with the milky sap from f1v. 5. Whip the mixture into a thick, orthopedic paste. 6. Store in earthenware jars to maintain organic temperature. 7. Apply to limb fractures using linen wraps. 8. Verify the purity of color before sealing for winter storage.",
+                "ref": "Orthopedic Base; Pairs with f1v sap; Validated on f116v."
+            },
+            "f3r": {
+                "title": "Branching Source Oil (f3r)",
+                "words": ["qokedy", "m-r"],
+                "desc": "Folio 3r features a distinctive branching botanical specimen with delicate leaf clusters that serves as the primary source for aromatherapy base oils. Unlike the fibrous nature of the previous folios, the f3r species is significantly more volatile and requires a pressurized steam distillation process. The laboratory utilizes this clear oil as the carrier fluid for high-potency star-essences, providing a non-reactive medium for neural decoctions. You must harvest the branching tips just as the first summer buds begin to form to maximize the lipid concentration. The archival logbooks suggest that the steam must be maintained at a steady ninety-five degrees Celsius to protect the delicate aromatic profile. This distillate is one of the few substances recorded in the manuscript that is capable of penetrating the blood-brain barrier. Notice the rhythmic spacing of the leaves on the illustration, which corresponds to the timing intervals for the steam valve releases. Failure to release the pressure according to these specific intervals will result in a clouded and potentially toxic final product.",
+                "recipe": "1. Harvest branching tips during early summer bud-form. 2. Pack the tips tightly into the copper retort. 3. Maintain steady steam heat at exactly 95 degrees Celsius. 4. Release pressure valves at 15-minute intervals. 5. Siphon the resulting clear carrier oil from the separator. 6. Test the volatility by applying a drop to a hot needle. 7. Store in small, clear glass vials for daily laboratory use. 8. Cross-reference for use with f67 celestial extractions.",
+                "ref": "Neural Carrier Oil; Directs to f67 celestial timing."
+            },
+            "f3v": {
+                "title": "Broad-Leaf Cooling Infusion (f3v)",
+                "words": ["ollag", "st-r"],
+                "desc": "The verso of folio 3 introduces a broad-leaf cooling reagent characterized by its intricate venation and massive surface area designed for heat exchange. This plant is the primary ingredient for reducing high-fever inflammations in the monastic infirmary and is administered as a chilled topical compress. The wide leaves are harvested during a cool dawn and immediately submerged in mountain spring water to lock in their thermal cooling properties. Analysis suggested in the marginalia indicates that the leaf venation acts as a radiator to disperse internal body heat when applied to the skin. You must ensure that the leaves remain entirely intact during harvest, as any surface breach results in the immediate oxidation of the alkaloids. This infusion is often blended with the triple-root base from f33v to provide a long-lasting topical cooling sensation during surgical recovery. The laboratory yield for f3v is monitored primarily by weight due to the high water content within the fresh leaf structure. It remains a staple reagent in the Black Sun medical inventory for all warm-season inflammation treatments.",
+                "recipe": "1. Harvest broad leaves at a cool dawn. 2. Ensure all leaves are pristine and free of surface damage. 3. Submerge immediately in chilled mountain spring water. 4. Macerate by hand using a stone pestle until a dark green liquid forms. 5. Blend 1:2 with the f33v Triple Root base. 6. Apply as a chilled compress to the patient's forehead or joints. 7. Replacing the compress every two hours for maximum cooling effect. 8. Dispose of spent leaf fibers in the oak ash bin.",
+                "ref": "Cooling Reagent; Pairs with f33v for inflammation."
+            },
             "f33r": {
                 "title": "Dual Green and Yellow Plants (f33r)",
                 "words": ["qokedy", "ll"],
@@ -42,7 +74,6 @@ class WilkenKeyEngine:
                 "recipe": "1. Harvest both species simultaneously in late April. 2. Chop green leaves into 2-inch segments for steam extraction. 3. Cold-press yellow roots for binding juice. 4. Blend at a 2:1 ratio by weight in the main vat. 5. Simmer for 1 hour below the boiling point. 6. Filter through wire-mesh silk. 7. Store in Slot 4 inventory. 8. Cross-verify results with f33v stabilization and f86v schematic.",
                 "ref": "Balancing page; Links f1v, f33v, and f86v factory."
             }
-        }
     def decipher_word(self, word):
         parts = []
         if "qo" in word: parts.append(self.glyphs["qo"])
@@ -61,7 +92,7 @@ st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="�
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
 sections = {
-    "🌿 Early Botanicals": ["f1r", "f1v", "f33r", "f33v"],
+    "🌿 Herbal Section": ["f1r", "f1v", "f2r", "f2v", "f3r", "f3v", "f33r", "f33v"],
     "🛁 Specialized Folios": ["f86v"],
     "🏺 Certification": ["f116v"]
 }
