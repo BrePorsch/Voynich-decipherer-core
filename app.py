@@ -55,7 +55,7 @@ class WilkenKeyEngine:
         for char in word:
             if char in self.glyphs and char not in ["q", "o"]:
                 parts.append(self.glyphs[char])
-         Clean '+' separator for professional look
+         #Clean '+' separator for professional look
         return " + ".join(parts) if parts else "No Transliteration Found"
     def get_image_url(self, folio):
         img_id = self.image_map.get(folio, "1006139")
