@@ -117,7 +117,7 @@ data = engine.archive.get(page_num, {
     "recipe": "Recipe pending.",
     "ref": "Cross-reference pending."
 })
-if page_num in [162, 133, 155, 86]:   Fold-outs
+if page_num in [162, 133, 155, 86]:
     st.warning("📜 Fold-out Detected: Full wide view.")
     st.image(img_url, use_container_width=True)
 else:
@@ -131,3 +131,9 @@ else:
         st.info(f"Recipe: {data['recipe']}")
         st.warning(f"Wilken Key Analysis: {data['desc']}")
         st.caption(f"Cross-Ref: {data['ref']}")
+if data['words']:
+    st.markdown("Operational Commands:")
+    for w in data['words']:
+        st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
+st.markdown("---")
+st.caption("brea Intelligence Core | Full Batches 1-13 Archive")
