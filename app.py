@@ -95,7 +95,7 @@ with col2:
     st.header(f"🧪 {data['title']}")
     st.markdown("---")
     
-     These labels are now plain and always visible
+     #These labels are now plain and always visible
     st.markdown(f"Description: {data['desc']}")
     st.markdown(f"Deciphered Recipe: {data['recipe']}")
     st.markdown(f"Cross-Reference: {data['ref']}")
