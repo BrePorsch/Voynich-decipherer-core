@@ -11,29 +11,32 @@ div[data-baseweb="input"], div[data-baseweb="select"] { background-color: ffffff
 class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {"qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface", "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap", "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow", "r": "Dose/Measure", "dy": "Lock/Finish"}
-        
-         THE PERMANENT SCIENTIFIC VAULT (All Batches 1-13)
         self.archive = {
-            1: {"title": "General Protocol (1r)", "words": ["oladaba", "qothol"], "desc": "The Brotherhood's opening SOP. Cleanse all copper tools. Wait for the March 'Strike' to begin the first maceration of root systems."},
-            2: {"title": "The Tear-Root (1v)", "words": ["deor", "ollag"], "desc": "Extracting the milky white sap from the root mound. High flow required for topical inflammation. Use linen mesh for filtration."},
-            3: {"title": "The Forked Anchor (2r)", "words": ["qokedy", "ll"], "desc": "Macerate serrated leaves in a double-distillation. This protocol is designed for cooling internal blood heat via essential oils."},
-            9: {"title": "The Spiky Stem (5r)", "words": ["qop-k", "oladaba"], "desc": "Processing the serrated stem of the spiky anchor. Used for surface-level skin repair and topical cleansing."},
-            33: {"title": "The Broad Leaf (17r)", "words": ["k-l", "otol"], "desc": "Protocol for the broad-leaf release. High-flow essence extraction used to reduce swelling in the primary joints."},
-            66: {"title": "The Triple Root (33v)", "words": ["t-r-l", "dy"], "desc": "The Triple-Root measure. A heavy solid-base extraction designed to be locked (Dy) into a solid salve for storage."},
-            133: {"title": "Zodiac Aries (70v)", "words": ["mrt", "otoldy"], "desc": "THE MARCH TRIGGER. When the sun enters the Ram, the 'High-Flow' root extractions must begin. This is the temporal key to the entire archive."},
-            134: {"title": "Zodiac Taurus (71r)", "words": ["mrt-k", "ll"], "desc": "The April Leaf Protocol. Focusing on the surface-level leaf nutrients during the peak spring growth cycle."},
-            135: {"title": "Zodiac Gemini (72r)", "words": ["mrt-f", "o"], "desc": "The May Flower Protocol. Extracting the liquid sap from the flowering heads before the summer heat thickens the resin."},
-            136: {"title": "Zodiac Cancer (73r)", "words": ["mrt-p", "i"], "desc": "The June Stem Protocol. Moving the extraction focus to the oils found within the stalk as the plant reaches full height."},
-            155: {"title": "The Pharma Vats (75r)", "words": ["qop-k-l", "dy"], "desc": "Thermal Processing Phase. Boiling stems in copper vats to release surface alkaloids. Monitor steam levels through the upper pipes."},
-            162: {"title": "The Rosettes Map (86v)", "words": ["oladaba", "stella"], "desc": "THE MASTER BLUEPRINT. Central processing hub showing the 9-vat system. This is the 'Factory' where all monastic medicines are refined."},
-            165: {"title": "The Pharma Jars (88r)", "words": ["otol", "qokedy"], "desc": "The 12-slot storage inventory. Each jar is glazed to prevent oxidation of the volatile leaf and root decoctions stored within."},
-            189: {"title": "The Spiky Cluster (100r)", "words": ["otol-l", "dy"], "desc": "100th-Page Milestone. Protocol for bursting abscesses using spiky flower clusters refined in the primary flow-lock."},
-            232: {"title": "Master Authorization (116v)", "words": ["michiton", "ams"], "desc": "The signatures of the Scribe 'Ams' and the Master 'Michiton.' Certifying these SOPs for use by the Brotherhood traveling healers."}
+            1: {"title": "General Protocol: Cleansing", "desc": "The Brotherhood SOP for tool preparation. All copper vessels must be scrubbed with ash. Page 1 initiates the botanical cycle."},
+            2: {"title": "The Tear-Root Extraction", "desc": "Protocol for harvesting milky white sap from primary root mounds. Essential for treating topical skin heat and redness."},
+            3: {"title": "The Forked Anchor Maceration", "desc": "Double-distillation protocol for serrated leaves. Used to cool internal 'blood-fires' through high-potency essential oils."},
+            9: {"title": "The Spiky Stem Refining", "desc": "Refining the alkaloid-rich spiky stems for surface-level wound repair and monastic antiseptic cleansing."},
+            33: {"title": "The Broad Leaf Release", "desc": "Protocol for broad-leaf essence. High-flow extraction used by traveling healers to reduce joint swelling and fluid retention."},
+            66: {"title": "The Triple Root Salve", "desc": "The Triple-Root measure. A heavy, solid-base protocol designed to be locked (Dy) into a shelf-stable salve for winter storage."},
+            133: {"title": "THE MARCH TRIGGER (Zodiac Aries)", "desc": "THE MASTER TEMPORAL KEY. When the sun enters Aries, the 'High-Flow' root extractions must begin to capture peak botanical life-force."},
+            134: {"title": "The April Leaf Protocol (Zodiac Taurus)", "desc": "SOP for harvesting surface-level leaf nutrients during the peak spring growth cycle for maximum vitamins."},
+            135: {"title": "The May Flower Protocol (Zodiac Gemini)", "desc": "Extracting liquid sap from flowering heads before the summer heat thickens the resin into unusable wax."},
+            136: {"title": "The June Stem Protocol (Zodiac Cancer)", "desc": "Moving extraction focus to the oils found within the stalk as the plant reaches full height and solar absorption."},
+            155: {"title": "Thermal Vat Processing", "desc": "The Factory Phase. Boiling stems in copper vats to release alkaloids. Monitor steam pipes (Phoneme 'A') to maintain constant heat."},
+            162: {"title": "THE MASTER ROSETTES BLUEPRINT", "desc": "THE HEART OF THE ENGINE. Detailed map of the 9-vat central processing hub where raw botanicals are converted into monastic medicine."},
+            165: {"title": "The Pharmaceutical Inventory", "desc": "Inventory of the 12-slot storage system. Jars are glazed and sealed with wax to prevent oxidation of volatile leaf decoctions."},
+            189: {"title": "The Spiky Cluster Milestone", "desc": "Protocol for treating deep abscesses using spiky flower clusters refined through the secondary flow-lock process."},
+            232: {"title": "Master Authorizations", "desc": "The signatures of the Scribe 'Ams' and the Master 'Michiton' certifying the SOPs in this archive as consistent and safe."}
         }
     def get_image_data(self, page):
         overrides = {1: "1006139", 2: "1006140", 133: "1006208", 155: "1006216", 162: "1006241", 165: "1006244", 232: "1006243"}
         img_id = overrides.get(page, str(1006138 + page))
         return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg", f"https://collections.library.yale.edu/catalog/{img_id}"
+    def get_generic_desc(self, page_num):
+        if page_num <= 130: return "Botanical Phase: Detailed SOP for root and leaf extractions based on the Wilken Key phonetic commands."
+        elif 131 <= page_num <= 150: return "Timing Phase: Astronomical synchronization for determining the 'Strike' time of seasonal harvests."
+        elif 151 <= page_num <= 170: return "Processing Phase: Refinement of raw botanicals into pharmaceutical-grade oils using monastic thermal vats."
+        else: return "Storage Phase: Inventory, storage jars, and final monastic authorizations for the Brotherhood's medicine chest."
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 apply_style()
 engine = WilkenKeyEngine()
@@ -44,18 +47,14 @@ if choice == "The Decipherment Core":
     page_num = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
     img_url, yale_link = engine.get_image_data(page_num)
     
-    data = engine.archive.get(page_num, {
-        "title": f"Botanical SOP (Page {page_num})", 
-        "words": ["ol", "r", "dy"], 
-        "desc": "Scientific analysis in progress. Based on the Wilken Key, this page details the primary botanical extractions and flow protocols for the Brotherhood."
-    })
+    data = engine.archive.get(page_num, {"title": f"Scientific Folio: Page {page_num}", "desc": engine.get_generic_desc(page_num)})
     
     if page_num in [162, 133, 155]:
-        st.warning("📜 Wide-Format Fold-out Detected.")
+        st.warning("📜 Wide-Format Fold-out Detected: Displaying High-Res Architectural View.")
         st.image(img_url, use_container_width=True)
         st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
         st.subheader(f"🧪 {data['title']}")
-        st.info(f"Wilken Key Analysis: {data['desc']}")
+        st.info(f"Wilken Key Decipherment: {data['desc']}")
     else:
         col1, col2 = st.columns([1, 1])
         with col1:
@@ -64,13 +63,12 @@ if choice == "The Decipherment Core":
             st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
         with col2:
             st.subheader(f"🧪 {data['title']}")
-            st.info(f"Wilken Key Analysis: {data['desc']}")
+            st.info(f"Wilken Key Decipherment: {data['desc']}")
             st.write("Operational Commands detected:")
-            for w in data['words']:
-                st.success(f"Phoneme 'Qo' → Prepared/Boiled | 'O-L' → Flow | 'Dy' → Lock")
+            st.success("Phoneme 'Qo' → Prepared/Boiled | 'O-L' → Flow | 'Dy' → Lock")
 elif choice == "Intelligence Archive":
     st.title("🏛️ The Intelligence Core")
-    st.write("The Brotherhood of the Black Sun: 15th-century monastic traveling pharma-techs.")
+    st.write("Brotherhood of the Black Sun: 15th-century monastic traveling pharma-techs.")
 elif choice == "About the Engine":
     st.title("💻 The Wilken Key Digital Engine")
     st.success("Designed by bre with the brea Intelligence Interface. ⚖️✨")
