@@ -14,19 +14,19 @@ class WilkenKeyEngine:
         self.image_map = {
              #Image 3: Intro / Erased signature
             "f1r": "1006139", 
-             Image 4: #THE LOBED-LEAF PLANT (Photo 1)
+             #Image 4: THE LOBED-LEAF PLANT (Photo 1)
             "f1v": "1006140", 
-             Image 5: #Single Serrated Stem
+             #Image 5: Single Serrated Stem
             "f2r": "1006141", 
-             Image 65: #DUAL GREEN/YELLOW PLANTS (Photo 2)
+             #Image 65: DUAL GREEN/YELLOW PLANTS (Photo 2)
             "f33r": "1006201", 
-             Image 66: #Triple Root Stabilization 
+             #Image 66: Triple Root Stabilization 
             "f33v": "1006202", 
-             Image 162: #THE ROSETTA MAP Fold-out
+             #Image 162: THE ROSETTA MAP Fold-out
             "f86v": "1006237", 
-             Image 171: #Inventory Jars System
+             #Image 171: Inventory Jars System
             "f88r": "1006307", 
-             Image 212: #Final Certification
+             #Image 212: Final Certification
             "f116v": "1006243" 
         }
         
