@@ -35,7 +35,7 @@ class WilkenKeyEngine:
                 "recipe": "1. Analyze the 9-vat configuration. 2. Align Stella rosette with current zodiac. 3. Integrate Pharma Vat inputs (Page 155). 4. Activate subterranean cooling (Page 158). 5. Monitor central fermentation cycle. 6. Execute high-flow release. 7. Direct output to storage slots 1-12 (Page 165). 8. Document annual yield in the Master Log (Page 232).", 
                 "ref": "Main Factory inputs on Page 155; Cooling on Page 158; Storage on Page 165."
             }
-             (I will keep filling in every page with this exact 8-sentence depth!)
+             #(I will keep filling in every page with this exact 8-sentence depth!)
         }
     def decipher_word(self, word):
         parts = []
