@@ -1,40 +1,34 @@
 import streamlit as st
+ --- THE WILKEN KEY STYLING ENGINE ---
 def apply_custom_style():
-    st.markdown(
-        """
-        
-        .stApp {
-            background-color: f4ece1;
-            background-image: url("https://www.transparenttextures.com/patterns/papyrus.png");
-        }
-        section[data-testid="stSidebar"] {
-            background-color: 3e2723 !important;
-        }
-        section[data-testid="stSidebar"] .stMarkdown, section[data-testid="stSidebar"] label {
-            color: d7ccc8 !important;
-        }
-        h1, h2, h3 {
-            color: 2d2926;
-            font-family: 'Georgia', serif;
-            border-bottom: 1px solid 8d6e63;
-        }
-        .stMarkdown, p, span {
-            color: 3e2723;
-            font-family: 'Georgia', serif;
-        }
-        .stAlert {
-            background-color: fff9f0 !important;
-            border: 1px solid d7ccc8 !important;
-            border-radius: 5px;
-        }
-        input {
-            background-color: ffffff !important;
-            border: 1px solid 8d6e63 !important;
-        }
-        
-        """,
-        unsafe_allow_html=True
-    )
+    parchment_css = """
+    
+    .stApp {
+        background-color: f4ece1 !important;
+        background-image: url("https://www.transparenttextures.com/patterns/papyrus.png");
+    }
+    [data-testid="stSidebar"] {
+        background-color: 3e2723 !important;
+    }
+    [data-testid="stSidebar"] .stMarkdown, [data-testid="stSidebar"] p, [data-testid="stSidebar"] label {
+        color: d7ccc8 !important;
+    }
+    h1, h2, h3, .stMarkdown p, .stText {
+        color: 3e2723 !important;
+        font-family: 'Georgia', serif !important;
+    }
+    .stAlert {
+        background-color: fff9f0 !important;
+        border: 1px solid d7ccc8 !important;
+        border-left: 5px solid 8d6e63;
+    }
+    div[data-baseweb="input"], div[data-baseweb="select"] {
+        background-color: ffffff !important;
+        border: 1px solid 8d6e63 !important;
+    }
+    
+    """
+    st.markdown(parchment_css, unsafe_allow_html=True)
 class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {
@@ -43,55 +37,101 @@ class WilkenKeyEngine:
             "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
             "r": "Dose/Measure", "dy": "Lock/Finish"
         }
-        self.image_map = {
-            "1r": "1006139", "1v": "1006140", "2r": "1006141", "2v": "1006142",
-            "70v": "1006208", "86v": "1006241", "88r": "1006244", "116v": "1006243"
+        
+         Manual Overrides for Fold-outs and non-linear sequences
+        self.special_pages = {
+            1: "1006139", 2: "1006140",  Page 1 & 2
+            133: "1006208",  Zodiac Aries
+            162: "1006241",  The Rosettes Map (Full Fold-out)
+            175: "1006244",  Pharma Jars
+            232: "1006243"   Master Authorization
         }
-        self.folios = {
-            "1r": {"title": "General Protocol", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike."},
-            "1v": {"title": "The Tear-Root", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound."},
-            "70v": {"title": "Zodiac - Aries", "words": ["mrt", "otoldy"], "desc": "March timing trigger for high-flow root medicine."},
-            "86v": {"title": "The Rosettes Map", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory)."},
-            "88r": {"title": "The Pharma Jars", "words": ["otol", "qokedy"], "desc": "The 12-slot storage system for all decoctions."},
-            "116v": {"title": "The Master Authorization", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors."}
-        }
-    def get_image_url(self, folio):
-        img_id = self.image_map.get(folio, "1006139")
-        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/!800,800/0/default.jpg"
-    def decipher_word(self, word):
-        components = [self.glyphs[c] for c in word if c in self.glyphs]
-        return " + ".join(components) if components else "Proprietary Label"
+    def get_image_data(self, page_num):
+         Calculate the Yale ID based on the 1006139 start point
+        if page_num in self.special_pages:
+            img_id = self.special_pages[page_num]
+        else:
+            img_id = str(1006138 + page_num)
+        
+        img_url = f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
+        yale_link = f"https://collections.library.yale.edu/catalog/{img_id}"
+        return img_url, yale_link
+    def get_scientific_protocol(self, page_num):
+         Logic to determine section based on page ranges
+        if page_num <= 130:
+            return {
+                "section": "🌿 Botanical Extraction Protocol",
+                "analysis": "Wilken Key indicates primary root/leaf maceration. The Brotherhood of the Black Sun utilized cold-press extraction for these specific alkaloids.",
+                "protocol": "1. Identify the root mound. 2. Apply 'Qo' (Boil) if leaves are serrated. 3. Filter through linen mesh."
+            }
+        elif 131 <= page_num <= 150:
+            return {
+                "section": "♈ Astronomical Timing Trigger",
+                "analysis": "Temporal synchronization page. Used to determine the 'Strike' time (March/April) for peak botanical potency.",
+                "protocol": "1. Align central star with horizon. 2. Observe 'Mrt' (March) marker. 3. Harvest at the solar degree marked in blue."
+            }
+        elif 151 <= page_num <= 170:
+            return {
+                "section": "🛁 Thermal Processing (The Factory)",
+                "analysis": "Refining raw plant essence into high-potency oils using copper vats and steam-pipes.",
+                "protocol": "1. Channel 'O-L' (Sap Flow). 2. Monitor 'A' (Steam) levels. 3. Collect essence in the lower cooling basin."
+            }
+        else:
+            return {
+                "section": "🏺 Pharmaceutical Inventory & Authorization",
+                "analysis": "The final SOPs and inventory logs. Contains the signatures of the Master Authors certifying the formulas.",
+                "protocol": "1. Review 'Oladaba' (Cleansing) check. 2. Verify monastic seal. 3. Lock the archive until the next March Strike."
+            }
+ --- LAUNCH THE brea INTELLIGENCE INTERFACE ---
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 apply_custom_style()
 engine = WilkenKeyEngine()
 st.sidebar.title("🧬 Navigator")
-page = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
-if page == "The Decipherment Core":
+page_choice = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
+if page_choice == "The Decipherment Core":
     st.title("🗝️ The Wilken Key Engine Decipherment Core")
-    st.markdown(" Decoding the world's most mysterious medical manuscript.")
-    query = st.text_input("Enter Folio ID (e.g., 1r, 70v, 86v, 116v):").strip().lower()
-    if query:
-        if query in engine.folios:
-            data = engine.folios[query]
+    st.markdown(" Decoding the world's most mysterious medical manuscript by Page Number.")
+    
+     User selects Page 1 to 232
+    selected_page = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
+    
+    if selected_page:
+        img_url, yale_link = engine.get_image_data(selected_page)
+        protocol = engine.get_scientific_protocol(selected_page)
+        
+         Determine if it's a wide fold-out for display
+        is_wide = selected_page in [162, 133, 155]
+        
+        if is_wide:
+            st.warning("📜 Wide-Format Fold-out Detected: Displaying full architectural view.")
+            st.image(img_url, use_container_width=True)
+            st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
+            
+            colA, colB = st.columns([1, 1])
+            with colA:
+                st.info(f"Section: {protocol['section']}\n\nWilken Key Analysis: {protocol['analysis']}")
+            with colB:
+                st.warning(f"Operational Protocol:\n{protocol['protocol']}")
+        else:
             col1, col2 = st.columns([1, 1])
             with col1:
-                st.subheader("📜 Yale Beinecke Source")
-                st.image(engine.get_image_url(query), caption=f"High-Res Scan: Folio {query}")
+                st.subheader("📜 Manuscript Source")
+                st.image(img_url, caption=f"Wilken Key Engine Scan: Page {selected_page}")
+                st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
             with col2:
-                st.subheader(f"🧪 {data['title']}")
-                st.info(f"Description: {data['desc']}")
-                st.write("Operational Commands detected:")
-                for w in data['words']:
-                    st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
-        else:
-            st.error("Folio ID not found in the 'Locked' database.")
-elif page == "Intelligence Archive":
+                st.subheader(f"🧪 {protocol['section']}")
+                st.info(f"Wilken Key Analysis: {protocol['analysis']}")
+                st.warning(f"Operational Protocol:\n{protocol['protocol']}")
+                
+                st.write("Phonetic Command Breakdown:")
+                st.success("Phoneme 'Qo' → Prepared/Boiled")
+                st.success("Phoneme 'O-L' → Liquid Flow Release")
+                st.success("Phoneme 'Dy' → Final Lock/Finish")
+elif page_choice == "Intelligence Archive":
     st.title("🏛️ The Intelligence Core")
-    st.markdown(" 1. WHO ARE THE AUTHORS?")
-    st.write("The 'Brotherhood of the Black Sun' (Alpine-Irish Monastics).")
-    st.markdown(" 2. WHAT IS THE MANUSCRIPT?")
-    st.write("A Functional Medical Field Manual from the 15th century.")
-elif page == "About the Engine":
+    st.markdown(" THE BROTHERHOOD OF THE BLACK SUN")
+    st.write("A 15th-century monastic order of traveling pharma-techs. They used the Wilken Key to protect their proprietary medical formulas.")
+elif page_choice == "About the Engine":
     st.title("💻 The Wilken Key Digital Engine")
     st.info("Bridges the visual and textual data of MS 408 using Recursive Phonetic Analysis.")
-    st.success("Designed by bre with the Wilken Key Intelligence Core. ⚖️✨")
+    st.success("Designed by bre with the brea Intelligence Interface. ⚖️✨")
