@@ -1,7 +1,7 @@
 import streamlit as st
 class WilkenKeyEngine:
     def __init__(self):
-         The key to the decipherment glyphs
+         #The key to the decipherment glyphs
         self.glyphs = {"qo": "🗝️", "a": "🌿", "o": "🌀", "l": "⚖️", "i": "✨", "r": "⚓", "m": "🥇", "t": "📏", "p": "🧪", "k": "🔪", "s": "📜", "d": "🩸", "g": "🪦", "e": "🌾", "f": "🔥", "u": "💧", "b": "🪵", "h": "🕯️", "n": "🌑"}
         
          Mapping pages to the Yale archive IDs
