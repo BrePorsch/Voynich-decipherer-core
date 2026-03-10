@@ -71,7 +71,7 @@ selected_section = st.sidebar.selectbox("Select Section:", list(sections.keys())
 page_num = st.sidebar.selectbox("Select Folio:", sections[selected_section])
 st.title("🗝️ The Wilken Key Engine Decipherment Core")
 st.markdown("The complete digital archive of the Brotherhood of the Black Sun.")
- Fetching Folio data
+ #Fetching Folio data
 img_url = engine.get_image_url(page_num)
 yale_link = engine.get_yale_link(page_num)
 data = engine.archive.get(page_num, {
