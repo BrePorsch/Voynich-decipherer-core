@@ -75,7 +75,7 @@ selected_section = st.sidebar.selectbox("Select Section:", list(sections.keys())
 page_num = st.sidebar.selectbox("Select Page:", sections[selected_section])
 st.title("🗝️ The Wilken Key Engine Decipherment Core")
 st.markdown("The complete digital archive of the Brotherhood of the Black Sun.")
- Fetching page data
+ #Fetching page data
 img_url = engine.get_image_url(page_num)
 yale_link = engine.get_yale_link(page_num)
 data = engine.archive.get(page_num, {
@@ -85,7 +85,7 @@ data = engine.archive.get(page_num, {
     "recipe": "Recipe pending.",
     "ref": "Cross-reference pending."
 })
- Display Layout
+ #Display Layout
 col1, col2 = st.columns([1, 1])
 with col1:
     st.subheader("📜 Yale Beinecke Source")
