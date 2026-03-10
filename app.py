@@ -75,19 +75,19 @@ class WilkenKeyEngine:
             218: {"title": "The Author's Note (114v)", "words": ["ams", "portas"], "desc": "Note from 'Ams' regarding the gateways of healing.", "recipe": "Healing gateways note.", "ref": "Page 232 authorization."},
             232: {"title": "The Master Authorization (116v)", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors.", "recipe": "SOP certification.", "ref": "Entire archive."}
         }
-            def decipher_word(self, word):
-                parts = []
-                if "qo" in word: parts.append(self.glyphs["qo"])
-                for char in word:
-                    if char in self.glyphs and char not in ["q", "o"]:
-                        parts.append(self.glyphs[char])
-                return " + ".join(parts) if parts else "Proprietary Command"
-            def get_image_url(self, page):
-                img_id = self.image_map.get(page, "1006139")
-                return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
-            def get_yale_link(self, page):
-                img_id = self.image_map.get(page, "1006139")
-                return f"https://collections.library.yale.edu/catalog/{img_id}"
+        def decipher_word(self, word):
+            parts = []
+            if "qo" in word: parts.append(self.glyphs["qo"])
+            for char in word:
+                if char in self.glyphs and char not in ["q", "o"]:
+                    parts.append(self.glyphs[char])
+            return " + ".join(parts) if parts else "Proprietary Command"
+        def get_image_url(self, page):
+            img_id = self.image_map.get(page, "1006139")
+            return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
+        def get_yale_link(self, page):
+            img_id = self.image_map.get(page, "1006139")
+            return f"https://collections.library.yale.edu/catalog/{img_id}"
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 apply_style()
 engine = WilkenKeyEngine()
