@@ -30,7 +30,6 @@ def apply_style():
             background-color: ffffff !important;
             border: 1px solid 8d6e63 !important;
         }
-        
     """, unsafe_allow_html=True)
 class WilkenKeyEngine:
     def __init__(self):
