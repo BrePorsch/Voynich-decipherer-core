@@ -2,40 +2,42 @@ import streamlit as st
 def apply_style():
     st.markdown("""
         
-        <style>
         .stApp {
-            background-color: #f4ece1 !important;
+            background-color: f4ece1 !important;
             background-image: url("https://www.transparenttextures.com/patterns/papyrus.png") !important;
             background-size: cover !important;
             background-attachment: fixed !important;
         }
         [data-testid="stSidebar"] {
-            background-color: #3e2723 !important;
-            border-right: 2px solid #8d6e63 !important;
+            background-color: 3e2723 !important;
+            border-right: 2px solid 8d6e63 !important;
         }
-        [data-testid="stSidebar"]  {
-            color: #d7ccc8 !important;
+        / This makes the Table of Contents Title visible! /
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3, [data-testid="stSidebar"] .stMarkdown {
+            color: d7ccc8 !important;
             font-family: 'Georgia', serif !important;
         }
         h1, h2, h3, p, span, label, .stMarkdown {
-            color: #2d2926 !important;
+            color: 2d2926 !important;
             font-family: 'Georgia', serif !important;
         }
         .stAlert {
-            background-color: #fff9f0 !important;
-            border: 1px solid #d7ccc8 !important;
-            border-left: 10px solid #8d6e63 !important;
+            background-color: fff9f0 !important;
+            border: 1px solid d7ccc8 !important;
+            border-left: 10px solid 8d6e63 !important;
             box-shadow: 2px 2px 8px rgba(0,0,0,0.1) !important;
         }
         div[data-baseweb="select"], div[data-baseweb="input"] {
-            background-color: #ffffff !important;
-            border: 1px solid #8d6e63 !important;
+            background-color: ffffff !important;
+            border: 1px solid 8d6e63 !important;
         }
-    </style>
+    
       """, unsafe_allow_html=True)
  
 class WilkenKeyEngine:
-   def __init__(self):
+    def __init__(self):
+         Added glyphs mapping so the decipher tool functions
+        self.glyphs = {"qo": "🗝️", "a": "🌿", "o": "🌀", "l": "⚖️", "i": "✨", "r": "⚓", "m": "🥇", "t": "📏", "p": "🧪", "k": "🔪", "s": "📜", "d": "🩸", "g": "🪦", "e": "🌾", "f": "🔥", "u": "💧", "b": "🪵", "h": "🕯️", "n": "🌑"}
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
             98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
@@ -75,19 +77,19 @@ class WilkenKeyEngine:
             218: {"title": "The Author's Note (114v)", "words": ["ams", "portas"], "desc": "Note from 'Ams' regarding the gateways of healing.", "recipe": "Healing gateways note.", "ref": "Page 232 authorization."},
             232: {"title": "The Master Authorization (116v)", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors.", "recipe": "SOP certification.", "ref": "Entire archive."}
         }
-        def decipher_word(self, word):
-            parts = []
-            if "qo" in word: parts.append(self.glyphs["qo"])
-            for char in word:
-                if char in self.glyphs and char not in ["q", "o"]:
-                    parts.append(self.glyphs[char])
-            return " + ".join(parts) if parts else "Proprietary Command"
-        def get_image_url(self, page):
-            img_id = self.image_map.get(page, "1006139")
-            return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
-        def get_yale_link(self, page):
-            img_id = self.image_map.get(page, "1006139")
-            return f"https://collections.library.yale.edu/catalog/{img_id}"
+    def decipher_word(self, word):
+        parts = []
+        if "qo" in word: parts.append(self.glyphs["qo"])
+        for char in word:
+            if char in self.glyphs and char not in ["q", "o"]:
+                parts.append(self.glyphs[char])
+        return " + ".join(parts) if parts else "Proprietary Command"
+    def get_image_url(self, page):
+        img_id = self.image_map.get(page, "1006139")
+        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
+    def get_yale_link(self, page):
+        img_id = self.image_map.get(page, "1006139")
+        return f"https://collections.library.yale.edu/catalog/{img_id}"
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 apply_style()
 engine = WilkenKeyEngine()
