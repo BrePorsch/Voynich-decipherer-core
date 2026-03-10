@@ -1,74 +1,120 @@
 import streamlit as st
-def apply_style():
-    st.markdown("""
-.stApp { background-color: f4ece1 !important; background-image: url("https://www.transparenttextures.com/patterns/papyrus.png"); }
-[data-testid="stSidebar"] { background-color: 3e2723 !important; }
-[data-testid="stSidebar"]  { color: d7ccc8 !important; font-family: 'Georgia', serif; }
-h1, h2, h3, p, span, label { color: 3e2723 !important; font-family: 'Georgia', serif !important; }
-.stAlert { background-color: fff9f0 !important; border: 1px solid d7ccc8 !important; border-left: 5px solid 8d6e63; }
-div[data-baseweb="input"], div[data-baseweb="select"] { background-color: ffffff !important; border: 1px solid 8d6e63 !important; }
+ --- STYLING BLOCK (INJECTED AT START) ---
+st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
+st.markdown("""
+    
+    .stApp { 
+        background-color: f4ece1 !important; 
+        background-image: url("https://www.transparenttextures.com/patterns/papyrus.png"); 
+    }
+    [data-testid="stSidebar"] { 
+        background-color: 3e2723 !important; 
+    }
+    [data-testid="stSidebar"]  { 
+        color: d7ccc8 !important; 
+        font-family: 'Georgia', serif; 
+    }
+    h1, h2, h3, p, span, label, .stMarkdown { 
+        color: 3e2723 !important; 
+        font-family: 'Georgia', serif !important; 
+    }
+    .stAlert { 
+        background-color: fff9f0 !important; 
+        border: 1px solid d7ccc8 !important; 
+        border-left: 5px solid 8d6e63; 
+    }
+    div[data-baseweb="input"], div[data-baseweb="select"] { 
+        background-color: ffffff !important; 
+        border: 1px solid 8d6e63 !important; 
+    }
+    
 """, unsafe_allow_html=True)
 class WilkenKeyEngine:
     def __init__(self):
         self.glyphs = {"qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface", "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap", "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow", "r": "Dose/Measure", "dy": "Lock/Finish"}
-        self.archive = {
-            1: {"title": "General Protocol: Cleansing", "desc": "The Brotherhood SOP for tool preparation. All copper vessels must be scrubbed with ash. Page 1 initiates the botanical cycle."},
-            2: {"title": "The Tear-Root Extraction", "desc": "Protocol for harvesting milky white sap from primary root mounds. Essential for treating topical skin heat and redness."},
-            3: {"title": "The Forked Anchor Maceration", "desc": "Double-distillation protocol for serrated leaves. Used to cool internal 'blood-fires' through high-potency essential oils."},
-            9: {"title": "The Spiky Stem Refining", "desc": "Refining the alkaloid-rich spiky stems for surface-level wound repair and monastic antiseptic cleansing."},
-            33: {"title": "The Broad Leaf Release", "desc": "Protocol for broad-leaf essence. High-flow extraction used by traveling healers to reduce joint swelling and fluid retention."},
-            66: {"title": "The Triple Root Salve", "desc": "The Triple-Root measure. A heavy, solid-base protocol designed to be locked (Dy) into a shelf-stable salve for winter storage."},
-            133: {"title": "THE MARCH TRIGGER (Zodiac Aries)", "desc": "THE MASTER TEMPORAL KEY. When the sun enters Aries, the 'High-Flow' root extractions must begin to capture peak botanical life-force."},
-            134: {"title": "The April Leaf Protocol (Zodiac Taurus)", "desc": "SOP for harvesting surface-level leaf nutrients during the peak spring growth cycle for maximum vitamins."},
-            135: {"title": "The May Flower Protocol (Zodiac Gemini)", "desc": "Extracting liquid sap from flowering heads before the summer heat thickens the resin into unusable wax."},
-            136: {"title": "The June Stem Protocol (Zodiac Cancer)", "desc": "Moving extraction focus to the oils found within the stalk as the plant reaches full height and solar absorption."},
-            155: {"title": "Thermal Vat Processing", "desc": "The Factory Phase. Boiling stems in copper vats to release alkaloids. Monitor steam pipes (Phoneme 'A') to maintain constant heat."},
-            162: {"title": "THE MASTER ROSETTES BLUEPRINT", "desc": "THE HEART OF THE ENGINE. Detailed map of the 9-vat central processing hub where raw botanicals are converted into monastic medicine."},
-            165: {"title": "The Pharmaceutical Inventory", "desc": "Inventory of the 12-slot storage system. Jars are glazed and sealed with wax to prevent oxidation of volatile leaf decoctions."},
-            189: {"title": "The Spiky Cluster Milestone", "desc": "Protocol for treating deep abscesses using spiky flower clusters refined through the secondary flow-lock process."},
-            232: {"title": "Master Authorizations", "desc": "The signatures of the Scribe 'Ams' and the Master 'Michiton' certifying the SOPs in this archive as consistent and safe."}
-        }
-    def get_image_data(self, page):
-        overrides = {1: "1006139", 2: "1006140", 133: "1006208", 155: "1006216", 162: "1006241", 165: "1006244", 232: "1006243"}
-        img_id = overrides.get(page, str(1006138 + page))
-        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg", f"https://collections.library.yale.edu/catalog/{img_id}"
-    def get_generic_desc(self, page_num):
-        if page_num <= 130: return "Botanical Phase: Detailed SOP for root and leaf extractions based on the Wilken Key phonetic commands."
-        elif 131 <= page_num <= 150: return "Timing Phase: Astronomical synchronization for determining the 'Strike' time of seasonal harvests."
-        elif 151 <= page_num <= 170: return "Processing Phase: Refinement of raw botanicals into pharmaceutical-grade oils using monastic thermal vats."
-        else: return "Storage Phase: Inventory, storage jars, and final monastic authorizations for the Brotherhood's medicine chest."
-st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
-apply_style()
+        
+    def get_image_data(self, page_num):
+         Specific overrides for non-linear high-res foldouts
+        special = {133: "1006208", 162: "1006241", 175: "1006244", 232: "1006243"}
+        img_id = special.get(page_num, str(1006138 + page_num))
+        url = f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
+        link = f"https://collections.library.yale.edu/catalog/{img_id}"
+        return url, link
+    def generate_deep_analysis(self, p):
+         Dynamic Wilken Key Scientific Protocol Generator
+        if p <= 130:
+            return f"""
+            SECTION: Botanical Extraction SOP (Page {p})
+            WILKEN KEY ANALYSIS: This page represents a core botanical 'Anchor' study. The phonetic commands surrounding the central illustration indicate a high-pressure maceration of the primary root mound. Each tokenized word identifies the 'Flow' (L) of sap from the serrated leaves to the secondary stems.
+            SCIENTIFIC PROTOCOL: 
+            1. Extract the primary bulbous root during the morning dew. 
+            2. Apply the 'Qo' (Boiling) command to the stalk to release volatile alkaloids. 
+            3. Filter the resulting liquid through the monastic 12-slot mesh to isolate the 'I' (Oil Essence).
+            PHARMACEUTICAL NOTE: The 'Dy' (Lock) marker at the bottom suggests this decoction must be stored in glazed earthenware to prevent oxidation.
+            """
+        elif 131 <= p <= 150:
+            return f"""
+            SECTION: Astronomical/Zodiacal Timing (Page {p})
+            WILKEN KEY ANALYSIS: This is a Temporal Synchronization Protocol. The Brotherhood used these celestial alignments to trigger the 'Strike'—the exact moment of maximum plant potency. The star-grid on this page is a calendar for pharmaceutical timing.
+            SCIENTIFIC PROTOCOL: 
+            1. Align the central rosette with the horizon line at sunset. 
+            2. Calculate the 'Mrt' (March) phonetic offset to determine the root-sap viscosity. 
+            3. Initiate the 'High-Flow' (O-L) harvest only when the sun enters the specific degree marked in blue ink.
+            PHARMACEUTICAL NOTE: Harvesting outside this temporal window results in a 40% loss of essential oil potency.
+            """
+        elif 151 <= p <= 175:
+            return f"""
+            SECTION: Thermal Processing & The Factory (Page {p})
+            WILKEN KEY ANALYSIS: This is a processing blueprint from the central monastic hub. It details the 'A-O' (Steam-Sap) conversion process within the thermal vats. The pipes shown represent the recursive distillation system used to refine raw resins into medicinal grade oils.
+            SCIENTIFIC PROTOCOL: 
+            1. Feed the raw macerate into the primary copper vat. 
+            2. Monitor the 'A' (Steam) phonetic markers to maintain a constant pressure of 2 monastic units. 
+            3. Release the flow (L) into the secondary cooling basin once the essence turns translucent.
+            PHARMACEUTICAL NOTE: This is the 'Master Refinement' phase—the heart of the Wilken Key Engine's medical output.
+            """
+        else:
+            return f"""
+            SECTION: Pharmaceutical Inventory & Authorization (Page {p})
+            WILKEN KEY ANALYSIS: This is the 'Apothecary's Ledger.' It catalogs the storage and inventory of the Brotherhood's medicine chest. The text contains the final 'Lock' (Dy) commands and the master authorization tokens of the authors.
+            SCIENTIFIC PROTOCOL: 
+            1. Label the jars with the phonetic token of the root-base. 
+            2. Apply a wax seal to the 'Otol' (Storage) vessels to preserve the 'I' (Essence). 
+            3. Archive the ledger under the signature of 'Ams' (The Scribe) and 'Michiton' (The Master).
+            PHARMACEUTICAL NOTE: This page ensures the consistency and safety of the medicine for long-distance transport.
+            """
+ --- ENGINE INTERFACE ---
 engine = WilkenKeyEngine()
 st.sidebar.title("🧬 Navigator")
 choice = st.sidebar.radio("Go to:", ["The Decipherment Core", "Intelligence Archive", "About the Engine"])
 if choice == "The Decipherment Core":
     st.title("🗝️ The Wilken Key Engine Decipherment Core")
-    page_num = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
-    img_url, yale_link = engine.get_image_data(page_num)
+    p_num = st.number_input("Enter Page Number (1 - 232):", min_value=1, max_value=232, value=1)
     
-    data = engine.archive.get(page_num, {"title": f"Scientific Folio: Page {page_num}", "desc": engine.get_generic_desc(page_num)})
+    img_url, yale_link = engine.get_image_data(p_num)
+    analysis = engine.generate_deep_analysis(p_num)
     
-    if page_num in [162, 133, 155]:
-        st.warning("📜 Wide-Format Fold-out Detected: Displaying High-Res Architectural View.")
+    if p_num in [162, 133, 155]:  Automated Wide-Format for Foldouts
+        st.warning("📜 Master Fold-out Detected: Displaying full wide-format view for detailed architectural analysis.")
         st.image(img_url, use_container_width=True)
         st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
-        st.subheader(f"🧪 {data['title']}")
-        st.info(f"Wilken Key Decipherment: {data['desc']}")
+        st.info(analysis)
     else:
         col1, col2 = st.columns([1, 1])
         with col1:
             st.subheader("📜 Manuscript Source")
-            st.image(img_url, caption=f"Wilken Key Engine Scan: Page {page_num}")
+            st.image(img_url, caption=f"Wilken Key Engine Scan: Page {p_num}")
             st.markdown(f"Keynote: [🔗 View Original High-Res PDF at Yale Beinecke Library]({yale_link})")
         with col2:
-            st.subheader(f"🧪 {data['title']}")
-            st.info(f"Wilken Key Decipherment: {data['desc']}")
-            st.write("Operational Commands detected:")
-            st.success("Phoneme 'Qo' → Prepared/Boiled | 'O-L' → Flow | 'Dy' → Lock")
+            st.subheader("🧪 Scientific Protocol")
+            st.info(analysis)
+            st.write("Core Phonetic Operational Commands:")
+            st.success("Phoneme 'Qo' → Prepared/Boiled | 'O-L' → Flow | 'Dy' → Lock | 'T' → Root Base")
 elif choice == "Intelligence Archive":
     st.title("🏛️ The Intelligence Core")
-    st.write("Brotherhood of the Black Sun: 15th-century monastic traveling pharma-techs.")
+    st.markdown(" THE BROTHERHOOD OF THE BLACK SUN")
+    st.write("A 15th-century monastic order of traveling scholars. They were the world's first 'Pharma-Techs,' using a phonetic token system (The Wilken Key) to protect their proprietary medical formulas from competitors and the uninitiated.")
 elif choice == "About the Engine":
     st.title("💻 The Wilken Key Digital Engine")
-    st.success("Designed by bre with the brea Intelligence Interface. ⚖️✨")
+    st.info("This application bridges the visual and textual data of MS 408 using Recursive Phonetic Analysis.")
+    st.write("Database Status: Fully Indexed (Pages 1-232)")
+    st.success("Designed by bre with the Wilken Key Intelligence Core. ⚖️✨🥇")
