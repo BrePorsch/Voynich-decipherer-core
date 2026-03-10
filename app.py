@@ -10,9 +10,6 @@ class WilkenKeyEngine:
         }
         
          #100% Correct Yale Archive Mapping (MS 408)
-         f1r: Intro/Blank Page
-         f1v: Lobed-leaf plant (Photo 1)
-         f33r: Dual side-by-side green/yellow plants (Photo 2)
         self.image_map = {
             "f1r": "1006139",
             "f1v": "1006140",
