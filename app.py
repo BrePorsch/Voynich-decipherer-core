@@ -11,12 +11,12 @@ class WilkenKeyEngine:
         
          #ELITE AUDITED VOYINCH IDS (Verified against Yale Volume 2002046)
         self.image_map = {
-            "f1r": "1006139", 
-            "f1v": "1006140", 
-            "f33r": "1006201", 
-            "f33v": "1006202", 
-            "f86v": "1006298",
-            "f116v": "1006348"
+            "f1r": "1006077", 
+            "f1v": "1006078", 
+            "f33r": "1006138", 
+            "f33v": "1006139", 
+            "f86v": "1006229","1006230"
+            "f116v": "1006305"
         }
         
          #8-Sentence Deep-Dive Archive
