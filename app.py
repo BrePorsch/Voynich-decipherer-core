@@ -4,7 +4,7 @@ class WilkenKeyEngine:
          #The key to the decipherment glyphs
         self.glyphs = {"qo": "🗝️", "a": "🌿", "o": "🌀", "l": "⚖️", "i": "✨", "r": "⚓", "m": "🥇", "t": "📏", "p": "🧪", "k": "🔪", "s": "📜", "d": "🩸", "g": "🪦", "e": "🌾", "f": "🔥", "u": "💧", "b": "🪵", "h": "🕯️", "n": "🌑"}
         
-         Mapping pages to the Yale archive IDs
+         #Mapping pages to the Yale archive IDs
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
             98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
@@ -14,7 +14,7 @@ class WilkenKeyEngine:
             201: "1006280", 211: "1006290", 218: "1006294", 232: "1006243"
         }
         
-         Your gathered research for each folio
+         #Your gathered research for each folio
         self.archive = {
             1: {"title": "General Protocol (1r)", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike.", "recipe": "Scrub copper vessels with ash. Initiate botanical cycle.", "ref": "See Page 133 (March Strike)."},
             2: {"title": "The Tear-Root (1v)", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound.", "recipe": "Harvest milky sap. Filter through linen.", "ref": "Storage on Page 165."},
@@ -59,7 +59,7 @@ class WilkenKeyEngine:
     def get_yale_link(self, page):
         img_id = self.image_map.get(page, "1006139")
         return f"https://collections.library.yale.edu/catalog/{img_id}"
- Build the App Interface
+ #Build the App Interface
 st.set_page_config(page_title="Wilken Key Engine", layout="wide", page_icon="🗝️")
 engine = WilkenKeyEngine()
 st.sidebar.title("📜 Table of Contents")
