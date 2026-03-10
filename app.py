@@ -1,7 +1,7 @@
 import streamlit as st
 class WilkenKeyEngine:
     def __init__(self):
-         The key to the decipherment glyphs - LETTERS ADDED NEXT TO EMOJIS
+         #The key to the decipherment glyphs - LETTERS ADDED NEXT TO EMOJIS
         self.glyphs = {
             "qo": "qo 🗝️", "a": "a 🌿", "o": "o 🌀", "l": "l ⚖️", "i": "i ✨", 
             "r": "r ⚓", "m": "m 🥇", "t": "t 📏", "p": "p 🧪", "k": "k 🔪", 
@@ -9,7 +9,7 @@ class WilkenKeyEngine:
             "u": "u 💧", "b": "b 🪵", "h": "h 🕯️", "n": "n 🌑"
         }
         
-         Mapping pages to the Yale archive IDs (Based on MS 408 Folio System)
+         #Mapping pages to the Yale archive IDs (Based on MS 408 Folio System)
         self.image_map = {
             1: "1006139", 2: "1006140", 3: "1006141", 9: "1006147", 33: "1006159", 66: "1006176",
             98: "1006188", 109: "1006193", 127: "1006197", 129: "1006201", 133: "1006208",
@@ -19,7 +19,7 @@ class WilkenKeyEngine:
             201: "1006280", 211: "1006290", 218: "1006294", 232: "1006243"
         }
         
-         8-Sentence Investigation Archive
+         #8-Sentence Investigation Archive
         self.archive = {
             1: {
                 "title": "General Protocol (f1r)", 
