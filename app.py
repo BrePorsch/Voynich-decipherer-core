@@ -131,13 +131,3 @@ else:
         st.info(f"Recipe: {data['recipe']}")
         st.warning(f"Wilken Key Analysis: {data['desc']}")
         st.caption(f"Cross-Ref: {data['ref']}")
-if data['words']:
-    st.markdown("Operational Commands:")
-    for w in data['words']:
-        st.success(f"Voynich: `{w}` → {engine.decipher_word(w)}")
-st.markdown("---")
-st.caption("brea Intelligence Core | Full Batches 1-13 Archive | [Yale Beinecke](https://collections.library.yale.edu/catalog/2002015)")
- Citations from web search for Yale IDs and Streamlit best practices
-[Yale Beinecke Voynich Catalog](https://collections.library.yale.edu/catalog/2002015)
-[Streamlit CSS Styling Guide](https://docs.streamlit.io/develop/concepts/configuration/customize-css)
-[Voynich Manuscript Digital Scans](https://collections.library.yale.edu/catalog/2002015)
