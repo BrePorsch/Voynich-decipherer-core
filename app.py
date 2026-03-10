@@ -1,4 +1,3 @@
-```python
 import streamlit as st
  ==========================================
  THE brea VOYNICH ENGINE v2.0 (STREAMLIT CORE)
@@ -70,4 +69,3 @@ elif page == "About the App":
     st.write("- Deciphers phonemes into 'Source + Action' commands.")
     st.write("- Provides 100% self-consistent scientific translation.")
     st.success("Designed by bre with the 'brea' Intelligence Engine. ⚖️✨")
-```
