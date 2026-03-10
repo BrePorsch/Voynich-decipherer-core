@@ -1,5 +1,5 @@
 import streamlit as st
---- THE MANUSCRIPT STYLING ENGINE ---
+ --- THE MANUSCRIPT STYLING ENGINE ---
 def apply_custom_style():
     st.markdown(
         """
@@ -46,25 +46,30 @@ def apply_custom_style():
     )
 class WilkenKeyEngine:
     def __init__(self):
+         The 12-Slot Phonetic Glyph Logic
         self.glyphs = {
             "qo": "Prepared/Boiled", "t": "Root/Solid", "k": "Leaf/Surface",
             "p": "Stem/Stalk", "f": "Flower/Head", "o": "Liquid/Sap",
             "a": "Steam/Air", "i": "Oil/Essence", "l": "Release/Flow",
             "r": "Dose/Measure", "dy": "Lock/Finish"
         }
+         The Yale IIIF Image ID Mapping
         self.image_map = {
             "1r": "1006139", "1v": "1006140", "2r": "1006141", "2v": "1006142",
             "70v": "1006208", "86v": "1006241", "88r": "1006244", "116v": "1006243"
         }
+         THE MASTER FOLIO ARCHIVE
         self.folios = {
             "1r": {"title": "General Protocol", "words": ["oladaba", "qothol"], "desc": "Cleanse tools and wait for March Strike."},
             "1v": {"title": "The Tear-Root", "words": ["deor", "ollag"], "desc": "Extract milky sap from the root mound."},
+            "70v": {"title": "Zodiac - Aries", "words": ["mrt", "otoldy"], "desc": "March timing trigger for high-flow root medicine."},
             "86v": {"title": "The Rosettes Map", "words": ["oladaba", "stella"], "desc": "The central processing hub map (The Factory)."},
+            "88r": {"title": "The Pharma Jars", "words": ["otol", "qokedy"], "desc": "The 12-slot storage system for all decoctions."},
             "116v": {"title": "The Master Authorization", "words": ["michiton", "ams"], "desc": "Final signatures of the Monastic Authors."}
         }
     def get_image_url(self, folio):
         img_id = self.image_map.get(folio, "1006139")
-        return f"https://collections.library.yext.yale.edu/iiif/2/{img_id}/full/!800,800/0/default.jpg"
+        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/!800,800/0/default.jpg"
     def decipher_word(self, word):
         components = [self.glyphs[c] for c in word if c in self.glyphs]
         return " + ".join(components) if components else "Proprietary Label"
@@ -86,7 +91,7 @@ if page == "The Decipherment Core":
             col1, col2 = st.columns([1, 1])
             with col1:
                 st.subheader("📜 Yale Beinecke Source")
-                st.image(f"https://collections.library.yale.edu/iiif/2/{engine.image_map[query]}/full/!800,800/0/default.jpg", caption=f"Folio {query}")
+                st.image(engine.get_image_url(query), caption=f"High-Res Scan: Folio {query}")
             with col2:
                 st.subheader(f"🧪 {data['title']}")
                 st.info(f"Description: {data['desc']}")
