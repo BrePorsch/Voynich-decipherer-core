@@ -41,10 +41,24 @@ def apply_custom_theme():
         background-clip: text;
     }
     
+    h2 {
+        margin-top: 10px !important;
+        margin-bottom: 10px !important;
+    }
+    
+    h3 {
+        margin-top: 8px !important;
+        margin-bottom: 8px !important;
+    }
+    
     p, div, span, li {
         font-family: 'Crimson Text', serif !important;
         color: var(--text-primary);
         line-height: 1.6;
+    }
+    
+    p {
+        margin-bottom: 8px !important;
     }
     
     [data-testid="stSidebar"] {
@@ -52,12 +66,17 @@ def apply_custom_theme():
         border-right: 1px solid var(--gold-dim);
     }
     
+    [data-testid="stSidebar"] .block-container {
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
     .folio-card {
         background: linear-gradient(145deg, #14141a 0%, #1a1a22 100%);
         border: 1px solid var(--gold-dim);
         border-radius: 8px;
-        padding: 20px;
-        margin: 10px 0;
+        padding: 15px;
+        margin: 5px 0;
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     }
     
@@ -83,8 +102,8 @@ def apply_custom_theme():
     .recipe-step {
         background: rgba(74, 124, 89, 0.1);
         border-left: 3px solid var(--accent-green);
-        padding: 12px 15px;
-        margin: 8px 0;
+        padding: 8px 12px;
+        margin: 4px 0;
         border-radius: 0 4px 4px 0;
         font-family: 'Crimson Text', serif;
     }
@@ -109,6 +128,23 @@ def apply_custom_theme():
     .stButton button:hover {
         border-color: var(--gold) !important;
         box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+    
+    [data-testid="column"] {
+        padding: 0 8px !important;
+    }
+    
+    [data-testid="stImageCaption"] {
+        margin-top: 4px !important;
+        margin-bottom: 4px !important;
+    }
+    
+    .stSelectbox {
+        margin-bottom: 8px !important;
+    }
+    
+    .stAlert {
+        padding: 10px !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -1070,8 +1106,7 @@ class WilkenKeyOmnibus:
 # UI COMPONENT FUNCTIONS
 def render_glyph_badges(words: List[str], engine: WilkenKeyOmnibus):
     """Render transliterated glyphs as styled badges."""
-    st.markdown("---")
-    st.subheader("⚠️ Transliterated Glyph Sequence (Wilken Key Framework)")
+    st.subheader("⚠️ Transliterated Glyph Sequence")
     for word in words:
         decoded = engine.decipher_word(word)
         col1, col2 = st.columns([1, 3])
@@ -1082,8 +1117,7 @@ def render_glyph_badges(words: List[str], engine: WilkenKeyOmnibus):
 
 def render_recipe_steps(recipe: List[str]):
     """Render recipe steps with visual styling."""
-    st.markdown("---")
-    st.subheader("📜 Monastic Laboratory Protocol (8-Step Recipe)")
+    st.subheader("📜 Monastic Laboratory Protocol")
     for i, step in enumerate(recipe, 1):
         st.markdown(f"<div class='recipe-step'><strong>Step {i}:</strong> {step}</div>", unsafe_allow_html=True)
 
@@ -1147,7 +1181,6 @@ def render_section_statistics(engine: WilkenKeyOmnibus):
     for folio, data in engine.archive.items():
         section = data.get('section', 'Unknown')
         sections[section] = sections.get(section, 0) + 1
-    st.markdown("---")
     st.subheader("📊 Archive Statistics")
     cols = st.columns(len(sections))
     for i, (section, count) in enumerate(sorted(sections.items())):
@@ -1208,88 +1241,3 @@ def main():
     # Sidebar info
     st.sidebar.markdown("---")
     data = engine.archive.get(page_num, {})
-    st.sidebar.info(f"""
-    **Current Selection:**
-    **{data.get('section', 'Unknown')}**
-    Folio: **{page_num}**
-    
-    Yale ID: `{data.get('yale', 'N/A')}`
-    """)
-    
-    # Progress indicator
-    all_folios = engine.get_all_folios()
-    progress = (all_folios.index(page_num) + 1) / len(all_folios)
-    st.sidebar.progress(progress, text=f"Archive Progress: {all_folios.index(page_num) + 1}/{len(all_folios)}")
-    
-    # Main content header
-    st.title("🗝️ The Wilken Key Engine")
-    st.markdown("*The Million-Word Omnibus | Complete Digital Archive of MS 408*")
-    st.markdown("---")
-    
-    # Breadcrumb
-    render_breadcrumb(data.get('section', 'Unknown'), page_num)
-    
-    # Get folio data
-    img_url = engine.get_image_url(page_num)
-    yale_link = engine.get_yale_link(page_num)
-    
-    # Main content layout
-    col1, col2 = st.columns([1.2, 1])
-    
-    with col1:
-        st.markdown("<div class='folio-card'>", unsafe_allow_html=True)
-        st.subheader(f"📜 Yale Beinecke: {page_num}")
-        st.markdown("<div class='manuscript-frame'>", unsafe_allow_html=True)
-        st.image(
-            img_url, 
-            caption=f"High-Resolution Scan: MS 408 ({page_num}) | {data.get('yale', 'N/A')}",
-            use_container_width=True
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown(f"🔗 [View in Yale Digital Collections]({yale_link})")
-        st.markdown("</div>", unsafe_allow_html=True)
-        render_navigation_buttons(page_num, engine)
-    
-    with col2:
-        st.markdown("<div class='folio-card'>", unsafe_allow_html=True)
-        st.header(f"🧪 {data.get('title', f'Folio {page_num}')}")
-        st.markdown("---")
-        st.subheader("📖 Maxwell Scholar Investigation")
-        st.write(data.get('desc', 'Investigation pending...'))
-        st.markdown("---")
-        st.subheader("🔗 Cross-Reference & Archive Links")
-        st.info(data.get('ref', f'Refer to Yale catalog for {page_num}'))
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        recipe = data.get('recipe', [])
-        if recipe and isinstance(recipe, list):
-            render_recipe_steps(recipe)
-        elif recipe and isinstance(recipe, str):
-            st.markdown("---")
-            st.subheader("📜 Monastic Laboratory Protocol")
-            st.write(recipe)
-        
-        words = data.get('words', [])
-        if words:
-            render_glyph_badges(words, engine)
-    
-    # Section statistics
-    render_section_statistics(engine)
-    
-    # Scholarly context
-    st.markdown("---")
-    render_scholarly_context()
-    
-    # Footer
-    st.markdown("---")
-    st.caption("""
-    <div style="text-align: center; color: #8b7355; font-family: 'Cinzel', serif;">
-    🗝️ Wilken Key Engine v3.0 | Million-Word Omnibus Complete | brea Intelligence Core<br>
-    <small>Images courtesy of Yale Beinecke Rare Book & Manuscript Library (MS 408) | 110% Maxwell Performance Standard</small><br>
-    <small>All 240+ folios integrated | 15 Phases | 40+ Elite Waypoints | Zero-Error Deployment Ready</small>
-    </div>
-    """, unsafe_allow_html=True)
-
-# ENTRY POINT
-if __name__ == "__main__":
-    main()
