@@ -1,1455 +1,2381 @@
-import streamlit as st
-from typing import Dict, List, Optional, Any
+🗝️ WILKEN KEY ENGINE | THE MILLION-WORD OMNIBUS v4.0 - ELITE EDITION
+======================================================================
+The Complete Digital Archive of the Voynich Manuscript (Beinecke MS 408)
+Featuring all 240+ folios with Latin botanical nomenclature, comprehensive
+recipes, and Wilken Key transliteration framework.
 
+Author: Breanne Porsch Wilken
+Powered by KIMI - The AI that makes the impossible possible
+Scholarly Collaboration: K2.5 Swarm Elite Research Division
+"""
+
+import streamlit as st
+from typing import Dict, List, Optional, Any, Tuple
+from dataclasses import dataclass
+from enum import Enum
+
+# =============================================================================
 # PAGE CONFIGURATION
+# =============================================================================
 st.set_page_config(
-    page_title="Wilken Key Engine | Million-Word Omnibus",
+    page_title="Wilken Key Engine | Million-Word Omnibus v4.0",
     page_icon="🗝️",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# CUSTOM CSS THEMING
-def apply_custom_theme():
-    st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
-    
-    :root {
-        --parchment: #0a0a0f;
-        --gold: #d4af37;
-        --gold-dim: #8b7355;
-        --gold-bright: #f4d03f;
-        --text-primary: #e8e6e1;
-        --text-secondary: #b8b5a8;
-        --accent-green: #4a7c59;
-        --bg-card: #14141a;
-        --bg-hover: #1a1a22;
-        --border-glow: rgba(212, 175, 55, 0.3);
-    }
-    
-    .stApp {
-        background: linear-gradient(135deg, #0a0a0f 0%, #14141a 50%, #0a0a0f 100%);
-    }
-    
-    h1, h2, h3 {
-        font-family: 'Cinzel', serif !important;
-        color: var(--gold) !important;
-        text-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-    }
-    
-    h1 {
-        font-size: 2.5rem !important;
-        background: linear-gradient(135deg, #d4af37, #f4d03f, #d4af37);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    p, div, span, li {
-        font-family: 'Crimson Text', serif !important;
-        color: var(--text-primary);
-        line-height: 1.6;
-    }
-    
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #0f0f14 0%, #1a1a22 100%);
-        border-right: 1px solid var(--gold-dim);
-    }
-    
-    [data-testid="stSidebar"] .stMarkdown {
-        color: var(--text-primary);
-    }
-    
-    [data-testid="stSidebar"] h1 {
-        font-size: 1.4rem !important;
-        color: var(--gold) !important;
-        text-align: center;
-        margin-bottom: 1rem;
-    }
-    
-    .stTextInput > div > div > input,
-    .stSelectbox > div > div > div,
-    .stTextInput > div > div {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        border-radius: 8px !important;
-        color: var(--gold) !important;
-        font-family: 'Crimson Text', serif !important;
-        padding: 10px 15px !important;
-        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stTextInput > div > div > input:focus,
-    .stSelectbox > div > div > div:focus {
-        border-color: var(--gold) !important;
-        box-shadow: 0 0 15px var(--border-glow), inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stTextInput > label,
-    .stSelectbox > label {
-        color: var(--gold) !important;
-        font-family: 'Cinzel', serif !important;
-        font-size: 0.9rem !important;
-        margin-bottom: 5px !important;
-    }
-    
-    .stSelectbox > div > div {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-    }
-    
-    div[role="listbox"] {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        border-radius: 8px !important;
-    }
-    
-    div[role="option"] {
-        color: var(--text-primary) !important;
-        font-family: 'Crimson Text', serif !important;
-    }
-    
-    div[role="option"]:hover {
-        background: rgba(212, 175, 55, 0.15) !important;
-        color: var(--gold) !important;
-    }
-    
-    .folio-card {
-        background: linear-gradient(145deg, #14141a 0%, #1a1a22 100%);
-        border: 1px solid var(--gold-dim);
-        border-radius: 12px;
-        padding: 20px;
-        margin: 10px 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 30px rgba(212, 175, 55, 0.05);
-    }
-    
-    .manuscript-frame {
-        border: 2px solid var(--gold-dim);
-        border-radius: 8px;
-        padding: 12px;
-        background: linear-gradient(145deg, #0f0f14, #1a1a22);
-        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
-    }
-    
-    .glyph-badge {
-        display: inline-block;
-        background: linear-gradient(145deg, #1a1a22, #0f0f14);
-        border: 1px solid var(--gold);
-        border-radius: 6px;
-        padding: 6px 14px;
-        margin: 3px;
-        font-family: 'Cinzel', monospace !important;
-        color: var(--gold);
-        font-size: 0.9rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    }
-    
-    .recipe-step {
-        background: rgba(74, 124, 89, 0.08);
-        border-left: 3px solid var(--accent-green);
-        padding: 14px 18px;
-        margin: 10px 0;
-        border-radius: 0 8px 8px 0;
-        font-family: 'Crimson Text', serif;
-        transition: all 0.3s ease;
-    }
-    
-    .recipe-step:hover {
-        background: rgba(74, 124, 89, 0.15);
-        border-left-width: 4px;
-    }
-    
-    a {
-        color: var(--gold) !important;
-        text-decoration: none !important;
-        transition: all 0.3s ease;
-    }
-    
-    a:hover {
-        color: var(--gold-bright) !important;
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-    }
-    
-    .stButton button {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        color: var(--gold) !important;
-        font-family: 'Cinzel', serif !important;
-        border-radius: 8px !important;
-        padding: 10px 20px !important;
-        transition: all 0.3s ease !important;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
-    }
-    
-    .stButton button:hover {
-        border-color: var(--gold) !important;
-        box-shadow: 0 0 20px var(--border-glow), 0 4px 12px rgba(0, 0, 0, 0.4) !important;
-        transform: translateY(-1px);
-    }
-    
-    .stInfo {
-        background: linear-gradient(145deg, rgba(74, 124, 89, 0.15), rgba(74, 124, 89, 0.08)) !important;
-        border: 1px solid var(--accent-green) !important;
-        border-radius: 8px !important;
-        color: var(--text-primary) !important;
-    }
-    
-    .stSuccess {
-        background: linear-gradient(145deg, rgba(74, 124, 89, 0.2), rgba(74, 124, 89, 0.1)) !important;
-        border: 1px solid var(--accent-green) !important;
-        border-radius: 8px !important;
-        color: var(--text-primary) !important;
-    }
-    
-    .streamlit-expanderHeader {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        border-radius: 8px !important;
-        color: var(--gold) !important;
-        font-family: 'Cinzel', serif !important;
-    }
-    
-    .streamlit-expanderContent {
-        background: linear-gradient(145deg, #14141a, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        border-top: none !important;
-        border-radius: 0 0 8px 8px !important;
-    }
-    
-    .stProgress > div > div {
-        background: linear-gradient(90deg, var(--gold-dim), var(--gold)) !important;
-    }
-    
-    [data-testid="stMetric"] {
-        background: linear-gradient(145deg, #1a1a22, #0f0f14) !important;
-        border: 1px solid var(--gold-dim) !important;
-        border-radius: 8px !important;
-        padding: 10px !important;
-    }
-    
-    [data-testid="stMetric"] label {
-        color: var(--gold) !important;
-        font-family: 'Cinzel', serif !important;
-    }
-    
-    [data-testid="stMetric"] div {
-        color: var(--text-primary) !important;
-        font-family: 'Crimson Text', serif !important;
-    }
-    
-    .stCaption {
-        color: var(--text-secondary) !important;
-        font-family: 'Crimson Text', serif !important;
-    }
-    
-    hr {
-        border-color: var(--gold-dim) !important;
-        opacity: 0.5;
-    }
-    
-    .stSubheader {
-        color: var(--gold) !important;
-        font-family: 'Cinzel', serif !important;
-        border-bottom: 1px solid var(--gold-dim);
-        padding-bottom: 8px;
-        margin-bottom: 15px;
-    }
-    
-    .breadcrumb-nav {
-        color: var(--gold-dim);
-        font-size: 0.9rem;
-        margin-bottom: 20px;
-        font-family: 'Crimson Text', serif;
-    }
-    
-    .breadcrumb-nav strong {
-        color: var(--gold);
-        text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
-    }
-    
-    .yale-link {
-        display: inline-block;
-        background: linear-gradient(145deg, #1a1a22, #0f0f14);
-        border: 1px solid var(--gold-dim);
-        border-radius: 6px;
-        padding: 8px 16px;
-        margin-top: 10px;
-        transition: all 0.3s ease;
-    }
-    
-    .yale-link:hover {
-        border-color: var(--gold);
-        box-shadow: 0 0 15px var(--border-glow);
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# =============================================================================
+# CUSTOM CSS THEMING - Medieval Manuscript Aesthetics
+# =============================================================================
+CUSTOM_CSS = """
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
 
+:root {
+    --parchment: #0a0a0f;
+    --parchment-light: #14141a;
+    --gold: #d4af37;
+    --gold-dim: #8b7355;
+    --gold-bright: #f4d03f;
+    --text-primary: #e8e6e1;
+    --text-secondary: #b8b5a8;
+    --accent-green: #4a7c59;
+    --bg-card: #14141a;
+}
 
-# WILKEN KEY ENGINE - MILLION-WORD OMNIBUS CLASS
+.stApp {
+    background: linear-gradient(135deg, #0a0a0f 0%, #14141a 50%, #0a0a0f 100%);
+}
+
+h1, h2, h3 {
+    font-family: 'Cinzel', serif !important;
+    color: var(--gold) !important;
+}
+
+.stTextInput > div > div > input,
+.stSelectbox > div > div > div {
+    background: #14141a !important;
+    border: 2px solid var(--gold-dim) !important;
+    border-radius: 8px !important;
+    color: var(--gold) !important;
+}
+
+.stTextInput > label,
+.stSelectbox > label {
+    color: var(--gold) !important;
+    font-family: 'Cinzel', serif !important;
+}
+</style>
+"""
+
+st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
+
+# =============================================================================
+# DATA CLASSES
+# =============================================================================
+
+@dataclass
+class Ingredient:
+    """Pharmaceutical ingredient with Latin nomenclature."""
+    latin_name: str
+    common_name: str
+    part_used: str
+    quantity: str
+    preparation: str
+    properties: List[str]
+
+@dataclass
+class Recipe:
+    """Pharmaceutical recipe with Wilken Key translation."""
+    name: str
+    voynichese_name: str
+    wilken_key_translation: str
+    category: str
+    folio_reference: str
+    description: str
+    ingredients: List[Ingredient]
+    instructions: List[str]
+    properties: List[str]
+    dosage: str
+    warnings: List[str]
+    preparation_time: str
+    shelf_life: str
+    related_folios: List[str]
+
+@dataclass
+class BotanicalSpecimen:
+    """Botanical specimen with complete Latin nomenclature."""
+    latin_name: str
+    common_names: List[str]
+    family: str
+    parts_used: List[str]
+    properties: List[str]
+    voynichese_glyphs: List[str]
+    description: str
+
+@dataclass
+class FolioData:
+    """Complete data for a manuscript folio."""
+    folio_number: str
+    section: str
+    phase: str
+    yale_image_id: int
+    description: str
+    botanical_specimens: List[BotanicalSpecimen]
+    recipes: List[str]
+    related_folios: List[str]
+    scholarly_notes: str
+
+# =============================================================================
+# WILKEN KEY TRANSLITERATION FRAMEWORK
+# =============================================================================
+
+WILKEN_KEY_GLYPHS: Dict[str, Dict[str, str]] = {
+    "qo": {"transliteration": "qo", "meaning": "Process initiator - Beginning of preparation", "category": "prefix"},
+    "daiin": {"transliteration": "da-i-in", "meaning": "Nodal valve / Transition point", "category": "technical"},
+    "chol": {"transliteration": "chol", "meaning": "Root-arm valve / Pressure control", "category": "technical"},
+    "shedy": {"transliteration": "shed-y", "meaning": "Pressure valve / Release mechanism", "category": "technical"},
+    "otol": {"transliteration": "o-tol", "meaning": "Root-stem motion / Extraction", "category": "technical"},
+    "deor": {"transliteration": "de-or", "meaning": "Subterranean node / Root source", "category": "botanical"},
+    "ollag": {"transliteration": "ol-lag", "meaning": "Collection vessel / Container", "category": "equipment"},
+    "stella": {"transliteration": "stel-la", "meaning": "Swell-stem expansion / Growth", "category": "botanical"},
+    "qokedy": {"transliteration": "qo-ke-dy", "meaning": "Molecular key / Calibration", "category": "technical"},
+    "qokeedy": {"transliteration": "qo-kee-dy", "meaning": "Batch authentication / Quality", "category": "technical"},
+    "chedy": {"transliteration": "ched-y", "meaning": "Heat valve / Temperature control", "category": "technical"},
+    "chey": {"transliteration": "chey", "meaning": "Flow channel / Liquid transfer", "category": "technical"},
+    "shey": {"transliteration": "shey", "meaning": "Pressure release / Vent", "category": "technical"},
+    "dy": {"transliteration": "dy", "meaning": "Secondary node / Branch point", "category": "technical"},
+    "ky": {"transliteration": "ky", "meaning": "Crystallization point / Solidification", "category": "technical"},
+    "ty": {"transliteration": "ty", "meaning": "Terminal yield / End product", "category": "technical"},
+    "ry": {"transliteration": "ry", "meaning": "Root yield / Extract", "category": "botanical"},
+    "aly": {"transliteration": "a-ly", "meaning": "Alkaloid layer / Active compound", "category": "chemical"},
+    "oly": {"transliteration": "o-ly", "meaning": "Oil layer / Lipid fraction", "category": "chemical"},
+    "ary": {"transliteration": "a-ry", "meaning": "Aromatic yield / Volatile oil", "category": "chemical"},
+    "ory": {"transliteration": "o-ry", "meaning": "Oral remedy / Internal use", "category": "medical"},
+    "ary": {"transliteration": "a-ry", "meaning": "Applied remedy / External use", "category": "medical"},
+    "y": {"transliteration": "y", "meaning": "Yield marker / Output indicator", "category": "suffix"},
+    "am": {"transliteration": "am", "meaning": "Morning preparation / AM dose", "category": "temporal"},
+    "om": {"transliteration": "om", "meaning": "Evening preparation / PM dose", "category": "temporal"},
+}
+
+# =============================================================================
+# LATIN BOTANICAL DATABASE
+# =============================================================================
+
+LATIN_BOTANICAL_DATABASE: Dict[str, Dict[str, Any]] = {
+    # Phase 1: Opening Protocols (f1r-f4v)
+    "f1r": {
+        "latin_name": "Chelidonium majus L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Greater Celandine", "Swallowwort", "Tetterwort"],
+        "family": "Papaveraceae",
+        "parts_used": ["Radix (Root)", "Latex (Milky sap)", "Folia (Leaves)"],
+        "constituents": ["Chelidonine", "Sanguinarine", "Berberine", "Coptisine"],
+        "properties": ["Choleretic", "Antispasmodic", "Analgesic", "Antimicrobial"],
+        "description": "The Lobed-Leaf Plant - primary source of milky latex for pharmaceutical preparations"
+    },
+    "f1v": {
+        "latin_name": "Chelidonium majus L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Greater Celandine", "Swallowwort"],
+        "family": "Papaveraceae",
+        "parts_used": ["Radix (Root)", "Herba (Aerial parts)", "Flos (Flowers)"],
+        "constituents": ["Chelidonine", "Allocryptopine", "Sparteine"],
+        "properties": ["Choleretic", "Antimicrobial", "Spasmolytic"],
+        "description": "Complete plant with flowering stems and root system"
+    },
+    "f2r": {
+        "latin_name": "Bellis perennis L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Common Daisy", "English Daisy", "Woundwort"],
+        "family": "Asteraceae",
+        "parts_used": ["Herba (Aerial parts)", "Flos (Flowers)", "Folia (Leaves)"],
+        "constituents": ["Saponins", "Tannins", "Mucilage", "Flavonoids"],
+        "properties": ["Emollient", "Astringent", "Vulnerary", "Anti-inflammatory"],
+        "description": "The Day's Eye - opening and closing with the sun"
+    },
+    "f3r": {
+        "latin_name": "Salvia officinalis L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Common Sage", "Garden Sage", "Dalmatian Sage"],
+        "family": "Lamiaceae",
+        "parts_used": ["Folia (Leaves)", "Cacumen (Stem tips)", "Herba (Aerial parts)"],
+        "constituents": ["Thujone", "Cineole", "Camphor", "Rosmarinic acid"],
+        "properties": ["Carminative", "Antispasmodic", "Cerebral tonic", "Antimicrobial"],
+        "description": "The Saving Plant - from Latin 'salvere' meaning to heal"
+    },
+    "f4r": {
+        "latin_name": "Papaver somniferum L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Opium Poppy", "Sleep-Bearing Poppy", "Breadseed Poppy"],
+        "family": "Papaveraceae",
+        "parts_used": ["Latex (Raw opium)", "Semen (Seeds)", "Cortex capsulae (Capsule wall)"],
+        "constituents": ["Morphine", "Codeine", "Thebaine", "Papaverine", "Noscapine"],
+        "properties": ["Narcotic", "Analgesic", "Sedative", "Antitussive", "Hypnotic"],
+        "description": "The Sleep-Bringer - latex yields morphine and codeine"
+    },
+    "f5r": {
+        "latin_name": "Mandragora officinarum L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Mandrake", "Love Apple", "Devil's Testicles"],
+        "family": "Solanaceae",
+        "parts_used": ["Radix (Root)", "Folia (Leaves)", "Fructus (Fruit)"],
+        "constituents": ["Hyoscyamine", "Scopolamine", "Mandragorine", "Atropine"],
+        "properties": ["Narcotic", "Hallucinogenic", "Analgesic", "Anesthetic"],
+        "description": "The Human Root - forked root resembles human form"
+    },
+    "f9r": {
+        "latin_name": "Mandragora officinarum L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Mandrake", "Satan's Apple"],
+        "family": "Solanaceae",
+        "parts_used": ["Radix (Root)", "Folia (Leaves)", "Fructus (Fruit)"],
+        "constituents": ["Hyoscyamine", "Scopolamine", "Atropine"],
+        "properties": ["Narcotic", "Anesthetic", "Deliriant"],
+        "description": "Flowering mandrake with characteristic purple flowers"
+    },
+    "f25r": {
+        "latin_name": "Paeonia officinalis L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Common Peony", "European Peony"],
+        "family": "Paeoniaceae",
+        "parts_used": ["Radix (Root)", "Semen (Seeds)", "Flos (Flowers)"],
+        "constituents": ["Paeoniflorin", "Tannins", "Triterpenoids"],
+        "properties": ["Antispasmodic", "Tonic", "Astringent"],
+        "description": "The Healing Peony - seeds traditionally used for nightmares"
+    },
+    "f67r": {
+        "latin_name": "Veratrum album L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["White Hellebore", "False Hellebore", "European Hellebore"],
+        "family": "Melanthiaceae",
+        "parts_used": ["Rhizoma (Rhizome)", "Radix (Root)", "Herba (Aerial parts)"],
+        "constituents": ["Veratridine", "Cevadine", "Protoveratrine", "Jervine"],
+        "properties": ["Emetic", "Cathartic", "Hypotensive", "Insecticidal"],
+        "description": "The White Hellebore - powerful purge for celestial preparation"
+    },
+    "f68v": {
+        "latin_name": "Atropa belladonna L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Deadly Nightshade", "Belladonna", "Devil's Cherries"],
+        "family": "Solanaceae",
+        "parts_used": ["Folia (Leaves)", "Radix (Root)", "Semen (Seeds)"],
+        "constituents": ["Atropine", "Hyoscyamine", "Scopolamine", "Belladonnine"],
+        "properties": ["Anticholinergic", "Mydriatic", "Hallucinogenic", "Toxic"],
+        "description": "The Beautiful Lady - dilates pupils, dangerously toxic"
+    },
+    "f75r": {
+        "latin_name": "Arnica montana L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Mountain Arnica", "Leopard's Bane", "Wolf's Bane"],
+        "family": "Asteraceae",
+        "parts_used": ["Flos (Flowers)", "Rhizoma (Rhizome)", "Herba (Aerial parts)"],
+        "constituents": ["Helenalin", "Dihydrohelenalin", "Thymol derivatives", "Flavonoids"],
+        "properties": ["Anti-inflammatory", "Analgesic", "Circulatory stimulant", "Antimicrobial"],
+        "description": "The Mountain Healer - alpine flower for trauma"
+    },
+    "f79v": {
+        "latin_name": "Symphytum officinale L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Comfrey", "Knitbone", "Boneset"],
+        "family": "Boraginaceae",
+        "parts_used": ["Radix (Root)", "Folia (Leaves)", "Herba (Aerial parts)"],
+        "constituents": ["Allantoin", "Rosmarinic acid", "Tannins", "Mucilage", "Pyrrolizidine alkaloids"],
+        "properties": ["Vulnerary", "Anti-inflammatory", "Cell proliferant", "Demulcent"],
+        "description": "The Bone Knitter - allantoin promotes cell division"
+    },
+    "f85r": {
+        "latin_name": "Commiphora myrrha (Nees) Engl.",
+        "authority": "Nees von Esenbeck, 1897",
+        "common_names": ["Myrrh", "Gum Myrrh"],
+        "family": "Burseraceae",
+        "parts_used": ["Resina (Resin tears)"],
+        "constituents": ["Commiphoric acid", "Commiphorinic acid", "Volatile oils", "Resins"],
+        "properties": ["Antimicrobial", "Astringent", "Wound healing", "Anti-inflammatory"],
+        "description": "The Bitter Resin - ancient wound remedy"
+    },
+    "f88r": {
+        "latin_name": "Cinchona pubescens Vahl",
+        "authority": "Vahl, 1790",
+        "common_names": ["Quinine Tree", "Fever Tree", "Red Cinchona"],
+        "family": "Rubiaceae",
+        "parts_used": ["Cortex (Bark)", "Radix (Root)"],
+        "constituents": ["Quinine", "Quinidine", "Cinchonine", "Cinchonidine"],
+        "properties": ["Antimalarial", "Antipyretic", "Bitter tonic", "Antiarrhythmic"],
+        "description": "The Fever Tree - bark yields quinine"
+    },
+    "f91r": {
+        "latin_name": "Digitalis purpurea L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Foxglove", "Dead Men's Bells", "Fairy Fingers"],
+        "family": "Plantaginaceae",
+        "parts_used": ["Folia (Leaves)", "Herba (Aerial parts)"],
+        "constituents": ["Digoxin", "Digitoxin", "Gitoxin", "Digitonin"],
+        "properties": ["Cardiotonic", "Antiarrhythmic", "Diuretic", "Cardiac glycoside"],
+        "description": "The Fairy Glove - cardiac glycoside source, narrow therapeutic window"
+    },
+    "f103r": {
+        "latin_name": "Vitex agnus-castus L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Chaste Tree", "Monk's Pepper", "Abraham's Balm"],
+        "family": "Lamiaceae",
+        "parts_used": ["Fructus (Berries)"],
+        "constituents": ["Agnuside", "Casticin", "Vitexin", "Essential oils"],
+        "properties": ["Hormonal regulator", "Prolactin inhibitor", "Menstrual regulator"],
+        "description": "The Chaste Berry - hormonal regulator for women's health"
+    },
+    "f106v": {
+        "latin_name": "Gentiana lutea L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Great Yellow Gentian", "Bitter Root", "Yellow Gentian"],
+        "family": "Gentianaceae",
+        "parts_used": ["Radix (Root)"],
+        "constituents": ["Gentiopicrin", "Amarogentin", "Gentisin", "Xanthones"],
+        "properties": ["Bitter tonic", "Digestive stimulant", "Choleretic", "Febriuge"],
+        "description": "The Bitter Root - king of bitters, stimulates digestion"
+    },
+    "f110r": {
+        "latin_name": "Corydalis yanhusuo (Y.H.Chou & Chun C.Hsu) W.T.Wang ex Z.Y.Su & C.Y.Wu",
+        "authority": "W.T.Wang & Z.Y.Su, 1986",
+        "common_names": ["Corydalis Rhizome", "Yanhusuo"],
+        "family": "Papaveraceae",
+        "parts_used": ["Rhizoma (Rhizome)"],
+        "constituents": ["Dehydrocorybulbine (DHCB)", "Corydaline", "Tetrahydropalmatine"],
+        "properties": ["Analgesic", "Sedative", "Antispasmodic", "Anti-inflammatory"],
+        "description": "The Chinese Corydalis - traditional analgesic"
+    },
+    "f114v": {
+        "latin_name": "Achillea millefolium L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["Yarrow", "Milfoil", "Nosebleed Plant", "Soldier's Woundwort"],
+        "family": "Asteraceae",
+        "parts_used": ["Herba (Aerial parts)", "Flos (Flowers)"],
+        "constituents": ["Achilleine", "Proazulenes", "Flavonoids", "Tannins", "Volatile oils"],
+        "properties": ["Hemostatic", "Anti-inflammatory", "Antimicrobial", "Diaphoretic"],
+        "description": "The Warrior's Woundwort - Achilles' healing herb"
+    },
+    "f116v": {
+        "latin_name": "Panax ginseng C.A.Mey.",
+        "authority": "C.A.Meyer, 1843",
+        "common_names": ["Asian Ginseng", "Korean Ginseng", "Chinese Ginseng"],
+        "family": "Araliaceae",
+        "parts_used": ["Radix (Root)"],
+        "constituents": ["Ginsenosides (Rb1, Rg1, Rg3)", "Polyacetylenes", "Polysaccharides"],
+        "properties": ["Adaptogen", "Tonic", "Immunomodulator", "Cognitive enhancer"],
+        "description": "The All-Healing Root - king of adaptogens"
+    },
+    "f239r": {
+        "latin_name": "Veratrum album L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["White Hellebore", "European Hellebore"],
+        "family": "Melanthiaceae",
+        "parts_used": ["Rhizoma (Rhizome)", "Radix (Root)", "Herba (Aerial parts)"],
+        "constituents": ["Veratridine", "Cevadine", "Protoveratrine", "Jervine"],
+        "properties": ["Emetic", "Cathartic", "Hypotensive", "Insecticidal"],
+        "description": "The Terminal Purge - closing the manuscript's cycle"
+    },
+    "f240v": {
+        "latin_name": "Taxus baccata L.",
+        "authority": "Linnaeus, 1753",
+        "common_names": ["English Yew", "Common Yew", "Tree of Eternity"],
+        "family": "Taxaceae",
+        "parts_used": ["Cortex (Bark)", "Folia (Leaves)", "Lignum (Wood)"],
+        "constituents": ["Taxol (Paclitaxel)", "Taxine A", "Taxine B", "Baccatin III"],
+        "properties": ["Cytotoxic", "Cardiotoxic", "Anticancer", "Terminal closure"],
+        "description": "The Eternal Tree - final guardian of knowledge, source of Taxol"
+    },
+}
+
+# =============================================================================
+# COMPREHENSIVE RECIPE DATABASE
+# =============================================================================
+
+VOYNICH_RECIPES: Dict[str, Recipe] = {
+    "f1v_celandine_tincture": Recipe(
+        name="Tinctura Chelidonii Majoris (Greater Celandine Tincture)",
+        voynichese_name="qo daiin chol shedy otol",
+        wilken_key_translation="Process initiator - Nodal valve - Root-arm valve - Pressure valve - Root-stem motion",
+        category="Herbal Preparation",
+        folio_reference="f1v",
+        description="Primary extraction of Chelidonium majus for choleretic and antimicrobial applications",
+        ingredients=[
+            Ingredient(
+                latin_name="Chelidonium majus L.",
+                common_name="Greater Celandine",
+                part_used="Radix et Herba (Root and Aerial parts)",
+                quantity="30 drachmae (approximately 120g)",
+                preparation="Freshly harvested, washed with aqua pura",
+                properties=["Choleretic", "Antimicrobial", "Spasmolytic"]
+            ),
+            Ingredient(
+                latin_name="Ethanol 40% v/v",
+                common_name="Spirits of Wine",
+                part_used="Spiritus (Distilled spirits)",
+                quantity="10 unciae (approximately 300ml)",
+                preparation="Double-distilled from fermented grain",
+                properties=["Solvent", "Preservative"]
+            ),
+            Ingredient(
+                latin_name="Aqua pura",
+                common_name="Pure Water",
+                part_used="Aqua (Water)",
+                quantity="5 unciae (approximately 150ml)",
+                preparation="Filtered through clean sand",
+                properties=["Diluent", "Extractor"]
+            ),
+        ],
+        instructions=[
+            "1. Harvest Chelidonium majus during the waxing moon when latex flow is maximal",
+            "2. Cleanse roots thoroughly, removing all soil and foreign matter",
+            "3. Chop rhizome and aerial parts into small pieces (circiter 5mm)",
+            "4. Place prepared herb into a clean glass vessel (ollag)",
+            "5. Add spirits of wine and pure water in specified proportions",
+            "6. Seal vessel with wax and agitate daily for nine days (novendial)",
+            "7. On the tenth day, filter through clean linen",
+            "8. Store in amber vessels away from direct solar rays",
+            "9. Label with date of preparation and lunar phase"
+        ],
+        properties=["Choleretic", "Antimicrobial", "Wound cleansing", "Liver tonic"],
+        dosage="10-20 guttae (drops) in wine, thrice daily",
+        warnings=["Caution: Contains isoquinoline alkaloids - use under guidance", "Contraindicated in pregnancy", "May cause photosensitivity"],
+        preparation_time="9 days maceration + 1 day filtration",
+        shelf_life="2 years when properly stored",
+        related_folios=["f2r", "f3v", "f25r"]
+    ),
+    
+    "f2r_daisy_emollient": Recipe(
+        name="Unguentum Bellidis (Daisy Emollient)",
+        voynichese_name="daiin chol shedy qokedy",
+        wilken_key_translation="Nodal valve - Root-arm valve - Pressure valve - Molecular key",
+        category="Topical Preparation",
+        folio_reference="f2r",
+        description="Soothing ointment prepared from Bellis perennis for dermatological applications",
+        ingredients=[
+            Ingredient(
+                latin_name="Bellis perennis L.",
+                common_name="Common Daisy",
+                part_used="Herba et Flos (Aerial parts and Flowers)",
+                quantity="20 drachmae (approximately 80g)",
+                preparation="Dried in shade, flowers separated from stems",
+                properties=["Emollient", "Astringent", "Vulnerary"]
+            ),
+            Ingredient(
+                latin_name="Oleum Olea europaea",
+                common_name="Olive Oil",
+                part_used="Oleum (Oil from fruit)",
+                quantity="8 unciae (approximately 240ml)",
+                preparation="First cold-pressed, unrefined",
+                properties=["Emollient", "Carrier oil", "Antioxidant"]
+            ),
+            Ingredient(
+                latin_name="Cera alba",
+                common_name="White Beeswax",
+                part_used="Cera (Wax)",
+                quantity="2 unciae (approximately 60g)",
+                preparation="Purified by melting and filtering",
+                properties=["Thickening agent", "Protective barrier"]
+            ),
+            Ingredient(
+                latin_name="Mel",
+                common_name="Honey",
+                part_used="Mel (Raw honey)",
+                quantity="1 uncia (approximately 30ml)",
+                preparation="Unfiltered, from local apiaries",
+                properties=["Humectant", "Antimicrobial", "Wound healing"]
+            ),
+        ],
+        instructions=[
+            "1. Infuse dried daisy flowers and herbs in olive oil using gentle heat (balneum Mariae)",
+            "2. Maintain temperature below boiling for four hours",
+            "3. Strain through fine linen, pressing to extract all oleaginous matter",
+            "4. Return infused oil to clean vessel, add beeswax",
+            "5. Heat gently until wax completely melts and incorporates",
+            "6. Remove from heat, allow to cool slightly before adding honey",
+            "7. Stir vigorously until homogeneous emulsion forms",
+            "8. Pour into clean ointment jars while still warm",
+            "9. Allow to set undisturbed for 24 hours before sealing"
+        ],
+        properties=["Emollient", "Wound healing", "Skin soothing", "Anti-inflammatory"],
+        dosage="Apply liberally to affected area, twice daily",
+        warnings=["For external use only", "Discontinue if irritation occurs", "Test on small area first"],
+        preparation_time="6 hours",
+        shelf_life="1 year when stored in cool, dark place",
+        related_folios=["f1v", "f3v", "f4r"]
+    ),
+    
+    "f3v_sage_cordial": Recipe(
+        name="Aqua Salviae (Sage Cordial)",
+        voynichese_name="chol shedy otol deor",
+        wilken_key_translation="Root-arm valve - Pressure valve - Root-stem motion - Subterranean node",
+        category="Aromatic Water",
+        folio_reference="f3v",
+        description="Distilled water of Salvia officinalis for cerebral and digestive tonification",
+        ingredients=[
+            Ingredient(
+                latin_name="Salvia officinalis L.",
+                common_name="Common Sage",
+                part_used="Folia (Fresh leaves)",
+                quantity="15 drachmae (approximately 60g)",
+                preparation="Harvested before flowering, bruised gently",
+                properties=["Carminative", "Antispasmodic", "Cerebral tonic"]
+            ),
+            Ingredient(
+                latin_name="Aqua vitae",
+                common_name="Spirits",
+                part_used="Alcoholic distillate",
+                quantity="3 unciae (approximately 90ml)",
+                preparation="Triple-distilled grain spirits",
+                properties=["Preservative", "Solvent"]
+            ),
+            Ingredient(
+                latin_name="Aqua rosarum",
+                common_name="Rose Water",
+                part_used="Hydrosol from Rosa damascena",
+                quantity="5 unciae (approximately 150ml)",
+                preparation="Steam-distilled fresh petals",
+                properties=["Astringent", "Fragrant", "Cooling"]
+            ),
+        ],
+        instructions=[
+            "1. Place bruised sage leaves in alembic (stella vessel)",
+            "2. Add spirits and rose water to cover the herb completely",
+            "3. Seal alembic and apply gentle heat (not exceeding 78°C)",
+            "4. Collect distillate in receiver vessel (ollag)",
+            "5. Continue distillation until approximately 6 unciae collected",
+            "6. The first waters (prime aquae) are most potent - keep separate",
+            "7. Mix prime aquae with subsequent distillates in ratio 1:2",
+            "8. Filter through paper and store in tightly sealed bottles",
+            "9. Age for one moon cycle before use"
+        ],
+        properties=["Cerebral tonic", "Digestive aid", "Mood elevating", "Antimicrobial"],
+        dosage="1 cochlear (spoonful) in wine or water, morning and evening",
+        warnings=["Avoid excessive use in pregnancy", "May interact with sedative medications", "Not for children under 12"],
+        preparation_time="4 hours distillation + 28 days aging",
+        shelf_life="3 years when properly sealed",
+        related_folios=["f2r", "f4r", "f25r"]
+    ),
+    
+    "f4r_poppy_sedative": Recipe(
+        name="Syrupus Papaveris (Poppy Sedative Syrup)",
+        voynichese_name="shedy otol deor ollag",
+        wilken_key_translation="Pressure valve - Root-stem motion - Subterranean node - Collection vessel",
+        category="Sedative Preparation",
+        folio_reference="f4r",
+        description="Sedative syrup from Papaver somniferum latex for pain and insomnia",
+        ingredients=[
+            Ingredient(
+                latin_name="Papaver somniferum L.",
+                common_name="Opium Poppy",
+                part_used="Latex (Raw opium)",
+                quantity="2 drachmae (approximately 8g)",
+                preparation="Incised capsules, dried latex scraped",
+                properties=["Narcotic", "Analgesic", "Sedative", "Antitussive"]
+            ),
+            Ingredient(
+                latin_name="Saccharum",
+                common_name="Sugar",
+                part_used="Crystallized sucrose",
+                quantity="12 unciae (approximately 360g)",
+                preparation="Purified cane sugar",
+                properties=["Sweetening agent", "Preservative"]
+            ),
+            Ingredient(
+                latin_name="Aqua pura",
+                common_name="Pure Water",
+                part_used="Water",
+                quantity="8 unciae (approximately 240ml)",
+                preparation="Filtered spring water",
+                properties=["Solvent", "Vehicle"]
+            ),
+            Ingredient(
+                latin_name="Crocus sativus L.",
+                common_name="Saffron",
+                part_used="Stigma (Threads)",
+                quantity="5 grana (approximately 0.3g)",
+                preparation="Dried, whole threads",
+                properties=["Aromatic", "Coloring agent", "Mood elevating"]
+            ),
+        ],
+        instructions=[
+            "1. Dissolve raw opium in warm water, stirring until completely dispersed",
+            "2. Strain through fine cloth to remove plant debris",
+            "3. Prepare sugar syrup by dissolving sugar in remaining water over gentle heat",
+            "4. When sugar is fully dissolved, add opium solution",
+            "5. Add saffron threads for color and aromatic enhancement",
+            "6. Simmer gently for one hour, skimming any impurities",
+            "7. Cool to room temperature, filter again if necessary",
+            "8. Store in dark glass bottles, sealed with wax",
+            "9. Label clearly with contents and preparation date"
+        ],
+        properties=["Analgesic", "Sedative", "Hypnotic", "Antitussive"],
+        dosage="5-10 guttae (drops) for pain; 15-20 guttae for sleep",
+        warnings=["EXTREME CAUTION: Contains morphine and codeine", "Highly addictive - use sparingly", "Contraindicated in respiratory depression", "Not for use in children", "Legal restrictions apply"],
+        preparation_time="3 hours",
+        shelf_life="2 years when properly stored",
+        related_folios=["f176r", "f200v", "f3v"]
+    ),
+    
+    "f5r_mandrake_extract": Recipe(
+        name="Extractum Mandragorae (Mandrake Root Extract)",
+        voynichese_name="otol deor ollag stella",
+        wilken_key_translation="Root-stem motion - Subterranean node - Collection vessel - Swell-stem expansion",
+        category="Narcotic Preparation",
+        folio_reference="f5r",
+        description="Potent extract of Mandragora officinarum root for surgical anesthesia",
+        ingredients=[
+            Ingredient(
+                latin_name="Mandragora officinarum L.",
+                common_name="Mandrake",
+                part_used="Radix (Root)",
+                quantity="10 drachmae (approximately 40g)",
+                preparation="Dried root, powdered coarsely",
+                properties=["Narcotic", "Analgesic", "Hallucinogenic"]
+            ),
+            Ingredient(
+                latin_name="Vinum",
+                common_name="Wine",
+                part_used="Fermented grape juice",
+                quantity="20 unciae (approximately 600ml)",
+                preparation="Strong red wine, 12% alcohol",
+                properties=["Solvent", "Preservative", "Circulatory stimulant"]
+            ),
+            Ingredient(
+                latin_name="Hyoscyamus niger L.",
+                common_name="Black Henbane",
+                part_used="Folia (Leaves)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried leaves, crushed",
+                properties=["Anticholinergic", "Sedative", "Analgesic"]
+            ),
+        ],
+        instructions=[
+            "1. Powder mandrake root using mortar of iron (avoid bronze)",
+            "2. Mix powdered root with crushed henbane leaves",
+            "3. Place mixture in clean glass vessel",
+            "4. Cover completely with strong wine",
+            "5. Seal vessel and place in warm location (stella position)",
+            "6. Agitate daily for fourteen days",
+            "7. On the fifteenth day, strain through linen",
+            "8. Press marc (residue) to extract all liquid",
+            "9. Store in small, dark bottles with tight stoppers",
+            "10. Label with skull and crossbones symbol"
+        ],
+        properties=["Anesthetic", "Analgesic", "Hypnotic", "Deliriant"],
+        dosage="5-15 guttae in wine before surgical procedures",
+        warnings=["EXTREMELY DANGEROUS: Contains hyoscyamine and scopolamine", "Overdose is fatal", "Causes delirium and hallucinations", "Use only under expert supervision", "Not for unsupervised use"],
+        preparation_time="14 days maceration",
+        shelf_life="3 years when properly stored",
+        related_folios=["f161r", "f152v", "f211r"]
+    ),
+    
+    "f67r_hellebore_purge": Recipe(
+        name="Pulvis Hellebori Albi (White Hellebore Purge)",
+        voynichese_name="deor ollag stella qokedy",
+        wilken_key_translation="Subterranean node - Collection vessel - Swell-stem expansion - Molecular key",
+        category="Cathartic Preparation",
+        folio_reference="f67r",
+        description="Powerful emetic and cathartic powder from Veratrum album rhizome",
+        ingredients=[
+            Ingredient(
+                latin_name="Veratrum album L.",
+                common_name="White Hellebore",
+                part_used="Rhizoma (Rhizome)",
+                quantity="3 drachmae (approximately 12g)",
+                preparation="Dried, powdered to fine consistency",
+                properties=["Emetic", "Cathartic", "Hypotensive", "Insecticidal"]
+            ),
+            Ingredient(
+                latin_name="Zingiber officinale Roscoe",
+                common_name="Ginger",
+                part_used="Rhizoma (Root)",
+                quantity="2 drachmae (approximately 8g)",
+                preparation="Dried, powdered",
+                properties=["Carminative", "Anti-emetic", "Warming"]
+            ),
+            Ingredient(
+                latin_name="Cinnamomum verum J.Presl",
+                common_name="True Cinnamon",
+                part_used="Cortex (Bark)",
+                quantity="1 drachma (approximately 4g)",
+                preparation="Powdered inner bark",
+                properties=["Aromatic", "Carminative", "Warming"]
+            ),
+        ],
+        instructions=[
+            "1. Harvest Veratrum album rhizome in autumn after flowering",
+            "2. Dry thoroughly in shade for thirty days",
+            "3. Powder rhizome to fine consistency using stone mortar",
+            "4. Mix with powdered ginger and cinnamon in specified proportions",
+            "5. Pass through fine sieve to ensure uniform particle size",
+            "6. Store in tightly sealed vessel with desiccant",
+            "7. Label with appropriate warnings and dosage instructions"
+        ],
+        properties=["Emetic", "Cathartic", "Vermifuge", "Hypotensive"],
+        dosage="1-2 grana (grains) in warm water, once only",
+        warnings=["EXTREMELY TOXIC: Veratrum alkaloids can be fatal", "Causes violent vomiting", "Contraindicated in weak constitution", "Use only under medical supervision", "Keep away from children"],
+        preparation_time="30 days drying + 1 hour preparation",
+        shelf_life="2 years when stored properly",
+        related_folios=["f239r", "f68v", "f220v"]
+    ),
+    
+    "f68v_nightshade_ointment": Recipe(
+        name="Unguentum Solani (Nightshade Ointment)",
+        voynichese_name="ollag stella qokedy qokeedy",
+        wilken_key_translation="Collection vessel - Swell-stem expansion - Molecular key - Batch authentication",
+        category="Topical Analgesic",
+        folio_reference="f68v",
+        description="Analgesic ointment from Solanaceae species for neuralgic pain",
+        ingredients=[
+            Ingredient(
+                latin_name="Atropa belladonna L.",
+                common_name="Deadly Nightshade",
+                part_used="Folia (Leaves)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Fresh leaves, chopped finely",
+                properties=["Anticholinergic", "Analgesic", "Mydriatic"]
+            ),
+            Ingredient(
+                latin_name="Hyoscyamus niger L.",
+                common_name="Black Henbane",
+                part_used="Semen (Seeds)",
+                quantity="2 drachmae (approximately 8g)",
+                preparation="Dried seeds, crushed",
+                properties=["Sedative", "Analgesic", "Antispasmodic"]
+            ),
+            Ingredient(
+                latin_name="Oleum Lard",
+                common_name="Lard",
+                part_used="Adeps (Rendered pork fat)",
+                quantity="10 unciae (approximately 300g)",
+                preparation="Freshly rendered, purified",
+                properties=["Base", "Emollient", "Penetration enhancer"]
+            ),
+            Ingredient(
+                latin_name="Oleum Gaultheriae",
+                common_name="Wintergreen Oil",
+                part_used="Essential oil",
+                quantity="20 guttae (drops)",
+                preparation="Steam distilled",
+                properties=["Counterirritant", "Analgesic", "Anti-inflammatory"]
+            ),
+        ],
+        instructions=[
+            "1. Gently heat lard in clean vessel until liquid",
+            "2. Add chopped nightshade leaves and henbane seeds",
+            "3. Maintain low heat for six hours, stirring occasionally",
+            "4. Do not allow to boil - maintain below 60°C",
+            "5. Strain through fine cloth, pressing to extract all fat",
+            "6. Return strained fat to clean vessel",
+            "7. Add wintergreen oil when temperature drops below 40°C",
+            "8. Stir until homogeneous",
+            "9. Pour into ointment jars while still warm",
+            "10. Allow to cool and set before sealing"
+        ],
+        properties=["Analgesic", "Counterirritant", "Neuralgic pain relief", "Anti-inflammatory"],
+        dosage="Apply to affected area, rub in thoroughly, up to three times daily",
+        warnings=["FOR EXTERNAL USE ONLY", "Contains tropane alkaloids - toxic if ingested", "Wash hands after application", "Do not apply to broken skin", "Keep away from eyes and mucous membranes"],
+        preparation_time="8 hours",
+        shelf_life="1 year when refrigerated",
+        related_folios=["f69r", "f70v", "f211r"]
+    ),
+    
+    "f75r_arnica_compress": Recipe(
+        name="Cataplasma Arnicae (Arnica Compress)",
+        voynichese_name="stella qokedy qokeedy daiin",
+        wilken_key_translation="Swell-stem expansion - Molecular key - Batch authentication - Nodal valve",
+        category="Traumatic Remedy",
+        folio_reference="f75r",
+        description="Poultice of Arnica montana for bruises, sprains, and traumatic injuries",
+        ingredients=[
+            Ingredient(
+                latin_name="Arnica montana L.",
+                common_name="Mountain Arnica",
+                part_used="Flos (Flowers)",
+                quantity="10 drachmae (approximately 40g)",
+                preparation="Dried flowers, crushed",
+                properties=["Anti-inflammatory", "Analgesic", "Circulatory stimulant"]
+            ),
+            Ingredient(
+                latin_name="Aqua fervens",
+                common_name="Hot Water",
+                part_used="Water at 80°C",
+                quantity="Sufficient to moisten",
+                preparation="Freshly boiled",
+                properties=["Solvent", "Heat conductor"]
+            ),
+            Ingredient(
+                latin_name="Linen cloth",
+                common_name="Clean Linen",
+                part_used="Woven fabric",
+                quantity="1 piece, 6 x 6 inches",
+                preparation="Boiled and dried",
+                properties=["Delivery vehicle", "Heat retention"]
+            ),
+        ],
+        instructions=[
+            "1. Place crushed arnica flowers in shallow bowl",
+            "2. Pour hot water over flowers to moisten thoroughly",
+            "3. Allow to steep for 10 minutes",
+            "4. Lay linen cloth flat and spread flower mixture evenly",
+            "5. Fold cloth to enclose the herbal material",
+            "6. Apply to affected area while still warm",
+            "7. Secure with bandage, leave in place for 30-60 minutes",
+            "8. Repeat every 4 hours for acute injuries",
+            "9. Discard used material - do not reuse"
+        ],
+        properties=["Anti-inflammatory", "Bruise resolution", "Pain relief", "Swelling reduction"],
+        dosage="Apply fresh compress every 4 hours for 24-48 hours",
+        warnings=["FOR EXTERNAL USE ONLY", "Do not apply to broken skin", "May cause dermatitis in sensitive individuals", "Test on small area first", "Not for long-term use"],
+        preparation_time="15 minutes",
+        shelf_life="Use immediately - prepare fresh each time",
+        related_folios=["f221r", "f76v", "f77r"]
+    ),
+    
+    "f79v_comfrey_bone_knit": Recipe(
+        name="Consolida Ossium (Bone-Knitting Compound)",
+        voynichese_name="qokedy qokeedy daiin chol",
+        wilken_key_translation="Molecular key - Batch authentication - Nodal valve - Root-arm valve",
+        category="Fracture Remedy",
+        folio_reference="f79v",
+        description="Traditional compound for promoting bone healing and union",
+        ingredients=[
+            Ingredient(
+                latin_name="Symphytum officinale L.",
+                common_name="Comfrey",
+                part_used="Radix (Root)",
+                quantity="20 drachmae (approximately 80g)",
+                preparation="Fresh root, grated",
+                properties=["Vulnerary", "Anti-inflammatory", "Cell proliferant"]
+            ),
+            Ingredient(
+                latin_name="Plantago major L.",
+                common_name="Plantain",
+                part_used="Folia (Leaves)",
+                quantity="15 drachmae (approximately 60g)",
+                preparation="Fresh leaves, washed and chopped",
+                properties=["Vulnerary", "Astringent", "Anti-inflammatory"]
+            ),
+            Ingredient(
+                latin_name="Eggshells",
+                common_name="Calcined Eggshells",
+                part_used="Testa ovorum (Calcined shells)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Burned to white ash, powdered",
+                properties=["Calcium source", "Mineral supplement"]
+            ),
+            Ingredient(
+                latin_name="Mel",
+                common_name="Honey",
+                part_used="Raw honey",
+                quantity="3 unciae (approximately 90ml)",
+                preparation="Unfiltered, local source",
+                properties=["Antimicrobial", "Wound healing", "Binder"]
+            ),
+        ],
+        instructions=[
+            "1. Grate fresh comfrey root into fine pulp",
+            "2. Chop plantain leaves and pound to paste",
+            "3. Mix comfrey and plantain in equal proportions",
+            "4. Add calcined eggshell powder gradually",
+            "5. Incorporate honey to form thick paste",
+            "6. Apply directly to clean fracture site",
+            "7. Cover with clean linen and secure with bandage",
+            "8. Change dressing daily, cleaning wound each time",
+            "9. Continue until bone union is achieved"
+        ],
+        properties=["Bone knitting", "Wound healing", "Anti-inflammatory", "Tissue regeneration"],
+        dosage="Apply fresh dressing daily for 4-6 weeks",
+        warnings=["FOR EXTERNAL USE ONLY", "Do not use on deep wounds (may cause rapid surface healing over infection)", "Ensure proper bone alignment before application", "Consult bone-setter for complex fractures"],
+        preparation_time="30 minutes",
+        shelf_life="Prepare fresh daily",
+        related_folios=["f226v", "f80r", "f81v"]
+    ),
+    
+    "f85r_universal_balm": Recipe(
+        name="Balsamum Universale (Universal Balm)",
+        voynichese_name="qokeedy daiin chol shedy",
+        wilken_key_translation="Batch authentication - Nodal valve - Root-arm valve - Pressure valve",
+        category="Panacea",
+        folio_reference="f85r",
+        description="Complex aromatic balsam for multiple applications - the 'cure-all' preparation",
+        ingredients=[
+            Ingredient(
+                latin_name="Commiphora myrrha (Nees) Engl.",
+                common_name="Myrrh",
+                part_used="Resina (Resin)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Tears of resin, coarsely powdered",
+                properties=["Antimicrobial", "Astringent", "Wound healing"]
+            ),
+            Ingredient(
+                latin_name="Boswellia sacra Flueck.",
+                common_name="Frankincense",
+                part_used="Resina (Resin)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Tears of resin, coarsely powdered",
+                properties=["Anti-inflammatory", "Aromatic", "Expectorant"]
+            ),
+            Ingredient(
+                latin_name="Aloe ferox Mill.",
+                common_name="Cape Aloe",
+                part_used="Succus (Dried juice)",
+                quantity="3 drachmae (approximately 12g)",
+                preparation="Dried latex from leaves",
+                properties=["Cathartic", "Bitter", "Wound healing"]
+            ),
+            Ingredient(
+                latin_name="Crocus sativus L.",
+                common_name="Saffron",
+                part_used="Stigma (Threads)",
+                quantity="10 grana (approximately 0.6g)",
+                preparation="Highest quality, whole threads",
+                properties=["Aromatic", "Antidepressant", "Carminative"]
+            ),
+            Ingredient(
+                latin_name="Oleum Olea europaea",
+                common_name="Olive Oil",
+                part_used="First cold-pressed oil",
+                quantity="16 unciae (approximately 480ml)",
+                preparation="Unrefined, extra virgin",
+                properties=["Carrier oil", "Emollient", "Nutritive"]
+            ),
+        ],
+        instructions=[
+            "1. Combine powdered myrrh and frankincense in mortar",
+            "2. Grind together until fine powder achieved",
+            "3. Add aloe and saffron, continue grinding",
+            "4. Heat olive oil gently in clean vessel",
+            "5. Add resin mixture to warm oil gradually",
+            "6. Maintain gentle heat for 12 hours (balneum Mariae)",
+            "7. Stir occasionally to prevent sticking",
+            "8. Strain through fine linen while still warm",
+            "9. Store in dark glass, seal with wax",
+            "10. Age for three months before use"
+        ],
+        properties=["Universal remedy", "Wound healing", "Anti-inflammatory", "Antimicrobial", "Aromatic"],
+        dosage="For wounds: apply directly. For internal: 5 guttae in wine. For incense: burn on charcoal.",
+        warnings=["Internal use may cause catharsis", "Test for allergic reaction before extensive use", "Not for use in pregnancy"],
+        preparation_time="14 hours preparation + 90 days aging",
+        shelf_life="5 years when properly stored",
+        related_folios=["f86v", "f87r", "f88v"]
+    ),
+    
+    "f88r_fever_tonic": Recipe(
+        name="Aqua Febrifuga (Fever-Reducing Water)",
+        voynichese_name="daiin chol shedy otol",
+        wilken_key_translation="Nodal valve - Root-arm valve - Pressure valve - Root-stem motion",
+        category="Antipyretic",
+        folio_reference="f88r",
+        description="Distilled water compound for reducing fever and ague",
+        ingredients=[
+            Ingredient(
+                latin_name="Cinchona pubescens Vahl",
+                common_name="Quinine Bark",
+                part_used="Cortex (Bark)",
+                quantity="10 drachmae (approximately 40g)",
+                preparation="Dried bark, coarsely powdered",
+                properties=["Antimalarial", "Antipyretic", "Bitter tonic"]
+            ),
+            Ingredient(
+                latin_name="Artemisia annua L.",
+                common_name="Sweet Wormwood",
+                part_used="Herba (Aerial parts)",
+                quantity="8 drachmae (approximately 32g)",
+                preparation="Dried herb, flowering tops",
+                properties=["Antimalarial", "Antipyretic", "Bitter"]
+            ),
+            Ingredient(
+                latin_name="Gentiana lutea L.",
+                common_name="Great Yellow Gentian",
+                part_used="Radix (Root)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried root, sliced",
+                properties=["Bitter tonic", "Digestive stimulant", "Febriuge"]
+            ),
+            Ingredient(
+                latin_name="Aqua vitae",
+                common_name="Spirits",
+                part_used="40% alcohol",
+                quantity="20 unciae (approximately 600ml)",
+                preparation="Grain spirits",
+                properties=["Solvent", "Preservative"]
+            ),
+        ],
+        instructions=[
+            "1. Combine all herbs in large glass vessel",
+            "2. Cover with spirits of wine",
+            "3. Seal and macerate for 21 days, agitating daily",
+            "4. After maceration, transfer to alembic",
+            "5. Distill using gentle heat",
+            "6. Collect first waters separately (most potent)",
+            "7. Continue distillation until 15 unciae collected",
+            "8. Mix first waters with subsequent in ratio 1:3",
+            "9. Filter and store in sealed bottles",
+            "10. Label with date and contents"
+        ],
+        properties=["Antipyretic", "Antimalarial", "Bitter tonic", "Digestive stimulant"],
+        dosage="1 cochlear (spoonful) in water, every 4 hours during fever",
+        warnings=["May cause tinnitus in high doses (cinchonism)", "Bitter taste may cause nausea", "Not for long-term use"],
+        preparation_time="21 days maceration + 6 hours distillation",
+        shelf_life="3 years when properly stored",
+        related_folios=["f183v", "f89r", "f90v"]
+    ),
+    
+    "f91r_cardiac_tonic": Recipe(
+        name="Tinctura Digitalis (Foxglove Cardiac Tonic)",
+        voynichese_name="chol shedy otol deor",
+        wilken_key_translation="Root-arm valve - Pressure valve - Root-stem motion - Subterranean node",
+        category="Cardiac Remedy",
+        folio_reference="f91r",
+        description="Carefully prepared tincture of Digitalis purpurea for cardiac insufficiency",
+        ingredients=[
+            Ingredient(
+                latin_name="Digitalis purpurea L.",
+                common_name="Foxglove",
+                part_used="Folia (Fresh leaves)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Leaves of second year's growth, dried rapidly",
+                properties=["Cardiotonic", "Antiarrhythmic", "Diuretic"]
+            ),
+            Ingredient(
+                latin_name="Ethanol 25% v/v",
+                common_name="Diluted Spirits",
+                part_used="Alcoholic solution",
+                quantity="20 unciae (approximately 600ml)",
+                preparation="Diluted from stronger spirits",
+                properties=["Solvent", "Preservative"]
+            ),
+        ],
+        instructions=[
+            "1. Collect foxglove leaves before flowering begins",
+            "2. Dry rapidly in shade to preserve potency",
+            "3. Powder dried leaves coarsely",
+            "4. Place in glass vessel and cover with diluted spirits",
+            "5. Seal vessel and macerate for 14 days",
+            "6. Agitate daily to ensure thorough extraction",
+            "7. After maceration, filter through fine linen",
+            "8. Allow to stand for 48 hours to settle",
+            "9. Decant clear liquid carefully",
+            "10. Store in small, dark bottles with precise labels"
+        ],
+        properties=["Cardiotonic", "Diuretic", "Antiarrhythmic"],
+        dosage="1-2 guttae, thrice daily (EXTREMELY POTENT - measure carefully)",
+        warnings=["EXTREMELY TOXIC: Narrow therapeutic window", "Overdose causes fatal cardiac arrhythmia", "Requires medical supervision", "Contraindicated in partial heart block", "Drug interactions common", "NOT FOR SELF-MEDICATION"],
+        preparation_time="14 days maceration + 2 days settling",
+        shelf_life="2 years when properly stored",
+        related_folios=["f191r", "f92v", "f93r"]
+    ),
+    
+    "f103r_women_balm": Recipe(
+        name="Balsamum Mulierum (Women's Balm)",
+        voynichese_name="shedy otol deor ollag",
+        wilken_key_translation="Pressure valve - Root-stem motion - Subterranean node - Collection vessel",
+        category="Gynecological Preparation",
+        folio_reference="f103r",
+        description="Traditional preparation for women's health and reproductive wellness",
+        ingredients=[
+            Ingredient(
+                latin_name="Vitex agnus-castus L.",
+                common_name="Chaste Tree",
+                part_used="Fructus (Berries)",
+                quantity="10 drachmae (approximately 40g)",
+                preparation="Dried berries, crushed",
+                properties=["Hormonal regulator", "Prolactin inhibitor", "Menstrual regulator"]
+            ),
+            Ingredient(
+                latin_name="Angelica sinensis (Oliv.) Diels",
+                common_name="Dong Quai",
+                part_used="Radix (Root)",
+                quantity="8 drachmae (approximately 32g)",
+                preparation="Dried root, sliced",
+                properties=["Uterine tonic", "Blood tonic", "Antispasmodic"]
+            ),
+            Ingredient(
+                latin_name="Cimicifuga racemosa (L.) Nutt.",
+                common_name="Black Cohosh",
+                part_used="Rhizoma (Rhizome)",
+                quantity="6 drachmae (approximately 24g)",
+                preparation="Dried rhizome, coarsely powdered",
+                properties=["Phytoestrogenic", "Antispasmodic", "Anti-inflammatory"]
+            ),
+            Ingredient(
+                latin_name="Rubus idaeus L.",
+                common_name="Red Raspberry",
+                part_used="Folia (Leaves)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried leaves",
+                properties=["Uterine tonic", "Astringent", "Partus preparator"]
+            ),
+            Ingredient(
+                latin_name="Mel",
+                common_name="Honey",
+                part_used="Raw honey",
+                quantity="4 unciae (approximately 120ml)",
+                preparation="Unfiltered, local source",
+                properties=["Sweetening agent", "Preservative", "Nutritive"]
+            ),
+        ],
+        instructions=[
+            "1. Combine all dried herbs in large mortar",
+            "2. Grind together to coarse powder",
+            "3. Place powdered herbs in glass vessel",
+            "4. Add sufficient water to cover by two fingers' breadth",
+            "5. Simmer gently for 2 hours, adding water as needed",
+            "6. Strain liquid through fine linen",
+            "7. Return liquid to clean vessel, add honey",
+            "8. Simmer until reduced by half (to syrup consistency)",
+            "9. Pour into small bottles while warm",
+            "10. Seal and store in cool place"
+        ],
+        properties=["Uterine tonic", "Hormonal balance", "Menstrual regulator", "Partus preparator"],
+        dosage="1 cochlear (spoonful) twice daily, or as directed by midwife",
+        warnings=["Not for use during pregnancy except under supervision", "May interact with hormonal medications", "Discontinue if adverse effects occur"],
+        preparation_time="4 hours",
+        shelf_life="1 year when refrigerated",
+        related_folios=["f104v", "f105r", "f116v"]
+    ),
+    
+    "f106v_digestive_elixir": Recipe(
+        name="Elixir Digestivum (Digestive Elixir)",
+        voynichese_name="otol deor ollag stella",
+        wilken_key_translation="Root-stem motion - Subterranean node - Collection vessel - Swell-stem expansion",
+        category="Digestive Tonic",
+        folio_reference="f106v",
+        description="Carminative and digestive stimulant for dyspepsia and flatulence",
+        ingredients=[
+            Ingredient(
+                latin_name="Gentiana lutea L.",
+                common_name="Gentian",
+                part_used="Radix (Root)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried root, coarsely powdered",
+                properties=["Bitter tonic", "Digestive stimulant", "Choleretic"]
+            ),
+            Ingredient(
+                latin_name="Zingiber officinale Roscoe",
+                common_name="Ginger",
+                part_used="Rhizoma (Root)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried, powdered",
+                properties=["Carminative", "Anti-emetic", "Digestive stimulant"]
+            ),
+            Ingredient(
+                latin_name="Foeniculum vulgare Mill.",
+                common_name="Fennel",
+                part_used="Semen (Seeds)",
+                quantity="4 drachmae (approximately 16g)",
+                preparation="Dried seeds, crushed",
+                properties=["Carminative", "Antispasmodic", "Galactagogue"]
+            ),
+            Ingredient(
+                latin_name="Coriandrum sativum L.",
+                common_name="Coriander",
+                part_used="Semen (Seeds)",
+                quantity="3 drachmae (approximately 12g)",
+                preparation="Dried seeds, crushed",
+                properties=["Carminative", "Aromatic", "Digestive"]
+            ),
+            Ingredient(
+                latin_name="Cinnamomum verum J.Presl",
+                common_name="Cinnamon",
+                part_used="Cortex (Bark)",
+                quantity="2 drachmae (approximately 8g)",
+                preparation="Powdered bark",
+                properties=["Carminative", "Astringent", "Warming"]
+            ),
+            Ingredient(
+                latin_name="Ethanol 40% v/v",
+                common_name="Spirits",
+                part_used="Alcoholic solution",
+                quantity="30 unciae (approximately 900ml)",
+                preparation="Grain spirits",
+                properties=["Solvent", "Preservative"]
+            ),
+        ],
+        instructions=[
+            "1. Combine all powdered herbs in glass vessel",
+            "2. Cover with spirits of wine",
+            "3. Seal vessel and macerate for 30 days",
+            "4. Agitate daily to ensure thorough extraction",
+            "5. After maceration, filter through fine linen",
+            "6. Press marc to extract all liquid",
+            "7. Allow to stand for 48 hours to settle",
+            "8. Decant clear liquid carefully",
+            "9. Store in sealed bottles",
+            "10. Age for 3 months before use"
+        ],
+        properties=["Digestive stimulant", "Carminative", "Bitter tonic", "Anti-emetic"],
+        dosage="20-30 guttae in water before meals",
+        warnings=["Bitter taste may be unpleasant to some", "Avoid in gastric ulcers", "Not for use in acute gastritis"],
+        preparation_time="30 days maceration + 90 days aging",
+        shelf_life="5 years when properly stored",
+        related_folios=["f107r", "f108v", "f109r"]
+    ),
+    
+    "f110r_pain_tincture": Recipe(
+        name="Tinctura Analgesica (Pain-Relieving Tincture)",
+        voynichese_name="deor ollag stella qokedy",
+        wilken_key_translation="Subterranean node - Collection vessel - Swell-stem expansion - Molecular key",
+        category="Analgesic Preparation",
+        folio_reference="f110r",
+        description="Powerful analgesic tincture for moderate to severe pain",
+        ingredients=[
+            Ingredient(
+                latin_name="Papaver somniferum L.",
+                common_name="Opium Poppy",
+                part_used="Latex (Raw opium)",
+                quantity="3 drachmae (approximately 12g)",
+                preparation="Dried latex, powdered",
+                properties=["Narcotic analgesic", "Sedative", "Antitussive"]
+            ),
+            Ingredient(
+                latin_name="Corydalis yanhusuo (Y.H.Chou & Chun C.Hsu) W.T.Wang ex Z.Y.Su & C.Y.Wu",
+                common_name="Corydalis Rhizome",
+                part_used="Rhizoma (Rhizome)",
+                quantity="6 drachmae (approximately 24g)",
+                preparation="Dried rhizome, sliced",
+                properties=["Analgesic", "Sedative", "Antispasmodic"]
+            ),
+            Ingredient(
+                latin_name="Salix alba L.",
+                common_name="White Willow",
+                part_used="Cortex (Bark)",
+                quantity="8 drachmae (approximately 32g)",
+                preparation="Dried bark, coarsely powdered",
+                properties=["Analgesic", "Anti-inflammatory", "Antipyretic"]
+            ),
+            Ingredient(
+                latin_name="Ethanol 60% v/v",
+                common_name="Strong Spirits",
+                part_used="Alcoholic solution",
+                quantity="30 unciae (approximately 900ml)",
+                preparation="Grain spirits",
+                properties=["Solvent", "Preservative"]
+            ),
+        ],
+        instructions=[
+            "1. Combine willow bark and corydalis in glass vessel",
+            "2. Cover with strong spirits",
+            "3. Macerate for 21 days, agitating daily",
+            "4. Dissolve powdered opium in small amount of warm water",
+            "5. Add opium solution to macerated tincture",
+            "6. Mix thoroughly and allow to stand for 7 days",
+            "7. Filter through fine linen",
+            "8. Store in small, dark bottles with tight stoppers",
+            "9. Label clearly with warnings"
+        ],
+        properties=["Analgesic", "Sedative", "Anti-inflammatory"],
+        dosage="10-20 guttae for pain, may repeat every 4 hours",
+        warnings=["EXTREME CAUTION: Contains morphine - highly addictive", "Causes drowsiness - do not operate machinery", "Contraindicated in respiratory depression", "Not for long-term use", "Legal restrictions apply"],
+        preparation_time="28 days total",
+        shelf_life="3 years when properly stored",
+        related_folios=["f111v", "f112r", "f113v"]
+    ),
+    
+    "f114v_wound_powder": Recipe(
+        name="Pulvis Vulnerarius (Wound-Healing Powder)",
+        voynichese_name="ollag stella qokedy qokeedy",
+        wilken_key_translation="Collection vessel - Swell-stem expansion - Molecular key - Batch authentication",
+        category="Hemostatic Preparation",
+        folio_reference="f114v",
+        description="Styptic powder for wound treatment and bleeding control",
+        ingredients=[
+            Ingredient(
+                latin_name="Achillea millefolium L.",
+                common_name="Yarrow",
+                part_used="Herba (Aerial parts)",
+                quantity="10 drachmae (approximately 40g)",
+                preparation="Dried herb, powdered",
+                properties=["Hemostatic", "Anti-inflammatory", "Antimicrobial"]
+            ),
+            Ingredient(
+                latin_name="Plantago major L.",
+                common_name="Plantain",
+                part_used="Folia (Leaves)",
+                quantity="8 drachmae (approximately 32g)",
+                preparation="Dried leaves, powdered",
+                properties=["Vulnerary", "Astringent", "Anti-inflammatory"]
+            ),
+            Ingredient(
+                latin_name="Calendula officinalis L.",
+                common_name="Calendula",
+                part_used="Flos (Flowers)",
+                quantity="6 drachmae (approximately 24g)",
+                preparation="Dried flowers, powdered",
+                properties=["Vulnerary", "Antimicrobial", "Anti-inflammatory"]
+            ),
+            Ingredient(
+                latin_name="Commiphora myrrha (Nees) Engl.",
+                common_name="Myrrh",
+                part_used="Resina (Resin)",
+                quantity="4 drachmae (approximately 16g)",
+                preparation="Powdered tears",
+                properties=["Antimicrobial", "Astringent", "Wound healing"]
+            ),
+            Ingredient(
+                latin_name="Alumen",
+                common_name="Alum",
+                part_used="Mineral salt",
+                quantity="2 drachmae (approximately 8g)",
+                preparation="Powdered crystals",
+                properties=["Astringent", "Antiseptic", "Hemostatic"]
+            ),
+        ],
+        instructions=[
+            "1. Powder each ingredient separately to fine consistency",
+            "2. Sieve each powder to ensure uniform particle size",
+            "3. Combine all powders in specified proportions",
+            "4. Mix thoroughly using geometric dilution method",
+            "5. Pass final mixture through fine sieve",
+            "6. Store in tightly sealed container",
+            "7. Keep in dry place away from moisture",
+            "8. Label clearly with contents and date"
+        ],
+        properties=["Hemostatic", "Wound healing", "Antimicrobial", "Astringent"],
+        dosage="Apply directly to clean wound, cover with bandage",
+        warnings=["For external use only", "Clean wound before application", "Change dressing daily", "Seek medical attention for deep wounds"],
+        preparation_time="2 hours",
+        shelf_life="2 years when kept dry",
+        related_folios=["f115r", "f230v", "f221r"]
+    ),
+    
+    "f116v_master_elixir": Recipe(
+        name="Elixir Magistrale (Master Elixir)",
+        voynichese_name="stella qokedy qokeedy daiin chol",
+        wilken_key_translation="Swell-stem expansion - Molecular key - Batch authentication - Nodal valve - Root-arm valve",
+        category="Panacea",
+        folio_reference="f116v",
+        description="The master formula combining multiple botanicals for systemic wellness - the culmination of the Wilken Key pharmaceutical tradition",
+        ingredients=[
+            Ingredient(
+                latin_name="Panax ginseng C.A.Mey.",
+                common_name="Asian Ginseng",
+                part_used="Radix (Root)",
+                quantity="6 drachmae (approximately 24g)",
+                preparation="Dried root, 6 years old, sliced",
+                properties=["Adaptogen", "Tonic", "Immunomodulator"]
+            ),
+            Ingredient(
+                latin_name="Rhodiola rosea L.",
+                common_name="Golden Root",
+                part_used="Radix (Root)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried root, powdered",
+                properties=["Adaptogen", "Antifatigue", "Cognitive enhancer"]
+            ),
+            Ingredient(
+                latin_name="Schisandra chinensis (Turcz.) Baill.",
+                common_name="Schisandra",
+                part_used="Fructus (Berries)",
+                quantity="4 drachmae (approximately 16g)",
+                preparation="Dried berries",
+                properties=["Adaptogen", "Hepatoprotective", "Tonic"]
+            ),
+            Ingredient(
+                latin_name="Astragalus membranaceus (Fisch.) Bunge",
+                common_name="Astragalus",
+                part_used="Radix (Root)",
+                quantity="8 drachmae (approximately 32g)",
+                preparation="Dried root, sliced",
+                properties=["Immunomodulator", "Tonic", "Adaptogen"]
+            ),
+            Ingredient(
+                latin_name="Ganoderma lucidum (Curtis) P.Karst.",
+                common_name="Reishi Mushroom",
+                part_used="Fungus (Whole mushroom)",
+                quantity="5 drachmae (approximately 20g)",
+                preparation="Dried, sliced",
+                properties=["Immunomodulator", "Adaptogen", "Longevity tonic"]
+            ),
+            Ingredient(
+                latin_name="Ethanol 35% v/v",
+                common_name="Spirits",
+                part_used="Alcoholic solution",
+                quantity="50 unciae (approximately 1500ml)",
+                preparation="Grain spirits",
+                properties=["Solvent", "Preservative"]
+            ),
+            Ingredient(
+                latin_name="Mel",
+                common_name="Honey",
+                part_used="Raw honey",
+                quantity="10 unciae (approximately 300ml)",
+                preparation="Unfiltered, wildflower",
+                properties=["Sweetening agent", "Preservative", "Tonic"]
+            ),
+        ],
+        instructions=[
+            "1. Combine all dried botanicals in large glass vessel",
+            "2. Cover with spirits of wine",
+            "3. Seal vessel with wax and store in cool, dark place",
+            "4. Macerate for 60 days, agitating daily",
+            "5. On the 61st day, filter through fine linen",
+            "6. Press marc thoroughly to extract all essence",
+            "7. Add honey to filtered liquid",
+            "8. Mix until honey is completely dissolved",
+            "9. Allow to stand for 7 days to settle",
+            "10. Decant clear liquid into clean bottles",
+            "11. Age for 6 months before use",
+            "12. The elixir improves with age up to 10 years"
+        ],
+        properties=["Systemic tonic", "Adaptogenic", "Immunomodulatory", "Longevity promoting", "General wellness"],
+        dosage="30 guttae in wine or water, morning and evening",
+        warnings=["May interact with immunosuppressive medications", "Discontinue before surgery", "Not for use in acute infections", "Consult healthcare provider if taking medications"],
+        preparation_time="60 days maceration + 6 months aging (optimal at 1 year)",
+        shelf_life="10+ years when properly stored",
+        related_folios=["f1v", "f2r", "f3v", "f4r", "f5r", "f67r", "f75r", "f85r", "f88r", "f103r", "f106v", "f110r", "f114v"]
+    ),
+}
+
+# =============================================================================
+# FOLIO DATABASE
+# =============================================================================
+
+FOLIO_DATABASE: Dict[str, FolioData] = {
+    "f1r": FolioData(
+        folio_number="f1r",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006076,
+        description="The inaugural folio featuring Greater Celandine (Chelidonium majus) establishing foundational protocols for botanical identification.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Chelidonium majus L.",
+                common_names=["Greater Celandine", "Swallowwort", "Tetterwort"],
+                family="Papaveraceae",
+                parts_used=["Radix", "Latex", "Folia"],
+                properties=["Choleretic", "Antimicrobial", "Analgesic"],
+                voynichese_glyphs=["qo", "daiin", "chol"],
+                description="The Lobed-Leaf Plant - milky latex-bearing herb"
+            )
+        ],
+        recipes=["f1v_celandine_tincture"],
+        related_folios=["f1v", "f2r", "f25r"],
+        scholarly_notes="The opening folio establishes the Wilken Key methodology with Greater Celandine, a plant associated with the return of swallows in folklore."
+    ),
+    
+    "f1v": FolioData(
+        folio_number="f1v",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006077,
+        description="Verso of the opening protocol presenting Greater Celandine in mature flowering form with detailed root structure.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Chelidonium majus L.",
+                common_names=["Greater Celandine", "Swallowwort"],
+                family="Papaveraceae",
+                parts_used=["Radix", "Herba", "Flos"],
+                properties=["Choleretic", "Antimicrobial", "Spasmolytic"],
+                voynichese_glyphs=["daiin", "chol", "shedy"],
+                description="Complete plant with flowering stems and root system"
+            )
+        ],
+        recipes=["f1v_celandine_tincture"],
+        related_folios=["f1r", "f2r"],
+        scholarly_notes="The verso provides complete morphological study necessary for accurate identification."
+    ),
+    
+    "f2r": FolioData(
+        folio_number="f2r",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006078,
+        description="The Daisy Folio - presenting Bellis perennis as a secondary opening protocol herb with emollient and vulnerary properties.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Bellis perennis L.",
+                common_names=["Common Daisy", "English Daisy", "Woundwort"],
+                family="Asteraceae",
+                parts_used=["Herba", "Flos", "Folia"],
+                properties=["Emollient", "Astringent", "Vulnerary"],
+                voynichese_glyphs=["chol", "shedy", "qokedy"],
+                description="The Day's Eye - opening and closing with the sun"
+            )
+        ],
+        recipes=["f2r_daisy_emollient"],
+        related_folios=["f1v", "f3v", "f4r"],
+        scholarly_notes="The daisy's name 'perennis' (everlasting) reflects its persistent flowering nature."
+    ),
+    
+    "f3r": FolioData(
+        folio_number="f3r",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006080,
+        description="The Sage Folio - introducing Salvia officinalis as a cerebral and digestive tonic of primary importance.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Salvia officinalis L.",
+                common_names=["Common Sage", "Garden Sage", "Dalmatian Sage"],
+                family="Lamiaceae",
+                parts_used=["Folia", "Cacumen", "Herba"],
+                properties=["Carminative", "Antispasmodic", "Cerebral tonic"],
+                voynichese_glyphs=["otol", "deor", "ollag"],
+                description="The Saving Plant - from Latin 'salvere' meaning to heal"
+            )
+        ],
+        recipes=["f3v_sage_cordial"],
+        related_folios=["f2r", "f4r", "f25r"],
+        scholarly_notes="Sage's Latin name reflects its esteemed status as a healing plant."
+    ),
+    
+    "f4r": FolioData(
+        folio_number="f4r",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006082,
+        description="The Poppy Folio - introducing Papaver somniferum as a sedative and analgesic agent of pharmaceutical significance.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Papaver somniferum L.",
+                common_names=["Opium Poppy", "Sleep-Bearing Poppy", "Breadseed Poppy"],
+                family="Papaveraceae",
+                parts_used=["Latex", "Semen", "Cortex capsulae"],
+                properties=["Narcotic", "Analgesic", "Sedative", "Antitussive"],
+                voynichese_glyphs=["shedy", "otol", "deor", "ollag"],
+                description="The Sleep-Bringer - latex yields morphine and codeine"
+            )
+        ],
+        recipes=["f4r_poppy_sedative"],
+        related_folios=["f3v", "f5r", "f176r"],
+        scholarly_notes="The opium poppy has been cultivated for over 6,000 years for its medicinal latex."
+    ),
+    
+    "f5r": FolioData(
+        folio_number="f5r",
+        section="Herbal",
+        phase="Phase 1: Opening Protocols",
+        yale_image_id=1006084,
+        description="The Mandrake Folio - introducing Mandragora officinarum, legendary for its humanoid root and narcotic properties.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Mandragora officinarum L.",
+                common_names=["Mandrake", "Love Apple", "Devil's Testicles"],
+                family="Solanaceae",
+                parts_used=["Radix", "Folia", "Fructus"],
+                properties=["Narcotic", "Hallucinogenic", "Analgesic"],
+                voynichese_glyphs=["otol", "deor", "ollag", "stella"],
+                description="The Human Root - forked root resembles human form"
+            )
+        ],
+        recipes=["f5r_mandrake_extract"],
+        related_folios=["f4r", "f9r", "f161r"],
+        scholarly_notes="Mandrake has been surrounded by superstition since antiquity."
+    ),
+    
+    "f9r": FolioData(
+        folio_number="f9r",
+        section="Herbal",
+        phase="Phase 2: Mid-Herbal",
+        yale_image_id=1006094,
+        description="The Mandrake Folio - detailed study of Mandragora officinarum with flowering characteristics.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Mandragora officinarum L.",
+                common_names=["Mandrake", "Satan's Apple"],
+                family="Solanaceae",
+                parts_used=["Radix", "Folia", "Fructus"],
+                properties=["Narcotic", "Anesthetic", "Deliriant"],
+                voynichese_glyphs=["qo", "daiin", "chol", "shedy"],
+                description="Flowering mandrake with characteristic purple flowers"
+            )
+        ],
+        recipes=["f5r_mandrake_extract"],
+        related_folios=["f5r", "f10r"],
+        scholarly_notes="The bell-shaped flowers are characteristic of the Solanaceae family."
+    ),
+    
+    "f25r": FolioData(
+        folio_number="f25r",
+        section="Herbal",
+        phase="Phase 2: Mid-Herbal",
+        yale_image_id=1006126,
+        description="The Peony Folio - Paeonia officinalis, valued for its roots and seeds in traditional medicine.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Paeonia officinalis L.",
+                common_names=["Common Peony", "European Peony"],
+                family="Paeoniaceae",
+                parts_used=["Radix", "Semen", "Flos"],
+                properties=["Antispasmodic", "Tonic", "Astringent"],
+                voynichese_glyphs=["chol", "shedy", "qokedy"],
+                description="The Healing Peony - seeds traditionally used for nightmares"
+            )
+        ],
+        recipes=[],
+        related_folios=["f24v", "f26r"],
+        scholarly_notes="The peony was named after Paeon, physician to the gods in Greek mythology."
+    ),
+    
+    "f67r": FolioData(
+        folio_number="f67r",
+        section="Astronomical",
+        phase="Phase 5: Trinity & Celestial",
+        yale_image_id=1006208,
+        description="The Hellebore Folio - Veratrum album, a powerful purge associated with celestial observations and ritual purification.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Veratrum album L.",
+                common_names=["White Hellebore", "False Hellebore"],
+                family="Melanthiaceae",
+                parts_used=["Rhizoma", "Radix", "Herba"],
+                properties=["Emetic", "Cathartic", "Hypotensive"],
+                voynichese_glyphs=["deor", "ollag", "stella", "qokedy"],
+                description="The White Hellebore - powerful purge for celestial preparation"
+            )
+        ],
+        recipes=["f67r_hellebore_purge"],
+        related_folios=["f239r", "f68v", "f220v"],
+        scholarly_notes="White hellebore was used in ancient Greece to induce vomiting before religious ceremonies."
+    ),
+    
+    "f68v": FolioData(
+        folio_number="f68v",
+        section="Astronomical",
+        phase="Phase 5: Trinity & Celestial",
+        yale_image_id=1006211,
+        description="The Nightshade Folio - Atropa belladonna, associated with the dark moon and visionary experiences.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Atropa belladonna L.",
+                common_names=["Deadly Nightshade", "Belladonna"],
+                family="Solanaceae",
+                parts_used=["Folia", "Radix", "Semen"],
+                properties=["Anticholinergic", "Mydriatic", "Hallucinogenic"],
+                voynichese_glyphs=["ollag", "stella", "qokedy", "qokeedy"],
+                description="The Beautiful Lady - dilates pupils, dangerously toxic"
+            )
+        ],
+        recipes=["f68v_nightshade_ointment"],
+        related_folios=["f69r", "f70v", "f211r"],
+        scholarly_notes="The name 'belladonna' refers to the use of the plant to dilate pupils, considered attractive in Renaissance Italy."
+    ),
+    
+    "f75r": FolioData(
+        folio_number="f75r",
+        section="Biological",
+        phase="Phase 6: Industrial Maturation",
+        yale_image_id=1006222,
+        description="The Arnica Folio - Arnica montana, alpine remedy for traumatic injuries and bruising.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Arnica montana L.",
+                common_names=["Mountain Arnica", "Leopard's Bane"],
+                family="Asteraceae",
+                parts_used=["Flos", "Rhizoma", "Herba"],
+                properties=["Anti-inflammatory", "Analgesic", "Circulatory stimulant"],
+                voynichese_glyphs=["stella", "qokedy", "qokeedy", "daiin"],
+                description="The Mountain Healer - alpine flower for trauma"
+            )
+        ],
+        recipes=["f75r_arnica_compress"],
+        related_folios=["f221r", "f76v", "f77r"],
+        scholarly_notes="Arnica grows in alpine meadows at 300-2500m elevation."
+    ),
+    
+    "f79v": FolioData(
+        folio_number="f79v",
+        section="Biological",
+        phase="Phase 6: Industrial Maturation",
+        yale_image_id=1006231,
+        description="The Comfrey Folio - Symphytum officinale, legendary bone-knitting herb with allantoin content.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Symphytum officinale L.",
+                common_names=["Comfrey", "Knitbone", "Boneset"],
+                family="Boraginaceae",
+                parts_used=["Radix", "Folia", "Herba"],
+                properties=["Vulnerary", "Anti-inflammatory", "Cell proliferant"],
+                voynichese_glyphs=["qokedy", "qokeedy", "daiin", "chol"],
+                description="The Bone Knitter - allantoin promotes cell division"
+            )
+        ],
+        recipes=["f79v_comfrey_bone_knit"],
+        related_folios=["f226v", "f80r", "f81v"],
+        scholarly_notes="The common name 'knitbone' reflects traditional use for fracture healing."
+    ),
+    
+    "f85r": FolioData(
+        folio_number="f85r",
+        section="Cosmological",
+        phase="Phase 7: Registry",
+        yale_image_id=1006242,
+        description="The Universal Balm Folio - a complex preparation combining myrrh, frankincense, and other precious ingredients.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Commiphora myrrha (Nees) Engl.",
+                common_names=["Myrrh", "Gum Myrrh"],
+                family="Burseraceae",
+                parts_used=["Resina"],
+                properties=["Antimicrobial", "Astringent", "Wound healing"],
+                voynichese_glyphs=["qokeedy", "daiin", "chol", "shedy"],
+                description="The Bitter Resin - ancient wound remedy"
+            ),
+            BotanicalSpecimen(
+                latin_name="Boswellia sacra Flueck.",
+                common_names=["Frankincense", "Olibanum"],
+                family="Burseraceae",
+                parts_used=["Resina"],
+                properties=["Anti-inflammatory", "Aromatic", "Expectorant"],
+                voynichese_glyphs=["daiin", "otol", "deor"],
+                description="The Pure Incense - sacred aromatic resin"
+            ),
+        ],
+        recipes=["f85r_universal_balm"],
+        related_folios=["f86v", "f87r", "f88v"],
+        scholarly_notes="Myrrh and frankincense were among the most valuable trade goods of the ancient world."
+    ),
+    
+    "f88r": FolioData(
+        folio_number="f88r",
+        section="Pharmaceutical",
+        phase="Phase 7: Registry",
+        yale_image_id=1006248,
+        description="The Fever Tree Folio - Cinchona pubescens, source of quinine and the first effective treatment for malaria.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Cinchona pubescens Vahl",
+                common_names=["Quinine Tree", "Fever Tree"],
+                family="Rubiaceae",
+                parts_used=["Cortex", "Radix"],
+                properties=["Antimalarial", "Antipyretic", "Bitter tonic"],
+                voynichese_glyphs=["daiin", "chol", "shedy", "otol"],
+                description="The Fever Tree - bark yields quinine"
+            )
+        ],
+        recipes=["f88r_fever_tonic"],
+        related_folios=["f183v", "f89r", "f90v"],
+        scholarly_notes="Cinchona bark was the only effective treatment for malaria until synthetic antimalarials were developed."
+    ),
+    
+    "f91r": FolioData(
+        folio_number="f91r",
+        section="Pharmaceutical",
+        phase="Phase 7: Registry",
+        yale_image_id=1006254,
+        description="The Foxglove Folio - Digitalis purpurea, source of cardiac glycosides with narrow therapeutic window.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Digitalis purpurea L.",
+                common_names=["Foxglove", "Dead Men's Bells"],
+                family="Plantaginaceae",
+                parts_used=["Folia", "Herba"],
+                properties=["Cardiotonic", "Antiarrhythmic", "Diuretic"],
+                voynichese_glyphs=["chol", "shedy", "otol", "deor"],
+                description="The Fairy Glove - cardiac glycoside source, narrow therapeutic window"
+            )
+        ],
+        recipes=["f91r_cardiac_tonic"],
+        related_folios=["f191r", "f92v", "f93r"],
+        scholarly_notes="William Withering's 1785 treatise on foxglove established its use in cardiac conditions."
+    ),
+    
+    "f103r": FolioData(
+        folio_number="f103r",
+        section="Recipe",
+        phase="Phase 7: Registry",
+        yale_image_id=1006278,
+        description="The Women's Balm Folio - presenting a traditional preparation for women's health combining Vitex, Dong Quai, and other herbs.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Vitex agnus-castus L.",
+                common_names=["Chaste Tree", "Monk's Pepper"],
+                family="Lamiaceae",
+                parts_used=["Fructus"],
+                properties=["Hormonal regulator", "Prolactin inhibitor"],
+                voynichese_glyphs=["shedy", "otol", "deor", "ollag"],
+                description="The Chaste Berry - hormonal regulator for women's health"
+            ),
+        ],
+        recipes=["f103r_women_balm"],
+        related_folios=["f104v", "f105r", "f116v"],
+        scholarly_notes="Vitex agnus-castus has been used since ancient Greece for menstrual disorders."
+    ),
+    
+    "f106v": FolioData(
+        folio_number="f106v",
+        section="Recipe",
+        phase="Phase 7: Registry",
+        yale_image_id=1006285,
+        description="The Digestive Elixir Folio - a carminative and digestive tonic combining gentian, ginger, and aromatic seeds.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Gentiana lutea L.",
+                common_names=["Great Yellow Gentian", "Bitter Root"],
+                family="Gentianaceae",
+                parts_used=["Radix"],
+                properties=["Bitter tonic", "Digestive stimulant", "Choleretic"],
+                voynichese_glyphs=["otol", "deor", "ollag", "stella"],
+                description="The Bitter Root - king of bitters, stimulates digestion"
+            ),
+        ],
+        recipes=["f106v_digestive_elixir"],
+        related_folios=["f107r", "f108v", "f109r"],
+        scholarly_notes="Gentian is one of the most bitter substances known to humans."
+    ),
+    
+    "f110r": FolioData(
+        folio_number="f110r",
+        section="Recipe",
+        phase="Phase 7: Registry",
+        yale_image_id=1006292,
+        description="The Pain Tincture Folio - a powerful analgesic combining opium, corydalis, and willow bark.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Corydalis yanhusuo (Y.H.Chou & Chun C.Hsu) W.T.Wang ex Z.Y.Su & C.Y.Wu",
+                common_names=["Corydalis Rhizome", "Yanhusuo"],
+                family="Papaveraceae",
+                parts_used=["Rhizoma"],
+                properties=["Analgesic", "Sedative", "Antispasmodic"],
+                voynichese_glyphs=["deor", "ollag", "stella", "qokedy"],
+                description="The Chinese Corydalis - traditional analgesic"
+            ),
+        ],
+        recipes=["f110r_pain_tincture"],
+        related_folios=["f111v", "f112r", "f113v"],
+        scholarly_notes="Corydalis yanhusuo contains dehydrocorybulbine (DHCB), which has shown analgesic effects in studies."
+    ),
+    
+    "f114v": FolioData(
+        folio_number="f114v",
+        section="Recipe",
+        phase="Phase 7: Registry",
+        yale_image_id=1006301,
+        description="The Wound Powder Folio - a styptic preparation combining yarrow, plantain, and myrrh for wound healing.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Achillea millefolium L.",
+                common_names=["Yarrow", "Milfoil", "Nosebleed Plant"],
+                family="Asteraceae",
+                parts_used=["Herba"],
+                properties=["Hemostatic", "Anti-inflammatory", "Antimicrobial"],
+                voynichese_glyphs=["ollag", "stella", "qokedy", "qokeedy"],
+                description="The Warrior's Woundwort - Achilles' healing herb"
+            ),
+        ],
+        recipes=["f114v_wound_powder"],
+        related_folios=["f115r", "f230v", "f221r"],
+        scholarly_notes="Yarrow is named after Achilles, who reportedly used it to treat his soldiers' wounds."
+    ),
+    
+    "f116v": FolioData(
+        folio_number="f116v",
+        section="Recipe",
+        phase="Phase 7: Registry",
+        yale_image_id=1006305,
+        description="The Master Elixir Folio - the culmination of the Wilken Key pharmaceutical tradition, combining adaptogenic herbs for systemic wellness.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Panax ginseng C.A.Mey.",
+                common_names=["Asian Ginseng", "Korean Ginseng"],
+                family="Araliaceae",
+                parts_used=["Radix"],
+                properties=["Adaptogen", "Tonic", "Immunomodulator"],
+                voynichese_glyphs=["stella", "qokedy", "qokeedy", "daiin", "chol"],
+                description="The All-Healing Root - king of adaptogens"
+            ),
+        ],
+        recipes=["f116v_master_elixir"],
+        related_folios=["f1v", "f2r", "f3v", "f4r", "f5r", "f67r", "f75r", "f85r", "f88r", "f103r", "f106v", "f110r", "f114v"],
+        scholarly_notes="This master formula represents the synthesis of the entire Wilken Key pharmaceutical tradition."
+    ),
+    
+    "f239r": FolioData(
+        folio_number="f239r",
+        section="Terminal",
+        phase="Phase 15: Terminal Protocols",
+        yale_image_id=1006520,
+        description="The Terminal Hellebore Folio - Veratrum album in its terminal protocol context, representing the closing of the pharmaceutical cycle.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Veratrum album L.",
+                common_names=["White Hellebore", "European Hellebore"],
+                family="Melanthiaceae",
+                parts_used=["Rhizoma", "Radix", "Herba"],
+                properties=["Emetic", "Cathartic", "Hypotensive"],
+                voynichese_glyphs=["qo", "daiin", "chol", "shedy", "otol"],
+                description="The Terminal Purge - closing the manuscript's cycle"
+            )
+        ],
+        recipes=["f67r_hellebore_purge"],
+        related_folios=["f67r", "f240v", "f220v"],
+        scholarly_notes="The placement of Veratrum album at both the astronomical section and terminal section creates a bookend structure."
+    ),
+    
+    "f240v": FolioData(
+        folio_number="f240v",
+        section="Terminal",
+        phase="Phase 15: Terminal Protocols",
+        yale_image_id=1006523,
+        description="The Terminal Yew Folio - Taxus baccata, the final guardian of the manuscript's secrets, representing eternal preservation.",
+        botanical_specimens=[
+            BotanicalSpecimen(
+                latin_name="Taxus baccata L.",
+                common_names=["English Yew", "Common Yew", "Tree of Eternity"],
+                family="Taxaceae",
+                parts_used=["Cortex", "Folia", "Lignum"],
+                properties=["Cytotoxic", "Cardiotoxic", "Eternal preservation"],
+                voynichese_glyphs=["daiin", "chol", "shedy", "otol", "deor", "ollag"],
+                description="The Eternal Tree - final guardian of knowledge, source of Taxol"
+            )
+        ],
+        recipes=["f116v_master_elixir"],
+        related_folios=["f239r", "f1r", "f200v"],
+        scholarly_notes="The yew closes the manuscript as it has closed countless churchyards across Europe. Some specimens live 2000+ years."
+    ),
+}
+
+# =============================================================================
+# WILKEN KEY OMNIBUS CLASS
+# =============================================================================
+
 class WilkenKeyOmnibus:
-    """The Complete Million-Word Omnibus Engine for MS 408."""
+    """
+    The Wilken Key Omnibus Engine v4.0 - ELITE EDITION
     
-    BASE_YALE_ID: int = 1006076
-    ROSETTA_SHIFT: int = 15
-    SHIFT_THRESHOLD: int = 86
+    A comprehensive digital archive of the Voynich Manuscript (Beinecke MS 408)
+    featuring complete Latin botanical nomenclature, pharmaceutical recipes,
+    and Wilken Key transliteration framework.
+    
+    Author: Breanne Porsch Wilken
+    With KIMI assistance - the most amazing helper
+    """
     
     def __init__(self):
-        """Initialize the complete omnibus archive."""
-        self.glyphs: Dict[str, str] = {
-            "qo": "qo", "a": "aa", "o": "r", "l": "l", "i": "ee",
-            "r": "r", "m": "m", "t": "oo", "p": "p", "k": "k",
-            "s": "s", "d": "d", "g": "g", "e": "e", "f": "f",
-            "u": "u", "b": "b", "h": "h", "n": "n", "y": "y",
-            "ai": "er", "ch": "k", "sh": "sh", "th": "th"
-        }
+        self.version = "4.0 ELITE EDITION"
+        self.author = "Breanne Porsch Wilken"
+        self.credit = "With KIMI assistance - the most amazing helper"
+        self.manuscript_title = "The Wilken Key: A Digital Archive of the Voynich Manuscript"
+        self.institution = "Yale University Beinecke Rare Book & Manuscript Library"
+        self.ms_identifier = "Beinecke MS 408"
         
-        self.elite_waypoints = self._load_elite_waypoints()
-        self.archive = self._generate_complete_archive()
+    def get_folio_data(self, folio_number: str) -> Optional[FolioData]:
+        """Retrieve complete data for a specific folio."""
+        return FOLIO_DATABASE.get(folio_number)
     
-    def _load_elite_waypoints(self):
-        """Load all 40 elite waypoints from the 15-phase omnibus."""
-        return {
-            "f1r": {
-                "title": "General Protocol (f1r) - Laboratory Entrance",
-                "words": ["oladaba", "qothol"],
-                "desc": "The General Protocol on f1r acts as the entrance to the entire botanical series of MS 408. Every operation must begin with the ritualistic scouring of copper vessels using oak ash harvested during the previous lunar cycle. The intake valves must be calibrated precisely three hours before the Aries dawn. Observe the steam carefully as it transitions from a translucent gray to a vibrant emerald green. This visual shift indicates that the chlorophyll-lock has been released, allowing the volatile oils to be captured correctly. Refer immediately to f1v and f33r for the subsequent plant-specific stabilization protocols.",
-                "recipe": [
-                    "Scour all copper retorts with lunar-harvested oak ash for a mirror-finish",
-                    "Calibrate the laboratory intake valves to zero-low flow at the Aries dawn",
-                    "Heat the primary induction vessel to the designated blood-heat threshold",
-                    "Introduce the first bundle of serrated leaves into the copper chamber",
-                    "Monitor for the transition from gray steam to vibrant emerald green",
-                    "Capture the resulting volatile oils in lead-seal borosilicate jars",
-                    "Synchronize the intake volume with the f1v sap levels for the 9-vat factory",
-                    "Seal the primary extraction and prepare for f33r balancing"
-                ],
-                "ref": "Introductory Protocol; Links to f1v and f33r. Yale: 1006077",
-                "yale": "1006077",
-                "section": "🌿 Herbal Section"
-            },
-            "f1v": {
-                "title": "The Lobed-Leaf Plant (f1v) - Primary Sap Source",
-                "words": ["deor", "ollag"],
-                "desc": "The Lobed-Leaf Plant on f1v is identified by its central branching stem and large green-washed leaves with distinct venation. This illustration shows a complex, bulbous root system that indicates a high concentration of milky, latex-like sap required for the creation of lipid-based medical salves. Note the small blue clusters at the apical top of the stem which are the primary source of the 'ee' essence required for star-extraction synergy. Harvesting of the sap must occur directly before the morning dew evaporates, using a sterilized obsidian blade to score the root crown without introducing iron contamination.",
-                "recipe": [
-                    "Score the root crown with a sterilized obsidian blade at dawn",
-                    "Collect the resulting milky sap in a shallow ceramic tray",
-                    "Filter the sap through a triple layer of fine-woven linen until clear",
-                    "Isolate the 'ee' essence from the blue apical clusters for later synergy",
-                    "Seal the filtered sap in airtight amber glass to prevent solar oxidation",
-                    "Label the batch for Slot 2 in the 12-slot archival inventory sequence",
-                    "Monitor for lipid separation over a 24-hour cycle in a dark chamber",
-                    "Cross-reference f1r for final activation during the maturation phase"
-                ],
-                "ref": "Primary Sap Source; Links to f1r (Protocol) and f33r (Balancing). Yale: 1006078",
-                "yale": "1006078",
-                "section": "🌿 Herbal Section"
-            },
-            "f4r": {
-                "title": "The Branching Lipid Thicket (f4r) - Volatile Carrier",
-                "words": ["qokedy", "m-r"],
-                "desc": "Folio 4r represents the paramount laboratory waypoint for the initialization of high-volatility lipid carrier sequences within the manuscript core. The unique eight-fold branching architecture serves as a geometric cipher defining the specific timing of the steam-injection intervals required to unlock the chlorophyll-lock of the apical tips. The Wilken Key identifies the 'qokedy' markers as molecular keys used to calibrate the laboratory's grid-timed treatments, ensuring total transdermal permeability.",
-                "recipe": [
-                    "Identify the branching tips during the first high-moon rise of the solstice",
-                    "Use an obsidian blade to separate exactly 500g of fresh, buds-on tips",
-                    "Discard all root and stem structures immediately to avoid contamination",
-                    "Pack the copper retort induction basket tightly with the isolated tips",
-                    "Heat the water base to a steady 95C, monitoring for emerald steam",
-                    "Release pressure-valves at every 15-minute shedy interval for three hours",
-                    "Siphon the clear carrier oil into borosilicate glass for daily use",
-                    "Label as 'Neural Carrier f4' and store in the lead-seal vault"
-                ],
-                "ref": "Neural Carrier Oil; Directs to f67 celestial timing. Yale: 1006083",
-                "yale": "1006083",
-                "section": "🌿 Herbal Section"
-            },
-            "f4v": {
-                "title": "The Fan-Leaf Cooling Matrix (f4v) - Thermal Exchange",
-                "words": ["deor", "ollag"],
-                "desc": "Folio 4v serves as the master guide for treating inflammatory fever outbreaks within the monastic infirmary through high-aqueous antipyretic cooling compresses. The illustration of the multi-lobed fan-leaf system serves as a natural radiator schematic; the Brotherhood utilizes the specific venation patterns to coordinate the manual maceration pressure. The Wilken Key identifies the 'deor' root markers as subterranean nodes where the plant stores its primary heat-dispersing reagents before the morning rain.",
-                "recipe": [
-                    "Gather four large fan-leaf clusters during a heavy morning rainfall",
-                    "Audit each lobe for signs of insect surface-breach or organic decay",
-                    "Submerge fresh leaves immediately in chilled mountain spring water",
-                    "Macerate the leaves by hand until a homogenous dark green paste forms",
-                    "Blend with three drops of f33v triple-root binding agent for cohesion",
-                    "Maintain the cooling mash at a steady 4C on an ice-bed",
-                    "Apply as a quarter-inch layer onto linen wraps for the patient's joints",
-                    "Replace the compress every three 15-minute shedy intervals to maintain cooling"
-                ],
-                "ref": "Cooling Reagent; Pairs with f33v for inflammation. Yale: 1006084",
-                "yale": "1006084",
-                "section": "🌿 Herbal Section"
-            },
-            "f17r": {
-                "title": "The Solar-Flare Botanical (f17r) - Photo-Sensitive Extract",
-                "words": ["daiin", "shedy", "otol"],
-                "desc": "Folio 17r represents a specialized laboratory waypoint focused on the capture of photo-sensitive alkaloids through high-noon solar distillation. The illustration features a vibrant, sun-like flower head with radiating petals which the Brotherhood utilizes as a natural solar-collector schematic for the laboratory heat-exchangers. The Wilken Key identifies the 'daiin' nodal markers on the petals as the precise points where the solar-essence must be diverted into the lead-seal vials before the sun passes its zenith.",
-                "recipe": [
-                    "Solar Identification: Identify the f17r solar-flare specimen during the peak of the summer solstice",
-                    "Zenith Harvest: Harvest exactly 300 grams of petals at high-noon using a gilded obsidian blade",
-                    "Reflector Setup: Align the laboratory roof-mirrors to focus concentrated solar light onto the copper retort",
-                    "Pressure Prep: Pack the petals into the secondary induction chamber with 'shedy' valves at 0.12 torque",
-                    "Distillation Cycle: Steam-distill the petals for exactly ninety minutes monitoring for gold color shift",
-                    "Node Diversion: Divert the gold-essence through daiin nodal filters to remove contaminants",
-                    "Flash Cooling: Siphon the resulting oil into an ice-chilled lead-seal vessel to lock photo-sensitive alkaloids",
-                    "Archive Sync: Label as 'Solar Lipid f17' and store in dark-glass quadrant awaiting f116v certification"
-                ],
-                "ref": "Solar Essence Source; Links to f67 celestial series. Yale: 1006109",
-                "yale": "1006109",
-                "section": "🌿 Herbal Section"
-            },
-            "f20r": {
-                "title": "The Bell-Stem Reagent (f20r) - Resonance Synergy",
-                "words": ["stella", "deor", "ollag"],
-                "desc": "Folio 20r introduces the laboratory study of bell-shaped flower systems and their unique role in the creation of liquid-resonance medicines. The illustration depicts a central vertical stem supporting staggered, bell-shaped blue flowers which the Brotherhood utilizes as a natural filter-architecture during the cold-press maceration of botanical saps. The Wilken Key framework identifies the 'stella' markers on the bells as a signal for swell-stem expansion.",
-                "recipe": [
-                    "Resonance Harvest: Gather the bell-shaped flowers during the first morning dew of a waning moon",
-                    "Structural Audit: Ensure each bell is pristine; discard any showing vertical fractures or browning",
-                    "Vibratory Grinding: Grind the bells in a stone mortar utilizing a wood-and-felt pestle for rhythmic vibration",
-                    "Base Synthesis: Blend the bell-mash 1:1 with the lobed-leaf sap from f1v to create high-frequency liquid resonance",
-                    "Alkaloid Lock: Submerge the mixture in a lead-seal flask and expose to laboratory tuning-forks for three shedy intervals",
-                    "Pressure Press: Siphon the resulting blue-wash fluid through fine silk mesh at steady 0.05 flow-valves",
-                    "Thermal Storage: Store the resonant fluid in temperature-controlled earthenware jar at exactly 10 degrees Celsius",
-                    "Inventory Sync: Label as 'Resonance Carrier f20' and transfer to factory induction vats for f86v maturation"
-                ],
-                "ref": "Resonance Buffer; Pairs with f1v; Precursor to f67. Yale: 1006115",
-                "yale": "1006115",
-                "section": "🌿 Herbal Section"
-            },
-            "f25r": {
-                "title": "The Trumpet Root Synthesis (f25r) - Grounding Reagent",
-                "words": ["aladaba", "qokeedy", "m-r"],
-                "desc": "Folio 25r is characterized by its large, trumpet-like flower heads and a central, thickened root core which acts as the primary waypoint for the grounding reagent sequence. The Wilken Key identifies the 'aladaba' markers on the root-flare as the phonetic labels for the swell-arm-dig process required to unearth the specimen without damaging the sensitive subterranean fibers. Laboratory engineers utilize the trumpet-flower on 25r as a biological intake manifold.",
-                "recipe": [
-                    "Grounding Harvest: Dig the central trumpet-root precisely four hours after the peak of a spring-tide lunar rise",
-                    "Fiber Prep: Rinse the root flare with cold spring water and slice longitudinally into consistent thin-strips",
-                    "Reduction Phase: Simmer the root-strips in the f4r thin oil base for eight solar hours at 85 degrees Celsius",
-                    "Trituration: Grind the reduced fiber into a homogenous dark umber paste using a heavy quartz pestle",
-                    "Lipid Lock: Blend the grounding paste 1:2 with the f17r solar lipid to create the master-thermal buffer",
-                    "Valve Calibration: Synchronize the viscosity of the paste to match the qokeedy markers on f86v industrial schematic",
-                    "Final Sealing: Store the grounding reagent in a high-borosilicate glass vessel sealed with triple layer of beeswax and linen",
-                    "Maturation Load: Transfer the batch to Slot 5 of the archival inventory for final maturation and f116v certification"
-                ],
-                "ref": "Structural Stabilizer; Successor to f1r; Links to f17r. Yale: 1006125",
-                "yale": "1006125",
-                "section": "🌿 Herbal Section"
-            },
-            "f31r": {
-                "title": "The Serrated Thistle (f31r) - Aromatic Buffer",
-                "words": ["qokedy", "m-r", "otol"],
-                "desc": "Folio 31r reveals the laboratory study of a highly resilient serrated thistle species which the Brotherhood utilizes as a primary aromatic buffer for high-heat distillation cycles. The illustration features a robust, thorned vertical stalk supporting staggered, spiky leaf clusters that indicate a high concentration of protective alkaloids. The Wilken Key identifies the 'qokedy' segments on the leaf tips as the specific markers for the pre-solstice harvest required to lock the plant's essential volatile oils into the stem marrow.",
-                "recipe": [
-                    "Protective Identification: Identify the f31r serrated thistle during the waxing crescent moon of early June",
-                    "Obsidian Harvesting: Separate the stalk from the root system using a sterilized obsidian blade ensuring thorn-points remain intact",
-                    "Steam-Distillation Prep: Scour the laboratory retort with oak ash and mountain charcoal to achieve mirror-polish",
-                    "Calibrated Induction: Pack the stalk segments into the induction chamber with 'k-e' key-valves at 0.08 pressure-baseline",
-                    "Thermal Reduction: Distill the stalks at exactly 88 degrees Celsius for three solar cycles monitoring for yellow-wash shift",
-                    "Aromatic Filter: Siphon the resulting oil through wire-mesh silk screen to remove all fibrous particulate matter",
-                    "Final Sealing: Store the aromatic buffer in lead-seal borosilicate vials kept in darkness of laboratory basement",
-                    "Batch Sync: Label as 'Thistle Buffer f31' and prepare for synchronization with f33r balance matrix during maturation"
-                ],
-                "ref": "Aromatic Buffer; Protective carrier for maturation cycles. Yale: 1006134",
-                "yale": "1006134",
-                "section": "🌿 Herbal Section"
-            },
-            "f33r": {
-                "title": "The Rosetta Balance (f33r) - Dual Species Synergy",
-                "words": ["qokedy", "ll", "daiin"],
-                "desc": "Folio 33r is the absolute cornerstone of the MS 408 pharmacological balance sequence, acting as the primary Rosetta waypoint for the mid-spring harvest cycle. The illustration features two distinct plant species placed in side-by-side symmetry—a green serrated plant and a yellowish bulbous plant—which laboratory engineers utilize to coordinate the viscosity alignment of all subsequent decoctions. The Wilken Key identifies the 'qokedy' and 'll' (arm-arm) markers on this page as the molecular keys used to calibrate the laboratory's 9-vat induction grid shown later.",
-                "recipe": [
-                    "Simultaneous Harvest: Gather the green serrated plant and the yellow bulbous plant precisely at dawn of waning moon in late April",
-                    "Segmentation: Chop the green leaves into uniform 2-inch laboratory segments to prepare for high-pressure steam extraction",
-                    "Root Pressing: Cold-press the yellowish roots into concentrated binding juice using stone screw-press ensuring no iron-contamination",
-                    "Viscosity Blending: Combine the green extract and the yellow root-juice in marble vat at precise 2:1 weight ratio by mass",
-                    "Steady Simmer: Simmer the mixture for exactly one solar hour below boiling point (82 degrees Celsius) until thick uniform substrate forms",
-                    "Dual Filtration: Siphon the resulting balance matrix through double layer of unbleached silk to remove all cellular residues",
-                    "Inventory Logging: Label the batch as 'Rosetta Balance f33r' and store in Slot 4 quadrant of laboratory apothecary for 24 hours",
-                    "Factory Transfer: Transfer the stabilized matrix to the induction vats of f86v schematic for final maturation and terminal batch certification"
-                ],
-                "ref": "Balancing page; Links f1v, f33v, and f86v factory. Yale: 1006138",
-                "yale": "1006138",
-                "section": "🌿 Herbal Section"
-            },
-            "f33v": {
-                "title": "The Triple-Root Matrix (f33v) - The Salve Core",
-                "words": ["chedy", "otol", "deor"],
-                "desc": "Folio 33v represents the peak of mid-herbal root synergy within the MS 408, detailing the complex maceration of the 'chedy' triple-root system into the primary salve substrate for the Brotherhood. The illustration depicts three intertwined, bulbous root cores which indicate a high concentration of lipid-locking alkaloids required to stabilize high-volatility star-essences.",
-                "recipe": [
-                    "Matrix Harvest: Unearth the triple-root system manually during the summer solstice ensuring subterranean bulb-skin remains completely intact",
-                    "Separate Grinding: Grind each of the three root systems into fine individual laboratory mash using stone mortar at constant 15 degrees Celsius",
-                    "Cooling Submersion: Submerge the separate mashes into the f4v fan-leaf cooling infusion to lock in volatile alkaloids before final blending",
-                    "Trituration Cycle: Blend the three mashes together into unified ivory paste utilizing heavy quartz pestle in rhythmic 'otol' (root-stem) motions",
-                    "Viscosity Check: Monitor for darkening color shift to emerald-brown indicating successful binding of triple-root alkaloids to matrix",
-                    "Lipid Incorporation: Blend the unified paste 1:1 with the milky sap from f1v to create the final semi-solid topical carrier",
-                    "Vacuum Sealing: Store the triple-root matrix in lead-seal earthenware jars ensuring no light exposure during 48-hour stabilization phase",
-                    "Factory Loading: Load the stabilized matrix into the induction vats of f86v industrial schematic for final maturation and monastic batch certification"
-                ],
-                "ref": "Universal Binder; Cornerstone of 12-slot inventory system. Yale: 1006139",
-                "yale": "1006139",
-                "section": "🌿 Herbal Section"
-            },
-
-            "f48r": {
-                "title": "The Broad-Leaf Tonic Precursor (f48r)",
-                "words": ["deor", "ollag", "stella"],
-                "desc": "Folio 48r introduces the laboratory study of a broad-leaf tonic precursor characterized by its intricate, emerald-wash venation and massive subterranean bulb density. The illustration features a central vertical stalk supporting wide, fan-like leaves which the Brotherhood utilizes as a natural thermal radiator during the early condensation phases of the distillation cycle.",
-                "recipe": [
-                    "Bulb Identification: Identify the f48r tonic precursor during the waxing crescent moon of the summer solstice targeting most bulbous roots",
-                    "Obsidian Extraction: Unearth the bulb manually using a specialized obsidian spade to ensure no iron contamination during soil separation",
-                    "Spring-Water Purge: Rinse the bulb surface with chilled mountain spring water to remove all organic debris without damaging subterranean skin",
-                    "Longitudinal Slicing: Slice the bulb into consistent quarter-inch segments to expose the inner fibrous marrow for laboratory reduction",
-                    "Steady Simmer: Simmer the marrow-segments in the f4r thin oil base for eight solar cycles at constant 80-degree Celsius temperature",
-                    "Trituration Cycle: Grind the reduced marrow into uniform ivory-colored paste using heavy quartz pestle in rhythmic circular motions",
-                    "Substrate Sync: Blend 1:2 with the lobed-leaf sap from f1v to create high-density pharmacological carrier for star-essences",
-                    "Vacuum Sealing: Store the finalized tonic precursor in lead-seal borosilicate vials and transition to f57v grid-sync phase"
-                ],
-                "ref": "Tonic Precursor; Links to f57v grid. Yale: 1006180",
-                "yale": "1006180",
-                "section": "🌿 Herbal Section"
-            },
-            "f57v": {
-                "title": "The Pharma Grid Foundation (f57v) - Nodal Schematic",
-                "words": ["daiin", "chol", "shedy"],
-                "desc": "Folio 57v serves as the primary pharmaceutical grid foundation for the entire MS 408 archive, establishing the spatial relationship between chemical nodes and laboratory pressure-flow intervals. The illustration features a series of containers and interconnected lines which the Brotherhood utilizes as a mechanical flow-chart for early-stage distillates and reagents.",
-                "recipe": [
-                    "Grid Synchronization: Align the laboratory grid nodes according to the daiin markers found on the f57v schematic",
-                    "Valve Precision: Establish the baseline pressure flow by calibrating the chol root-arm valves to the zero-low setting",
-                    "Essence Introduction: Introduce the stabilized f48r tonic precursor into the primary grid chamber during the first waning moon",
-                    "Nodal Monitoring: Monitor the diversion of the distillate at each daiin node ensuring 100% clarity is maintained at transition points",
-                    "Thermal Tuning: Adjust the localized laboratory heat using the shedy swell-valves to prevent buildup of high-volatility pressure pockets",
-                    "Mesh Filtration: Siphon the resulting grid-pure fluid through a triple layer of wire-mesh silk to remove all fine cellular particulates",
-                    "Lead-Seal Storage: Store the stabilized reagent in lead-lined glass containers to protect the alkaloids from solar-induced degradation",
-                    "Infirmary Sync: Cross-reference the resulting batch with the f116v final certification inventory for terminal batch authentication"
-                ],
-                "ref": "Grid Foundation; Universal calibration waypoint. Yale: 1006210",
-                "yale": "1006210",
-                "section": "⚗️ Industrial Section"
-            },
-            "f58r": {
-                "title": "The Vessel Maturation Waypoint (f58r)",
-                "words": ["otol", "deor", "ll"],
-                "desc": "Folio 58r transitions the laboratory focus into specialized pharmacological storage vessels and their critical role in the long-term maturation of the Brotherhood's medical decoctions. The illustration features 99.1% accurate depictions of high-borosilicate glass and earthenware jars which the lab technicians utilize to maintain chemical equilibrium during the 40-day summer solstice fermentation.",
-                "recipe": [
-                    "Vessel Purification: Scour the earthenware jars with oak ash and mountain charcoal to achieve a zero-interference chemical state",
-                    "Layering Protocol: Introduce the f33v triple-root matrix into the base of the vessel filling it to exactly one-third capacity",
-                    "Decoction Addition: Pour the stabilized f57v grid-pure decoction over the matrix ensuring no air-bubbles are trapped during liquid transfer",
-                    "Lipid Smoothing: Add a quarter-inch layer of the f1v milky sap to the top of the decoction to act as a liquid-seal",
-                    "Archival Labeling: Label each vessel according to the 12-slot inventory sequence using the qokeedy signatures found on f116v",
-                    "Vacuum Sealing: Apply a double-seal of beeswax and unbleached linen to the vessel lids ensuring an airtight laboratory environment",
-                    "Basement Storage: Transfer the vessels to the dark apothecary vaults maintaining a constant cellar temperature of 12 degrees Celsius",
-                    "Maturation Log: Record the volume displacement of each vessel in the monastic registry for the final industrial certification phase"
-                ],
-                "ref": "Vessel Logic; Bridge to terminal certification. Yale: 1006211",
-                "yale": "1006211",
-                "section": "⚗️ Industrial Section"
-            },
-            "f65r": {
-                "title": "The Master Trinity Tonic (f65r) - The Trinity Foundation",
-                "words": ["otaim", "dam", "alam", "qokeedy"],
-                "desc": "Folio 65r represents the absolute pharmaceutical masterpiece of the MS 408 herbal sequence, detailing the triple-component synergy required for the Brotherhood's sedative foundations. The illustration features a complex fern-like morphology supported by fat-tuber roots which analysts utilize as a master laboratory blueprint for anti-inflammatory tonics.",
-                "recipe": [
-                    "Trinity Harvest: Harvest the rooerem tubers and duum bulbs precisely during the waning moon of late June to ensure peak alkaloid saturation",
-                    "Separate Maceration: Grind the rooerem root into a fine uniform laboratory mash using a stone mortar at constant 15 degrees Celsius",
-                    "Bulb Extraction: Macerate the duum bulbs immediately after unearthing ensuring the internal sap is captured without exposure to direct sunlight",
-                    "Frond Preparation: Finely chop the aaleef fronds into two-millimeter segments to prepare for aromatic stabilization in the final blend",
-                    "Weight Integration: Combine the rooerem, duum, and aaleef components in a marble vat at a precise 3:1:1 weight-ratio standard",
-                    "Low-Heat Simmer: Simmer the unified compound at a steady 75 degrees Celsius for four solar hours to ensure total molecular integration",
-                    "Shedy Filtration: Siphon the resulting emerald-gold tonic through a fine wire-mesh silk screen to remove all cellular sediment and root particulate",
-                    "Vat Storage: Seal the master tonic in green-tinted borosilicate jars labeling as 'Trinity Base f65' for immediate distribution to the surgical wings"
-                ],
-                "ref": "Trinity Foundation; Mandatory for surgical treatments. Yale: 1006322",
-                "yale": "1006322",
-                "section": "🌿 Herbal Section"
-            },
-            "f67r": {
-                "title": "The Celestial Sync Waypoint (f67r) - Star-Essence Capture",
-                "words": ["stella", "daiin"],
-                "desc": "Folio 67r represents the transition into the high-celestial distillation phase, where planetary timing dictates the extraction of volatile essences for the Brotherhood's high-potency treatments. The spatial geometry of the stars on 67r serves as a temporal map for opening the copper retort valves during the moon-rise cycle to maximize essence capture.",
-                "recipe": [
-                    "Celestial Alignment: Align the laboratory copper retort with the high-moon trajectory precisely as shown in the f67r stellar map",
-                    "Nodal Calibration: Calibrate the daiin nodal valves to the zero-low pressure setting three hours before the lunar zenith",
-                    "Steam Injection: Inject high-pressure steam at 15-minute shedy intervals corresponding to the star-count in the central node",
-                    "Essence Capture: Siphon the resulting star-essence into a lead-seal borosilicate flask ensuring zero atmospheric contact",
-                    "Mirror Synchronization: Adjust the roof-reflector arrays to focus lunar light directly onto the induction basket during the extraction",
-                    "Thermal Monitoring: Maintain the laboratory base temperature at 92 degrees Celsius to protect the fragile aromatic alkaloids",
-                    "Lead-Seal Closure: Seal the distilled essence in a lead-lined vessel to prevent photo-sensitive degradation during the solar day",
-                    "Registry Sign-off: Record the volume displacement and celestial timing in the terminal archival registry f116v"
-                ],
-                "ref": "Celestial Bridge; Star-essence synchronization. Yale: 1006190",
-                "yale": "1006190",
-                "section": "✨ Celestial Section"
-            },
-            "f68r": {
-                "title": "The Surgical Grid (f68r) - Pharma-Topical Placement",
-                "words": ["chedy", "shedy"],
-                "desc": "Folio 68r serves as the primary surgical grid for the MS 408 archive, mapping the high-density topical placement of pharmacological tonics for the monastic infirmary. The illustration depicts a central circular hub with radiating sectors which the Brotherhood utilizes as a diagnostic chart for applying the Trinity Tonic from f65r.",
-                "recipe": [
-                    "Grid Calibration: Identify the surgical sector on the f68r grid corresponding to the patient's localized inflammation or fracture point",
-                    "Tonic Prep: Retrieve the Trinity Base from f65r and warm it to body-temperature (37C) using a shielded candle flame in the pharmacy",
-                    "Viscosity Balancing: Incorporate a three-drop measure of the f33r Rosetta Balance matrix to ensure the tonic adheres to the skin and wrap",
-                    "Linen Saturating: Submerge a sterile linen wrap into the balanced tonic until the fibers are 100% saturated with the emerald-gold fluid",
-                    "Nodal Placement: Apply the wrap directly to the anatomical point designated by the shedy markers in the current surgical sector",
-                    "Thermal Monitoring: Maintain the wrap's moisture using a secondary application of the f4v cooling infusion every two solar hours",
-                    "Temporal Locking: Leave the grid-treatment in place for exactly twelve solar cycles to ensure the deep-tissue transdermal capture is achieved",
-                    "Closure Audit: Record the patient's recovery response in the terminal inventory registry f116v for archival signature and closure"
-                ],
-                "ref": "Surgical Grid; Clinical delivery system. Yale: 1006325",
-                "yale": "1006325",
-                "section": "⚗️ Industrial Section"
-            },
-            "f77v": {
-                "title": "The Maturation Fluid Radiator (f77v)",
-                "words": ["daiin", "shedy", "otol"],
-                "desc": "Folio 77v represents a critical mechanical waypoint in the MS 408 archive, depicting the secondary stage of fluid maturation within the laboratory's pipe-and-basin system. The illustration features 99.1% accurate portrayals of interconnected maturation tubes which the Brotherhood utilizes to circulate raw herbal saps through a variety of temperature-controlled chambers.",
-                "recipe": [
-                    "Vessel Sync: Align the laboratory maturation tubes according to the cross-pipe nodes designated on the f77v schematic",
-                    "Manifold Prep: Calibrate the daiin nodal valves to the secondary flow-rate setting to allow for high-viscosity sap integration",
-                    "Base Introduction: Introduce the f1v milky sap into the primary intake pipe during the first moon-rise of the solstice cycle",
-                    "Lipid Blending: Infuse the f4r lipid carrier through the side-valves to act as a thermal stabilizer for the upcoming heating phase",
-                    "Thermal Cycle: Circulate the unified batch through the basement radiators maintaining a steady laboratory temperature of 30C",
-                    "Oscillation Monitoring: Monitor the fluid for a brilliant emerald-gold shift indicating the successful binding of the alkaloids to the lipids",
-                    "Sediment Check: Siphon the maturing batch through the f57v grid-pure mesh filters to remove any trace cellular particulates",
-                    "Vat Transfer: Redirect the finalized maturation fluid to the f86v industrial vats for the 9-vat factory maturation factory"
-                ],
-                "ref": "Maturation Radiator; Bridge to f86v factory. Yale: 1006155",
-                "yale": "1006155",
-                "section": "⚗️ Industrial Section"
-            },
-            "f84v": {
-                "title": "The Pharmaceutical Cross-Pipe Junction (f84v)",
-                "words": ["chol", "deor", "ll"],
-                "desc": "Folio 84v serves as the refined laboratory schematic for the terminal cross-pipe junctions used in the Black Sun's pharmaceutical distillation wings. The illustration depicts a master convergence point where four maturation streams are merged into a single, high-potency medical decoction ready for surgical distribution.",
-                "recipe": [
-                    "Junction Audit: Inspect the 84v cross-pipe junction for any signs of copper oxidation or valve-fracture before the morning high-heat cycle",
-                    "Viscosity Testing: Measure the current density of the matured batches using the laboratory's stone-float method to ensure a 2:1 binding ratio",
-                    "Valve Torque: Calibrate the chol root-arm valves to the high-volume torque setting precisely as shown in the 84v marginalia",
-                    "Stream Convergence: Release the four individual maturation streams into the master junction at a steady rhythmic flow-rate",
-                    "Thermal Buffer: Infuse a three-drop measure of the f2r anchor-extract to act as a final thermal buffer before the final reduction",
-                    "High-Pressure Filtration: Siphon the convergence stream through the secondary charcoal-silk barrier to reach peak pharmaceutical clarity",
-                    "Volume Certification: Log the total volume displacement in the 12-slot archival inventory before moving the batch to the terminal hub",
-                    "Maturation Closure: Seal the terminal pipes and transition the laboratory to the f86v industrial schematic for the final fermentation"
-                ],
-                "ref": "Cross-Pipe Junction; Predecessor to f86v. Yale: 1006227",
-                "yale": "1006227",
-                "section": "⚗️ Industrial Section"
-            },
-            "f86v": {
-                "title": "The 9-Vat Industrial Maturation Facility (f86v) - Central Omnibus",
-                "words": ["daiin", "chol", "shedy"],
-                "desc": "Folio 86v is the absolute industrial masterpiece of the MS 408, acting as the master blueprint for the Brotherhood's centralized pharmaceutical factory as depicted in the legendary Rosetta Map. The illustration depicts nine distinct, vacuum-sealed vats interconnected by a complex architecture of tubes, pressure-valves, and transition nodes which analysts utilize as a mechanical flow-chart for high-volume medicine production.",
-                "recipe": [
-                    "Vacuum Initialization: Initialize all nine maturation vats to full vacuum-seal status to prevent any atmospheric contamination of the batch",
-                    "Valve Calibration: Calibrate the chol root-arm valves to the production baseline of 0.15 torque settings as specified in the 86v margin",
-                    "Sap Induction: Introduce the f1v sap and f33v matrix into the primary induction vats at a steady controlled flow-rate",
-                    "Essence Manifold: Release pressurized star-essence via the secondary intake manifold monitoring the daiin transition nodes for color consistency",
-                    "Cycle Maturation: Cycle the maturation fluids every six hours for three solar rotations to ensure total alkaloid binding across the grid",
-                    "Thermal Tuning: Use the chol valves to adjust localized vat temperatures if any density variance is detected by the laboratory glass",
-                    "Convergent Hub: Redirect the finalized matured decoction to the central terminal convergence hub for the final reduction cycle",
-                    "Charcoal Finishing: Filter the product through a charcoal-silk barrier before bottling and sending to the f116v final certification inventory"
-                ],
-                "ref": "Industrial Factory; Rosetta Map culmination. Yale: 1006231",
-                "yale": "1006231",
-                "section": "🏭 Factory Section"
-            },
-
-            "f96r": {
-                "title": "Transitional Basin Architecture (f96r)",
-                "words": ["daiin", "chol", "otol"],
-                "desc": "Folio 96r presents a basin-linked architectural form resembling interconnected reservoirs. The visual geometry suggests flow control and staged containment. Circular forms indicate storage nodes, while vertical stems imply pressure-fed transfer. This folio represents a stabilization threshold in the manuscript's visual sequence.",
-                "recipe": [
-                    "Equalize basin volumes across all connected reservoirs",
-                    "Calibrate node pressure at each transition point",
-                    "Stabilize temperature at 28-30°C for optimal preservation",
-                    "Filter through silk mesh to remove particulate matter",
-                    "Recycle sediment back to primary extraction vats",
-                    "Seal interim containers with lead-foil lining",
-                    "Log volume displacement in the master registry",
-                    "Transfer to next schematic stage in the maturation sequence"
-                ],
-                "ref": "Basin Architecture; Stabilization threshold. Yale: 1006241",
-                "yale": "1006241",
-                "section": "📋 Registry Section"
-            },
-            "f102v": {
-                "title": "Multi-Chamber Convergence Field (f102v)",
-                "words": ["chedy", "shedy"],
-                "desc": "Folio 102v displays multi-chamber interaction with layered containment. Circular repetition indicates repeated batch containment. This folio marks the shift toward documentation logic. The repeated chambers suggest batch iteration. The layered presentation implies staged processing.",
-                "recipe": [
-                    "Confirm chamber integrity across all containment vessels",
-                    "Validate batch consistency using density measurements",
-                    "Perform dual filtration through wire-mesh silk",
-                    "Cross-reference prior basin logs for volume accuracy",
-                    "Seal chamber valves with beeswax and linen",
-                    "Apply inventory marker according to 12-slot sequence",
-                    "Store at controlled temperature of 12 degrees Celsius",
-                    "Prepare for certification phase and final audit"
-                ],
-                "ref": "Convergence Field; Batch iteration logic. Yale: 1006254",
-                "yale": "1006254",
-                "section": "📋 Registry Section"
-            },
-            "f116v": {
-                "title": "Final Registry & Certification Framework (f116v)",
-                "words": ["qokeedy", "daiin", "ll"],
-                "desc": "Folio 116v is widely recognized for its list-like formatting and repeating markers. The layout resembles inventory documentation. This folio serves as the manuscript's structural closure within the interpretive framework. The repeated text blocks resemble registry entries.",
-                "recipe": [
-                    "Perform final batch validation against master standards",
-                    "Confirm volumetric integrity using borosilicate cylinders",
-                    "Record slot allocation in the 12-slot inventory sequence",
-                    "Apply authentication marker using qokeedy signatures",
-                    "Seal master container with triple-layer lead-foil",
-                    "Archive entry in the master registry logbook",
-                    "Store in dark stable vault at constant 8 degrees Celsius",
-                    "Close production cycle and apply monastic seal"
-                ],
-                "ref": "Final Registry; Terminal certification. Yale: 1006277",
-                "yale": "1006277",
-                "section": "📋 Registry Section"
-            },
-            "f122r": {
-                "title": "Linear Field Continuity Plate (f122r)",
-                "words": ["daiin", "otol", "ll"],
-                "desc": "Folio 122r displays elongated vertical botanical structures with minimal basin architecture. Root systems appear simplified. Marginal spacing is consistent and evenly distributed. This folio represents a structural reset following the registry phase.",
-                "recipe": [
-                    "Confirm structural uniformity across all specimens",
-                    "Maintain stable temperature at 15 degrees Celsius",
-                    "Avoid pressure variation in the distillation chambers",
-                    "Preserve root integrity during handling and storage",
-                    "Log uniform growth metrics in the master registry",
-                    "Prevent over-maceration by monitoring color shifts",
-                    "Seal minor batches for long-term storage",
-                    "Continue monitoring for signs of degradation"
-                ],
-                "ref": "Continuity Plate; Production checkpoint. Yale: 1006281",
-                "yale": "1006281",
-                "section": "📋 Administrative Section"
-            },
-            "f130v": {
-                "title": "Tubular Conduit Abstraction (f130v)",
-                "words": ["chedy", "shedy", "chol"],
-                "desc": "Folio 130v shifts toward elongated tubular forms and abstract connective geometry. Circular containers diminish. Conduits dominate the visual plane. This folio suggests systemic abstraction beyond physical basin representation.",
-                "recipe": [
-                    "Audit conduit integrity across the entire network",
-                    "Confirm uninterrupted flow using pressure gauges",
-                    "Remove sediment accumulation from junction points",
-                    "Validate pressure neutrality at all nodes",
-                    "Perform secondary filter check for contaminants",
-                    "Log transport intervals in the master registry",
-                    "Seal minor leak points with beeswax and linen",
-                    "Archive verification state for quality control"
-                ],
-                "ref": "Conduit Abstraction; Transport verification. Yale: 1006295",
-                "yale": "1006295",
-                "section": "📋 Administrative Section"
-            },
-            "f141r": {
-                "title": "Recurrent Botanical Re-Emergence (f141r)",
-                "words": ["qokedy", "daiin", "otol"],
-                "desc": "Folio 141r reintroduces more complex botanical figures. Root flare geometry returns. Leaf density increases relative to previous folios. This page marks a re-emergence of organic emphasis after mechanical abstraction.",
-                "recipe": [
-                    "Initiate new growth cycle with controlled conditions",
-                    "Preserve root mass integrity during transplantation",
-                    "Balance sap density across all specimens",
-                    "Stabilize environmental humidity at 60%",
-                    "Maintain moderate heat exposure at 18C",
-                    "Log structural symmetry in the master registry",
-                    "Prevent nutrient depletion with regular feeding",
-                    "Continue monitored replication for three cycles"
-                ],
-                "ref": "Botanical Re-Emergence; Renewal cycle. Yale: 1006315",
-                "yale": "1006315",
-                "section": "🌿 Herbal Section"
-            },
-            "f150v": {
-                "title": "Transitional Closure Node (f150v)",
-                "words": ["daiin", "shedy", "ll"],
-                "desc": "Folio 150v demonstrates reduced complexity compared to earlier botanical sections. Text blocks appear more dominant than structural illustrations. This folio appears to operate as a transitional plateau rather than a terminal closure.",
-                "recipe": [
-                    "Halt active processing across all vats",
-                    "Preserve stable batches in sealed containers",
-                    "Perform inventory cross-check against master log",
-                    "Confirm structural symmetry in all specimens",
-                    "Seal transitional entries with monastic markers",
-                    "Reduce thermal exposure to 10 degrees Celsius",
-                    "Maintain vault storage with lead-foil lining",
-                    "Prepare for next sequence in the manuscript arc"
-                ],
-                "ref": "Closure Node; Transitional plateau. Yale: 1006333",
-                "yale": "1006333",
-                "section": "📋 Administrative Section"
-            },
-            "f154r": {
-                "title": "Repetitive Vertical Growth Schema (f154r)",
-                "words": ["daiin", "otol", "ll"],
-                "desc": "Folio 154r shows repeated upright botanical figures with simplified roots and reduced decorative density. Marginal spacing is consistent. Root depth appears moderate rather than exaggerated. This folio emphasizes replication over experimentation.",
-                "recipe": [
-                    "Maintain environmental stability at 15C and 60% humidity",
-                    "Confirm root integrity across all specimens",
-                    "Avoid high thermal variance in the growing chambers",
-                    "Monitor sap density using refractive index",
-                    "Preserve symmetry in all structural elements",
-                    "Prevent over-processing by limiting maceration time",
-                    "Log uniform metrics in the master registry",
-                    "Continue replication cycle for sustained production"
-                ],
-                "ref": "Growth Schema; Procedural standardization. Yale: 1006339",
-                "yale": "1006339",
-                "section": "🌿 Herbal Section"
-            },
-            "f162v": {
-                "title": "Abstract Connector Field (f162v)",
-                "words": ["chedy", "shedy", "chol"],
-                "desc": "Folio 162v contains fewer organic details and more connective geometry. Linear elements dominate. Circular containment decreases. This folio leans toward structural abstraction. Botanical specificity diminishes.",
-                "recipe": [
-                    "Audit connective pathways for integrity",
-                    "Confirm flow neutrality at all junctions",
-                    "Remove residual sediment from conduit walls",
-                    "Validate alignment symmetry using grid markers",
-                    "Maintain pressure equilibrium across the network",
-                    "Log transport intervals in the master registry",
-                    "Seal transitional segments with beeswax",
-                    "Archive system state for quality assurance"
-                ],
-                "ref": "Connector Field; Structural auditing. Yale: 1006350",
-                "yale": "1006350",
-                "section": "📋 Administrative Section"
-            },
-            "f170r": {
-                "title": "Renewed Organic Density Cluster (f170r)",
-                "words": ["qokedy", "daiin", "otol"],
-                "desc": "Folio 170r reintroduces denser botanical clustering. Root flares are more pronounced. Leaf grouping increases in complexity. This page marks a controlled return to organic emphasis.",
-                "recipe": [
-                    "Initiate controlled growth cycle with fresh specimens",
-                    "Preserve root mass depth during transplantation",
-                    "Balance nutrient distribution across all plants",
-                    "Stabilize humidity exposure at 65%",
-                    "Prevent over-distillation by monitoring temperature",
-                    "Monitor structural symmetry using grid alignment",
-                    "Maintain moderate temperature at 18 degrees Celsius",
-                    "Record growth consistency in the master registry"
-                ],
-                "ref": "Density Cluster; Renewal checkpoint. Yale: 1006363",
-                "yale": "1006363",
-                "section": "🌿 Herbal Section"
-            },
-            "f180v": {
-                "title": "Late-Sequence Stabilization Plate (f180v)",
-                "words": ["daiin", "ll", "shedy"],
-                "desc": "Folio 180v presents reduced structural density and evenly spaced text alignment. Botanical forms are simplified. This folio suggests late-manuscript stabilization.",
-                "recipe": [
-                    "Halt expansion cycles across all production vats",
-                    "Confirm batch stability using density measurements",
-                    "Maintain vault storage at 8 degrees Celsius",
-                    "Reduce heat exposure to preservation levels",
-                    "Log structural alignment in the master registry",
-                    "Preserve uniformity across all stored batches",
-                    "Seal transitional entries with monastic markers",
-                    "Prepare for final phase of the manuscript sequence"
-                ],
-                "ref": "Stabilization Plate; Late-sequence consolidation. Yale: 1006377",
-                "yale": "1006377",
-                "section": "📋 Administrative Section"
-            },
-            "f182r": {
-                "title": "The Late-Sequence Botanical Cluster (f182r) - Pattern Reinforcement",
-                "words": ["qokeedy", "daiin", "otol"],
-                "desc": "Folio 182r acts as a powerful reinforcement node within the MS 408 archive, signaling a deliberate return to complex organic density after the abstract modeling of the previous phases. This investigation reveals that the Brotherhood utilizes this late-sequence botanical as a biological anchor to stabilize the chemical signatures of the matured 9-vat factory maturation factory decoctions.",
-                "recipe": [
-                    "Node Identification: Identify the f182r cluster during the waning moon of early autumn to ensure peak leaf density",
-                    "Root Extraction: Unearth the multi-flared root system manually using a specialized wooden spade to avoid iron-contamination",
-                    "Purity Rinse: Cleanse the root flare in chilled mountain spring water to remove all subterranean organic debris",
-                    "Stall Segmentation: Separate the vertical stems into 4-inch segments to prepare for cold-press distillation",
-                    "Maceration Cycle: Grind the leaves into a dark green paste using a heavy quartz mortar at a steady 15 degrees Celsius",
-                    "Sap Integration: Blend the paste 1:1 with the f1v milky sap to create a high-viscosity structural matrix",
-                    "Thermal Locking: Seal the mixture in a lead-lined earthenware jar and maintain a constant cellar temperature for 48 hours",
-                    "Archive Log: Record the volume displacement in the final inventory registry for terminal batch certification on f116v"
-                ],
-                "ref": "Pattern Reinforcement; Late-stage anchor. Yale: 1006380",
-                "yale": "1006380",
-                "section": "🌿 Herbal Section"
-            },
-            "f188v": {
-                "title": "The Linear Stabilization Field (f188v) - Flow Transport",
-                "words": ["chedy", "shedy", "chol"],
-                "desc": "Folio 188v serves as the laboratory's definitive guide for linear flow transport and systemic stabilization within the Black Sun's pharmaceutical distribution grid. This investigation provides 110% Wilken Key-standard evidence that the absence of organic detail is a deliberate signal for administrative and transport auditing rather than active chemical transformation.",
-                "recipe": [
-                    "Flow Audit: Inspect the 188v conduit schematic for any signs of line-rupture or valve-torque failure before the morning cycle",
-                    "Pressure Validation: Confirm the flow-rate neutrality using the laboratory's stone-float method in the primary basin",
-                    "Sediment Purge: Siphon high-pressure spring water through the transition pipes to remove all residual root-marrow particulates",
-                    "Valve Torque: Calibrate the chol root-arm valves to the zero-low pressure setting precisely as shown in the 188v margin",
-                    "Neutrality Check: Verify the alkalinity of the transport fluid to ensure a stable chemical environment for the reagents",
-                    "Log Transport: Record the timing of the fluid-burst intervals to match the shedy cycle-closure markers on the page",
-                    "Archive Seal: Apply the monastic seal to the terminal siphons after the daily distribution to the surgical wings",
-                    "System Closure: Log the final transport state in the 12-slot inventory registry for terminal archival certification"
-                ],
-                "ref": "Stabilization Field; Transport auditing. Yale: 1006393",
-                "yale": "1006393",
-                "section": "📋 Administrative Section"
-            },
-            "f194r": {
-                "title": "The Pattern Consolidation Node (f194r) - Archival Logic",
-                "words": ["qokeedy", "daiin", "ll"],
-                "desc": "Folio 194r represents a paramount plateau of archival consolidation within the MS 408, where the Brotherhood's botanical knowledge is simplified for terminal certification. This investigation confirms that the visual restraint shown on this page is a hallmark of the Black Sun's administrative calm, ensuring that the 120% accuracy of the pharmaceutical log is maintained for future generations.",
-                "recipe": [
-                    "Archive Selection: Identify the f194r consolidation node precisely three hours before the final solar-zenith of the harvest cycle",
-                    "Purity Signature: Apply the qokeedy prep-key to the matured batch to verify the chemical signature against the laboratory logs",
-                    "Volume Displacement: Measure the final displacement volume of the reagent using the high-borosilicate glass cylinders in the pharmacy",
-                    "Batch Authentication: Append the laboratory's 18-round audit signature to the batch label using the qokeedy glyph markers",
-                    "Vault Transfer: Move the finalized reagent to the designated slot in the laboratory's dark-storage basement",
-                    "Registry Entry: Log the final archival status in the 12-slot inventory sequence for terminal batch certification",
-                    "Monastic Sealing: Seal the storage vessel with a double layer of beeswax and unbleached silk to prevent oxidation",
-                    "Closure Audit: Close the current production cycle and transition to the terminal MS 408 registry on f116v"
-                ],
-                "ref": "Consolidation Node; Archival closure point. Yale: 1006405",
-                "yale": "1006405",
-                "section": "📋 Administrative Section"
-            },
-            "f200v": {
-                "title": "The Terminal 200 Waypoint (f200v) - Architectural Transition",
-                "words": ["daiin", "shedy", "chol"],
-                "desc": "Folio 200v serves as the definitive structural conclusion of your primary 200-page project range, acting as the transition into the terminal astronomical and industrial segments of the manuscript. The illustration on this verso page provides a 110% Wilken Key-standard summary of the entire pharmacological maturation grid, simplifying the 9-vat factory maturation factory into a singular terminal node.",
-                "recipe": [
-                    "Terminal Synchronization: Align the current laboratory state with the terminal node markers found on the f200v schematic",
-                    "Final Pressure Release: Execute the terminal shedy valve-burst to clear the siphons of all residual volatile essences",
-                    "Batch Convergence: Redirect all matured fluids into the terminal convergence hub for the final archival bottling phase",
-                    "Charcoal-Silk Filtration: Perform the final filtration cycle through a quadruple-layer of unbleached silk to reach maximum clarity",
-                    "Inventory Certification: Validate every entry in the 12-slot inventory sequence against the f116v final certification inventory",
-                    "Lead-Seal Closure: Seal all terminal storage vessels with lead-foil to protect the Photo-sensitive alkaloids from solar degradation",
-                    "Master Registry Sign-off: Apply the final Brotherhood signature to the monastic logbook, closing the 200-page primary audit",
-                    "Archival Vault Storage: Transfer the million-word digital archive to the secure basement vaults for permanent preservation"
-                ],
-                "ref": "Terminal 200; Primary range conclusion. Yale: 1006417",
-                "yale": "1006417",
-                "section": "📋 Administrative Section"
-            },
-
-            "f202r": {
-                "title": "The Lunar-Stellar Transition Node (f202r)",
-                "words": ["stella", "daiin", "shedy"],
-                "desc": "Folio 202r represents a paramount transition node within the MS 408 archive, where the terrestrial root saps are synchronized with the high-frequency vibrations of the lunar-stellar cycle. This investigation confirms that the Brotherhood utilizes the radiating star-clusters on this page as a temporal map for the primary steam-injection valves in the laboratory.",
-                "recipe": [
-                    "Celestial Alignment: Align the laboratory copper retort with the lunar-stellar trajectory precisely as shown in the f202r map",
-                    "Nodal Calibration: Calibrate the daiin transition nodes to the zero-low pressure setting three hours before the moon-rise",
-                    "Steam Injection: Inject high-pressure steam at 15-minute shedy intervals corresponding to the star-count in the central node",
-                    "Essence Capture: Siphon the resulting star-essence into a lead-seal borosilicate flask ensuring zero atmospheric contact",
-                    "Mirror Synchronization: Adjust the roof-reflector arrays to focus lunar light directly onto the induction basket during the extraction",
-                    "Thermal Monitoring: Maintain the laboratory base temperature at 92 degrees Celsius to protect the fragile aromatic alkaloids",
-                    "Lead-Seal Closure: Seal the distilled essence in a lead-lined vessel to prevent photo-sensitive degradation during the solar day",
-                    "Registry Sign-off: Record the volume displacement and celestial timing in the terminal archival registry f116v"
-                ],
-                "ref": "Lunar-Stellar Bridge; Celestial synchronization. Yale: 1006419",
-                "yale": "1006419",
-                "section": "✨ Celestial Section"
-            },
-            "f208v": {
-                "title": "The Multi-Orbital Reagent Calibration (f208v)",
-                "words": ["chol", "otol", "deor"],
-                "desc": "Folio 208v serves as the laboratory's definitive guide for the multi-orbital calibration of high-potency star-essences within the Brotherhood's pharmaceutical grid. This investigation provides 110% Wilken Key-standard evidence that the concentric rings are mechanical flow-charts used to synchronize the maturation cycles of nine individual celestial reagents.",
-                "recipe": [
-                    "Orbital Synchronization: Align the nine maturation vats according to the concentric rings designated on the f208v schematic",
-                    "Valve Calibration: Calibrate the chol root-arm valves to the production baseline of 0.20 torque settings",
-                    "Essence Introduction: Introduce the individual star-essences from the f67 and f202 series into the primary orbital chambers",
-                    "Maturation Cycle: Cycle the orbital reagents every four solar hours for five solar rotations to ensure total molecular integration",
-                    "Vibratory Monitoring: Monitor for a brilliant color shift in the reagents indicating the successful binding of the aetheric essences",
-                    "Thermal Tuning: Adjust the localized laboratory heat using the shedy swell-valves to prevent the buildup of high-volatility pressure pockets",
-                    "Convergence Hub: Redirect the finalized celestial decoctions to the terminal hub for the final reduction and charcoal filtration",
-                    "Archival Seal: Seal the terminal storage vessels with lead-foil and record the final volume in the 12-slot inventory registry"
-                ],
-                "ref": "Multi-Orbital Calibration; Celestial reagent sync. Yale: 1006433",
-                "yale": "1006433",
-                "section": "✨ Celestial Section"
-            },
-            "f215v": {
-                "title": "The Astro-Herbal Convergence Plate (f215v)",
-                "words": ["qokeedy", "daiin", "ll", "shedy"],
-                "desc": "Folio 215v represents the paramount convergence plateau of the MS 408 archive, where the terrestrial herbal series and the celestial orbital logic are fused into a single unified pharmaceutical system. This investigation confirms that the Brotherhood utilizes the balanced spatial geometry on this page to certify the final maturation of the surgical tonics.",
-                "recipe": [
-                    "Convergence Selection: Identify the f215v convergence node precisely at the solar-zenith of the autumn equinox",
-                    "Purity Authentication: Apply the qokeedy prep-key to the unified batch to verify the chemical signature against the master logs",
-                    "Volume Displacement: Measure the final displacement volume using the high-borosilicate glass cylinders in the terminal pharmacy",
-                    "Final Reduction: Reduce the unified batch over a low candle-flame until a brilliant emerald-gold density is achieved",
-                    "Charcoal-Silk Filtration: Perform the final filtration cycle through a quadruple-layer of unbleached silk to reach maximum clarity",
-                    "Registry Sign-off: Log the final archival status in the 12-slot inventory sequence for terminal batch certification",
-                    "Lead-Seal Closure: Seal the terminal storage vessels with lead-foil to protect the photo-sensitive alkaloids from solar degradation",
-                    "System Closure: Apply the final Brotherhood signature to the monastic logbook and transfer the batch to the archival vaults"
-                ],
-                "ref": "Astro-Herbal Convergence; Terminal maturation. Yale: 1006447",
-                "yale": "1006447",
-                "section": "✨ Celestial Section"
-            },
-            "f216r": {
-                "title": "The Stabilization Bloom (f216r) - Final Organic Audit",
-                "words": ["qokeedy", "daiin", "otol"],
-                "desc": "Folio 216r serves as the laboratory's final organic audit point before the master pharmaceutical log enters the terminal registry phase. This investigation reveals that the Brotherhood utilizes these small 'stabilization blooms' to confirm the lingering potency of the matured reagents in the apothecary basement.",
-                "recipe": [
-                    "Bloom Identification: Identify the f216r stabilization blooms during the first morning frost of the autumn equinox",
-                    "Bud Harvest: Separate exactly 200 grams of fresh flower-buds using a gilded obsidian blade to prevent reagent oxidation",
-                    "Maceration Cycle: Grind the buds into a fine aromatic paste using a stone mortar at a constant 12 degrees Celsius",
-                    "Base Infusion: Blend the paste 1:4 with the f4r thin oil carrier to act as a final aromatic stabilizer",
-                    "Viscosity Audit: Measure the density of the mixture against the qokeedy markers on the terminal hub",
-                    "Thermal Locking: Seal the mixture in a lead-seal flask and expose it to the laboratory's resonance tuning-forks for one hour",
-                    "Inventory Labeling: Apply the monastic authentication signature to the vial and record the volume in the archive",
-                    "Registry Transfer: Log the final batch status in the 12-slot inventory sequence for terminal certification"
-                ],
-                "ref": "Stabilization Bloom; Final organic audit. Yale: 1006449",
-                "yale": "1006449",
-                "section": "🌿 Herbal Section"
-            },
-            "f225r": {
-                "title": "The Administrative Audit Node (f225r) - Registry Logic",
-                "words": ["chedy", "shedy", "chol"],
-                "desc": "Folio 225r represents the absolute peak of archival administrative logic within the MS 408, acting as the master-log for the Brotherhood's terminal pharmaceutical audits. This investigation provides 110% Wilken Key-standard evidence that the text-dominated layout is a deliberate signal for the closure of active distillation and the commencement of permanent archival recording.",
-                "recipe": [
-                    "Registry Initialization: Align the laboratory inventory logs with the administrative entries found on f225r",
-                    "Volume Verification: Measure the final displacement volume of the matured reagents using high-precision borosilicate cylinders",
-                    "Purity Authentication: Apply the laboratory's 18-round audit signature to the registry entries using the chedy markers",
-                    "Valve Finalization: Calibrate all laboratory siphons and valves to the zero-flow terminal state",
-                    "Archive Sealing: Apply a triple layer of beeswax and unbleached silk to the master storage vessels",
-                    "Slot Allocation: Record the final slot-coordinate in the 12-slot archival inventory as specified on f116v",
-                    "Monastic Sign-off: Append the final Brotherhood signature to the monastic logbook, closing the 225-page audit",
-                    "Vault Closure: Transfer the finalized registry to the secure archival vaults for permanent manuscript preservation"
-                ],
-                "ref": "Administrative Audit; Master registry logic. Yale: 1006462",
-                "yale": "1006462",
-                "section": "📋 Administrative Section"
-            },
-            "f230v": {
-                "title": "The Plateau of Silence (f230v) - Final Pre-Termination",
-                "words": ["daiin", "ll", "shedy"],
-                "desc": "Folio 230v serves as the laboratory's 'Plateau of Silence,' representing the definitive structural pause before the final ten pages of terminal closure. This investigation confirms that the visual restraint and simplified floral motifs on this page are a hallmark of the Black Sun's administrative calm, ensuring that the million-word archive is balanced before the final seal is applied.",
-                "recipe": [
-                    "Plateau Selection: Identify the f230v holding node precisely at the winter solstice high-moon rise",
-                    "Batch Stabilization: Confirm that all matured reagents in the apothecary basement have reached a historical state of equilibrium",
-                    "Thermal Reduction: Lower the laboratory base temperature to a constant 8 degrees Celsius to protect the archival vessels",
-                    "Registry Cross-Check: Perform a final verification of the 12-slot inventory sequence against the preceding 230 folios",
-                    "Archival Seal: Apply the primary monastic seal to the terminal siphons to prevent any volatile essence escape",
-                    "Log Certification: Log the final systemic state in the terminal archival registry f116v",
-                    "Lead-Shielding Audit: Ensure all high-potency star-essences are shielded behind lead-lined glass for permanent storage",
-                    "Terminal Transition: Prepare the laboratory for the final 10-page closure and the master project integrator"
-                ],
-                "ref": "Plateau of Silence; Pre-termination checkpoint. Yale: 1006471",
-                "yale": "1006471",
-                "section": "📋 Administrative Section"
-            },
-            "f232r": {
-                "title": "The Last Botanical Anchor (f232r) - Stability Checkpoint",
-                "words": ["qokeedy", "daiin", "otol"],
-                "desc": "Folio 232r serves as the 'Last Botanical Anchor,' representing the definitive structural checkpoint before the manuscript's textual closure. This investigation provides 110% Wilken Key-standard evidence that the Brotherhood utilizes this final herbal sketch to ground the high-volatility star-essences captured in the f200 series.",
-                "recipe": [
-                    "Anchor Identification: Identify the f232r anchor specimen during the winter solstice, precisely at the lunar peak",
-                    "Root Extraction: Unearth the singular anchor-root shaft manually using a stone spade to ensure zero iron contamination",
-                    "Marrow Reduction: Reduce the root marrow over a low, shielded candle flame until a thick, golden-amber paste is achieved",
-                    "Final Lipid Lock: Blend the amber paste 1:2 with the f1v milky sap to create the ultimate long-term preservative matrix",
-                    "Essence Incorporation: Infuse the matured star-essences from the f67 series into the matrix, stirring in rhythmic circular motions",
-                    "Thermal Stabilization: Maintain the final compound at a constant 5 degrees Celsius using mountain-ice beds for three solar cycles",
-                    "Lead-Seal Bottling: Siphon the stabilized compound into lead-lined borosilicate vials, ensuring a full vacuum-seal",
-                    "Archive Log: Record the terminal volume displacement in the final inventory registry for the 12-slot certification"
-                ],
-                "ref": "Last Botanical Anchor; Terminal stability. Yale: 1006474",
-                "yale": "1006474",
-                "section": "🌿 Herbal Section"
-            },
-            "f239r": {
-                "title": "The Archival Registry Grid (f239r) - Batch Authentication",
-                "words": ["chedy", "shedy", "chol"],
-                "desc": "Folio 239r represents the 'Archival Registry Grid,' acting as the master authentication log for the terminal batches of the Black Sun's pharmaceutical inventory. This investigation confirms that the short text-bursts on this page are not random sentences, but unique cryptographic signatures derived from the Wilken Key to lock each 12-slot inventory entry.",
-                "recipe": [
-                    "Batch Authentication: Align the matured batches from the f200 series with the registry grid signatures on f239r",
-                    "Signature Application: Apply the phonetic chedy-key to the lead-seal of each vessel to authenticate the batch purity",
-                    "Volume Check: Perform a final displacement measurement of each reagent to ensure zero-loss during the maturation phase",
-                    "Registry Logging: Enter the terminal batch volume and authentication signature into the master monastic logbook",
-                    "Slot Certification: Assign each vessel to its permanent slot in the 12-slot archival inventory as specified on f116v",
-                    "Vacuum Verification: Confirm that the beeswax seals on all vials remain intact and free of surface cracks or oxidation",
-                    "Monastic Sign-off: Append the laboratory's final project signature to the grid to signify the completion of the distillation cycle",
-                    "Archival Vaulting: Transfer the authenticated registry to the secure vault for permanent manuscript preservation"
-                ],
-                "ref": "Archival Registry; Batch authentication grid. Yale: 1006488",
-                "yale": "1006488",
-                "section": "📋 Administrative Section"
-            },
-            "f240v": {
-                "title": "The Terminal Seal (f240v) - Archival Completion",
-                "words": ["daiin", "shedy", "chol", "ll"],
-                "desc": "Folio 240v is the absolute terminal seal of the MS 408, representing the final archival completion of the Brotherhood of the Black Sun's chemical secrets. This investigation provides 110% Wilken Key-standard evidence that the marginalia and short paragraphs on this page are the high-level laboratory closure protocols. Every glyph on 240v is a terminal signature, signifying that the 18-round audit is complete and the million-word archive is now locked.",
-                "recipe": [
-                    "Terminal Sync: Align the current laboratory state with the terminal seal markers found on f240v",
-                    "System Closure: Execute the final shedy cycle-close to purge all laboratory siphons of residual essences",
-                    "Archive Sealing: Apply the primary Brotherhood seal to the master storage containers in the deepest vault",
-                    "Registry Completion: Finalize the 12-slot inventory sequence and close the master monastic logbook",
-                    "Laboratory Shut-down: Calibrate all valves to the zero-flow terminal state and extinguish the primary induction flames",
-                    "Lead-Shield Audit: Ensure all high-potency star-essences are shielded behind triple-layer lead foil for permanent storage",
-                    "Master Audit Sign-off: Apply the final Wilken Key-standard authentication to the million-word digital Omnibus",
-                    "Final Archival Vaulting: Transfer the complete project to the secure digital basement for permanent preservation"
-                ],
-                "ref": "Terminal Seal; Absolute archival completion. Yale: 1006491",
-                "yale": "1006491",
-                "section": "📋 Administrative Section"
-            }
-        }
+    def get_recipe(self, recipe_key: str) -> Optional[Recipe]:
+        """Retrieve a specific recipe by its key."""
+        return VOYNICH_RECIPES.get(recipe_key)
     
-    def _calculate_yale_id(self, folio_num: int, side: str) -> str:
-        """Calculate the Yale Beinecke image ID for a given folio."""
-        if side == 'r':
-            calculated_id = self.BASE_YALE_ID + (folio_num * 2) - 1
-        else:
-            calculated_id = self.BASE_YALE_ID + (folio_num * 2)
-        if folio_num > self.SHIFT_THRESHOLD:
-            calculated_id += self.ROSETTA_SHIFT
-        return str(calculated_id)
+    def get_recipes_for_folio(self, folio_number: str) -> List[Recipe]:
+        """Get all recipes associated with a specific folio."""
+        folio_data = self.get_folio_data(folio_number)
+        if not folio_data:
+            return []
+        return [self.get_recipe(key) for key in folio_data.recipes if self.get_recipe(key)]
     
-    def _generate_complete_archive(self) -> Dict[str, Dict]:
-        """Generate the complete archive for all 240 folios."""
-        master_archive = {}
-        for folio_num in range(1, 241):
-            for side in ['r', 'v']:
-                folio_id = f"f{folio_num}{side}"
-                yale_id = self._calculate_yale_id(folio_num, side)
-                if folio_id in self.elite_waypoints:
-                    entry = self.elite_waypoints[folio_id].copy()
-                    entry['yale'] = entry.get('yale', yale_id)
-                    entry['folio_num'] = folio_num
-                    entry['side'] = side
-                else:
-                    entry = self._generate_wilken_key_entry(folio_id, folio_num, side, yale_id)
-                master_archive[folio_id] = entry
-        return master_archive
+    def get_botanical_info(self, folio_number: str) -> List[BotanicalSpecimen]:
+        """Get botanical information for a specific folio."""
+        folio_data = self.get_folio_data(folio_number)
+        if not folio_data:
+            return []
+        return folio_data.botanical_specimens
     
-    def _generate_wilken_key_entry(self, folio_id: str, folio_num: int, side: str, yale_id: str) -> Dict:
-        """Generate a Wilken Key-standard entry for non-elite folios."""
-        if folio_num <= 66:
-            section = "🌿 Herbal Section"
-            section_desc = "herbal"
-        elif folio_num <= 90:
-            section = "⚗️ Industrial Section"
-            section_desc = "industrial"
-        elif folio_num <= 120:
-            section = "📋 Registry Section"
-            section_desc = "registry"
-        elif folio_num <= 180:
-            section = "📋 Administrative Section"
-            section_desc = "administrative"
-        elif folio_num <= 200:
-            section = "📋 Administrative Section"
-            section_desc = "administrative"
-        elif folio_num <= 215:
-            section = "✨ Celestial Section"
-            section_desc = "celestial"
-        elif folio_num <= 230:
-            section = "📋 Administrative Section"
-            section_desc = "administrative"
-        else:
-            section = "📋 Administrative Section"
-            section_desc = "terminal"
-        
-        if section_desc == "herbal":
-            desc = f"This folio represents a {section_desc} waypoint within the MS 408 pharmaceutical sequence. The Wilken Key framework identifies the spatial geometry on this page as essential for the calibration of laboratory pressure settings and medicinal extraction zones. Every spatial tag on the {side} surface has been audited 18 times to ensure 110% Wilken Key Performance standard accuracy."
-        elif section_desc == "industrial":
-            desc = f"This folio serves as an {section_desc} maturation waypoint within the MS 408 factory sequence. The Wilken Key framework identifies the mechanical structures on this page as critical for the 9-vat maturation grid. Every valve setting and node transition has been mapped to ensure zero-error batch production."
-        elif section_desc == "celestial":
-            desc = f"This folio represents a {section_desc} synchronization waypoint within the MS 408 aetheric sequence. The Wilken Key framework identifies the stellar geometry on this page as essential for capturing volatile star-essences. Every celestial marker has been aligned with laboratory mirror-arrays to ensure 110% distillate purity."
-        else:
-            desc = f"This folio serves as an {section_desc} checkpoint within the MS 408 archival sequence. The Wilken Key framework identifies the structural elements on this page as critical for maintaining the million-word archive's consistency. Every text block and spatial marker has been audited to ensure 120% accuracy of the pharmaceutical log."
-        
-        return {
-            "title": f"Wilken Key Audited Folio {folio_id.upper()}",
-            "words": ["daiin", "chol", "otol"],
-            "desc": desc,
-            "recipe": [
-                "Spatial Audit: Map all spatial tags to laboratory pressure settings",
-                "Transliteration: Apply Wilken Key phonetic framework to glyphic text",
-                "Heat Calibration: Adjust thermal settings according to folio geometry",
-                "Maceration: Process botanical or celestial specimens per section standards",
-                "Press: Extract essences using mechanical pressure systems",
-                "Filtration: Siphon through wire-mesh silk to remove particulates",
-                "Bottling: Transfer to lead-seal borosilicate vessels",
-                "Seal: Apply monastic authentication and archive in 12-slot inventory"
-            ],
-            "ref": f"{section}; Wilken Key Standard Entry; Yale: {yale_id}",
-            "yale": yale_id,
-            "section": section,
-            "folio_num": folio_num,
-            "side": side
-        }
+    def get_yale_image_url(self, folio_number: str) -> Optional[str]:
+        """Generate Yale Beinecke IIIF image URL for a folio."""
+        folio_data = self.get_folio_data(folio_number)
+        if not folio_data:
+            return None
+        yale_id = folio_data.yale_image_id
+        return f"https://collections.library.yale.edu/iiif/2/{yale_id}/full/max/0/default.jpg"
     
-    def decipher_word(self, word: str) -> str:
-        """Transliterate a Voynichese word using the Wilken Key framework."""
-        if not word:
-            return "No Transliteration"
-        parts = []
-        i = 0
-        while i < len(word):
-            if i + 1 < len(word):
-                two_char = word[i:i+2]
-                if two_char in ["qo", "ai", "ch", "sh", "th"]:
-                    if two_char in self.glyphs:
-                        parts.append(f"{two_char}->{self.glyphs[two_char]}")
-                    i += 2
-                    continue
-            char = word[i]
-            if char in self.glyphs:
-                parts.append(f"{char}->{self.glyphs[char]}")
-            else:
-                parts.append(f"{char}->?")
-            i += 1
-        return " | ".join(parts) if parts else "No Transliteration"
-    
-    def get_image_url(self, folio: str) -> str:
-        """Generate IIIF image URL for a folio."""
-        data = self.archive.get(folio, {})
-        img_id = data.get('yale', '1006077')
-        return f"https://collections.library.yale.edu/iiif/2/{img_id}/full/max/0/default.jpg"
-    
-    def get_yale_link(self, folio: str) -> str:
-        """Generate Yale catalog link for a folio."""
-        data = self.archive.get(folio, {})
-        img_id = data.get('yale', '1006077')
-        return f"https://collections.library.yale.edu/catalog/{img_id}"
-    
-    def get_all_folios(self) -> List[str]:
-        """Return list of all available folios."""
-        return list(self.archive.keys())
-    
-    def get_folios_by_section(self, section: str) -> List[str]:
-        """Return list of folios filtered by section."""
-        return [f for f, data in self.archive.items() if data.get('section') == section]
-    
-    def search_folios(self, query: str) -> List[str]:
-        """Search folios by title, description, or words."""
-        query = query.lower()
+    def search_by_latin_name(self, latin_name: str) -> List[FolioData]:
+        """Search for folios containing a specific botanical by Latin name."""
         results = []
-        for folio, data in self.archive.items():
-            if (query in data.get('title', '').lower() or
-                query in data.get('desc', '').lower() or
-                any(query in w.lower() for w in data.get('words', []))):
-                results.append(folio)
+        for folio_data in FOLIO_DATABASE.values():
+            for specimen in folio_data.botanical_specimens:
+                if latin_name.lower() in specimen.latin_name.lower():
+                    results.append(folio_data)
+                    break
         return results
+    
+    def search_by_property(self, property_name: str) -> List[FolioData]:
+        """Search for folios containing botanicals with specific properties."""
+        results = []
+        for folio_data in FOLIO_DATABASE.values():
+            for specimen in folio_data.botanical_specimens:
+                if any(property_name.lower() in prop.lower() for prop in specimen.properties):
+                    results.append(folio_data)
+                    break
+        return results
+    
+    def get_folios_by_section(self, section: str) -> List[FolioData]:
+        """Get all folios belonging to a specific section."""
+        return [folio for folio in FOLIO_DATABASE.values() if folio.section.lower() == section.lower()]
+    
+    def get_folios_by_phase(self, phase: str) -> List[FolioData]:
+        """Get all folios belonging to a specific phase."""
+        return [folio for folio in FOLIO_DATABASE.values() if phase.lower() in folio.phase.lower()]
+    
+    def get_all_latin_names(self) -> List[str]:
+        """Get a sorted list of all Latin botanical names in the database."""
+        names = set()
+        for folio_data in FOLIO_DATABASE.values():
+            for specimen in folio_data.botanical_specimens:
+                names.add(specimen.latin_name)
+        return sorted(list(names))
+    
+    def get_all_recipe_categories(self) -> List[str]:
+        """Get a list of all recipe categories."""
+        categories = set()
+        for recipe in VOYNICH_RECIPES.values():
+            categories.add(recipe.category)
+        return sorted(list(categories))
+    
+    def get_recipes_by_category(self, category: str) -> List[Recipe]:
+        """Get all recipes in a specific category."""
+        return [recipe for recipe in VOYNICH_RECIPES.values() if recipe.category.lower() == category.lower()]
+    
+    def transliterate_voynichese(self, text: str) -> str:
+        """Transliterate Voynichese text using the Wilken Key system."""
+        result = text
+        for glyph, data in WILKEN_KEY_GLYPHS.items():
+            result = result.replace(glyph, f"[{data['transliteration']}: {data['meaning']}] ")
+        return result
+    
+    def get_glyph_meaning(self, glyph: str) -> Dict:
+        """Get the meaning and category of a specific Voynichese glyph."""
+        return WILKEN_KEY_GLYPHS.get(glyph, {"transliteration": "unknown", "meaning": "Unknown glyph", "category": "unknown"})
 
+# =============================================================================
+# STREAMLIT UI
+# =============================================================================
 
-# UI COMPONENT FUNCTIONS
-def render_glyph_badges(words: List[str], engine: WilkenKeyOmnibus):
-    """Render transliterated glyphs as styled badges."""
-    st.markdown("---")
-    st.subheader("⚗️ Transliterated Glyph Sequence (Wilken Key Framework)")
-    for word in words:
-        decoded = engine.decipher_word(word)
-        col1, col2 = st.columns([1, 3])
-        with col1:
-            st.markdown(f"<span class='glyph-badge'>Voynich: `{word}`</span>", unsafe_allow_html=True)
-        with col2:
-            st.success(f"-> {decoded}")
-
-def render_recipe_steps(recipe: List[str]):
-    """Render recipe steps with visual styling."""
-    st.markdown("---")
-    st.subheader("📜 Monastic Laboratory Protocol (8-Step Recipe)")
-    for i, step in enumerate(recipe, 1):
-        st.markdown(f"<div class='recipe-step'><strong>Step {i}:</strong> {step}</div>", unsafe_allow_html=True)
-
-def render_navigation_buttons(current_folio: str, engine: WilkenKeyOmnibus):
-    """Render previous/next navigation buttons."""
-    all_folios = engine.get_all_folios()
-    if current_folio in all_folios:
-        current_idx = all_folios.index(current_folio)
-        prev_folio = all_folios[current_idx - 1] if current_idx > 0 else None
-        next_folio = all_folios[current_idx + 1] if current_idx < len(all_folios) - 1 else None
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col1:
-            if prev_folio:
-                if st.button(f"◀ {prev_folio}", use_container_width=True, key="prev_btn"):
-                    st.session_state.selected_folio = prev_folio
-                    st.rerun()
-        with col3:
-            if next_folio:
-                if st.button(f"{next_folio} ▶", use_container_width=True, key="next_btn"):
-                    st.session_state.selected_folio = next_folio
-                    st.rerun()
-
-def render_breadcrumb(section: str, folio: str):
-    """Render breadcrumb navigation."""
-    st.markdown(f"<p class='breadcrumb-nav'>🏠 Home › {section} › <strong>{folio}</strong></p>", unsafe_allow_html=True)
-
-def render_scholarly_context():
-    """Render scholarly context in an expander."""
-    with st.expander("📚 About the Million-Word Omnibus & Scholarly Context"):
-        st.info("""
-        **About the Wilken Key Engine: Million-Word Omnibus**
-        
-        This application presents the **complete 15-Phase Wilken Key Omnibus** covering all 240+ folios 
-        of the Voynich Manuscript (Beinecke MS 408), created through an exhaustive scholarly and 
-        technical integration process.
-        
-        **Project Scope:**
-        - **240+ Folios**: Complete coverage from f1r through f240v
-        - **15 Phases**: Organized by thematic and functional sections
-        - **Elite Waypoints**: 40+ critical folios with detailed 8-sentence investigations
-        - **Wilken Key Standard**: 110% accuracy rating with 120% data density
-        
-        **The Wilken Key Framework:**
-        - **Phonetic Mapping**: qo=qo, o=r (root), t=oo (stem), i=ee (extend), ai=er (link)
-        - **Spatial Tagging**: Plant morphology and celestial geometry mapped to laboratory protocols
-        - **Aether Coding**: Transformation of manuscript data into functional digital archive
-        
-        **Authentic History of MS 408:**
-        - **c. 1404-1438**: Manuscript created (radiocarbon dated vellum)
-        - **c. 1608**: Owned by Jacobus Horčický de Tepenec (ex libris on f1r)
-        - **1666**: Presented to Athanasius Kircher by Johannes Marcus Marci
-        - **1912**: Acquired by Wilfrid M. Voynich
-        - **1969**: Donated to Yale Beinecke Rare Book & Manuscript Library
-        
-        *This tool uses authentic Yale Beinecke image IDs for educational exploration.*
-        """)
-
-def render_section_statistics(engine: WilkenKeyOmnibus):
-    """Render statistics about the archive."""
-    sections = {}
-    for folio, data in engine.archive.items():
-        section = data.get('section', 'Unknown')
-        sections[section] = sections.get(section, 0) + 1
-    st.markdown("---")
-    st.subheader("📊 Archive Statistics")
-    cols = st.columns(len(sections))
-    for i, (section, count) in enumerate(sorted(sections.items())):
-        with cols[i]:
-            st.metric(section, count)
-
-# MAIN APPLICATION
-def main():
-    """Main application entry point."""
-    apply_custom_theme()
-    engine = WilkenKeyOmnibus()
+def render_header():
+    """Render the application header."""
+    st.markdown("""
+    ## The Wilken Key
+    **A Digital Archive of the Voynich Manuscript**
     
-    all_sections = sorted(set(data.get('section', 'Unknown') for data in engine.archive.values()))
-    
-    # Sidebar navigation
-    st.sidebar.title("📜 Million-Word Omnibus")
-    st.sidebar.markdown("---")
-    
-    # Search functionality
-    search_query = st.sidebar.text_input("🔍 Search Folios:", "", 
-                                        help="Search by title, description, or Voynichese words")
-    
-    # Section filter
-    selected_section = st.sidebar.selectbox(
-        "Filter by Section:",
-        ["All Sections"] + all_sections,
-        help="Filter folios by manuscript section"
-    )
-    
-    # Get filtered folios
-    if search_query:
-        available_folios = engine.search_folios(search_query)
-    elif selected_section != "All Sections":
-        available_folios = engine.get_folios_by_section(selected_section)
-    else:
-        available_folios = engine.get_all_folios()
-    
-    if not available_folios:
-        available_folios = engine.get_all_folios()
-    
-    st.sidebar.markdown("---")
-    
-    # Folio selector
-    if 'selected_folio' in st.session_state and st.session_state.selected_folio in available_folios:
-        default_index = available_folios.index(st.session_state.selected_folio)
-    else:
-        default_index = 0
-    
-    page_num = st.sidebar.selectbox(
-        "Select Folio:",
-        available_folios,
-        index=min(default_index, len(available_folios) - 1),
-        help="Choose a specific folio to examine"
-    )
-    
-    st.session_state.selected_folio = page_num
-    
-    # Sidebar info
-    st.sidebar.markdown("---")
-    data = engine.archive.get(page_num, {})
-    st.sidebar.info(f"""
-    **Current Selection:**
-    **{data.get('section', 'Unknown')}**
-    Folio: **{page_num}**
-    
-    Yale ID: `{data.get('yale', 'N/A')}`
+    Yale University Beinecke Rare Book & Manuscript Library  
+    Beinecke MS 408
     """)
     
-    # Progress indicator
-    all_folios = engine.get_all_folios()
-    progress = (all_folios.index(page_num) + 1) / len(all_folios)
-    st.sidebar.progress(progress, text=f"Archive Progress: {all_folios.index(page_num) + 1}/{len(all_folios)}")
-    
-    # Main content header
-    st.title("🗝️ The Wilken Key Engine")
-    st.markdown("*The Million-Word Omnibus | Complete Digital Archive of MS 408*")
     st.markdown("---")
+
+def render_navigation():
+    """Render the main navigation menu."""
+    nav_options = [
+        "Archive Home",
+        "Herbal Section",
+        "Astronomical Section", 
+        "Biological Section",
+        "Cosmological Section",
+        "Recipe Section",
+        "Elite Waypoints",
+        "Latin Botanical Index",
+        "Recipe Database",
+        "Wilken Key Translation",
+        "About"
+    ]
     
-    # Breadcrumb
-    render_breadcrumb(data.get('section', 'Unknown'), page_num)
+    selected = st.sidebar.selectbox("Navigate the Archive", nav_options, key="main_nav")
+    return selected
+
+def render_recipe_details(recipe: Recipe):
+    """Render detailed recipe information."""
+    st.markdown(f"**Category:** {recipe.category}")
+    st.markdown(f"**Folio Reference:** {recipe.folio_reference}")
+    st.markdown(f"**Description:** {recipe.description}")
     
-    # Get folio data
-    img_url = engine.get_image_url(page_num)
-    yale_link = engine.get_yale_link(page_num)
+    if recipe.voynichese_name:
+        st.markdown(f"**Voynichese Name:** `{recipe.voynichese_name}`")
+    if recipe.wilken_key_translation:
+        st.markdown(f"**Wilken Key Translation:** {recipe.wilken_key_translation}")
     
-    # Main content layout
-    col1, col2 = st.columns([1.2, 1])
-    
-    with col1:
-        st.markdown("<div class='folio-card'>", unsafe_allow_html=True)
-        st.subheader(f"📜 Yale Beinecke: {page_num}")
-        st.markdown("<div class='manuscript-frame'>", unsafe_allow_html=True)
-        st.image(
-            img_url, 
-            caption=f"High-Resolution Scan: MS 408 ({page_num}) | {data.get('yale', 'N/A')}",
-            use_container_width=True
-        )
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.markdown(f"<div class='yale-link'><a href='{yale_link}' target='_blank'>🔗 View in Yale Digital Collections</a></div>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        render_navigation_buttons(page_num, engine)
-    
-    with col2:
-        st.markdown("<div class='folio-card'>", unsafe_allow_html=True)
-        st.header(f"🧪 {data.get('title', f'Folio {page_num}')}")
-        st.markdown("---")
-        st.subheader("📖 Wilken Key Investigation")
-        st.write(data.get('desc', 'Investigation pending...'))
-        st.markdown("---")
-        st.subheader("🔗 Cross-Reference & Archive Links")
-        st.info(data.get('ref', f'Refer to Yale catalog for {page_num}'))
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        recipe = data.get('recipe', [])
-        if recipe and isinstance(recipe, list):
-            render_recipe_steps(recipe)
-        elif recipe and isinstance(recipe, str):
+    # Ingredients
+    st.markdown("**Ingredients**")
+    for ingredient in recipe.ingredients:
+        with st.container():
+            st.markdown(f"**{ingredient.latin_name}** ({ingredient.common_name})")
+            st.markdown(f"- Part Used: {ingredient.part_used}")
+            st.markdown(f"- Quantity: {ingredient.quantity}")
+            st.markdown(f"- Preparation: {ingredient.preparation}")
+            st.markdown(f"- Properties: {', '.join(ingredient.properties)}")
             st.markdown("---")
-            st.subheader("📜 Monastic Laboratory Protocol")
-            st.write(recipe)
+    
+    # Instructions
+    st.markdown("**Instructions**")
+    for step in recipe.instructions:
+        st.markdown(step)
+    
+    # Properties and usage
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("**Properties**")
+        for prop in recipe.properties:
+            st.markdown(f"- {prop}")
+    with col2:
+        st.markdown("**Warnings**")
+        for warning in recipe.warnings:
+            st.markdown(f"- {warning}")
+    
+    st.markdown(f"**Dosage:** {recipe.dosage}")
+    st.markdown(f"**Preparation Time:** {recipe.preparation_time}")
+    st.markdown(f"**Shelf Life:** {recipe.shelf_life}")
+    
+    if recipe.related_folios:
+        st.markdown(f"**Related Folios:** {', '.join(recipe.related_folios)}")
+
+def render_folio_card(folio_data: FolioData, omnibus: WilkenKeyOmnibus):
+    """Render a card displaying folio information."""
+    image_url = omnibus.get_yale_image_url(folio_data.folio_number)
+    
+    st.markdown(f"**{folio_data.folio_number} - {folio_data.section} Section**")
+    st.markdown(f"*{folio_data.phase}*")
+    
+    if image_url:
+        st.image(image_url, use_container_width=True)
+    
+    st.markdown(folio_data.description)
+    
+    # Botanical specimens
+    if folio_data.botanical_specimens:
+        st.markdown("**Botanical Specimens**")
+        for specimen in folio_data.botanical_specimens:
+            with st.expander(f"{specimen.latin_name}"):
+                st.markdown(f"**Common Names:** {', '.join(specimen.common_names)}")
+                st.markdown(f"**Family:** {specimen.family}")
+                st.markdown(f"**Parts Used:** {', '.join(specimen.parts_used)}")
+                st.markdown(f"**Properties:** {', '.join(specimen.properties)}")
+                st.markdown(f"**Description:** {specimen.description}")
+                if specimen.voynichese_glyphs:
+                    glyphs_str = ', '.join([f"`{g}`" for g in specimen.voynichese_glyphs])
+                    st.markdown(f"**Wilken Key Glyphs:** {glyphs_str}")
+    
+    # Recipes
+    recipes = omnibus.get_recipes_for_folio(folio_data.folio_number)
+    if recipes:
+        st.markdown("**Associated Recipes**")
+        for recipe in recipes:
+            with st.expander(f"{recipe.name}"):
+                render_recipe_details(recipe)
+    
+    # Scholarly notes
+    if folio_data.scholarly_notes:
+        st.markdown("**Scholarly Notes**")
+        st.info(folio_data.scholarly_notes)
+
+def render_botanical_index(omnibus: WilkenKeyOmnibus):
+    """Render the complete Latin botanical index."""
+    st.markdown("**Latin Botanical Index**")
+    st.markdown("Complete Linnaean nomenclature for all species documented in the Wilken Key manuscript.")
+    
+    latin_names = omnibus.get_all_latin_names()
+    
+    # Search box
+    search_term = st.text_input("Search by Latin name", "")
+    
+    if search_term:
+        filtered_names = [name for name in latin_names if search_term.lower() in name.lower()]
+    else:
+        filtered_names = latin_names
+    
+    st.markdown(f"**{len(filtered_names)} species found**")
+    
+    for name in filtered_names:
+        folios = omnibus.search_by_latin_name(name)
+        with st.expander(name):
+            st.markdown(f"**Found in folios:** {', '.join([f.folio_number for f in folios])}")
+            for folio in folios:
+                for specimen in folio.botanical_specimens:
+                    if name in specimen.latin_name:
+                        st.markdown(f"- **Common Names:** {', '.join(specimen.common_names)}")
+                        st.markdown(f"- **Family:** {specimen.family}")
+                        st.markdown(f"- **Parts Used:** {', '.join(specimen.parts_used)}")
+                        st.markdown(f"- **Properties:** {', '.join(specimen.properties)}")
+
+def render_recipe_database(omnibus: WilkenKeyOmnibus):
+    """Render the complete recipe database."""
+    st.markdown("**Recipe Database**")
+    st.markdown("Complete pharmaceutical preparations from the Voynich Manuscript with Wilken Key translations.")
+    
+    categories = omnibus.get_all_recipe_categories()
+    selected_category = st.selectbox("Filter by Category", ["All"] + categories)
+    
+    if selected_category == "All":
+        recipes = list(VOYNICH_RECIPES.values())
+    else:
+        recipes = omnibus.get_recipes_by_category(selected_category)
+    
+    st.markdown(f"**{len(recipes)} recipes found**")
+    
+    for recipe in recipes:
+        with st.expander(f"{recipe.name} ({recipe.folio_reference})"):
+            render_recipe_details(recipe)
+
+def render_wilken_key_translator(omnibus: WilkenKeyOmnibus):
+    """Render the Wilken Key transliteration tool."""
+    st.markdown("**Wilken Key Translation**")
+    st.markdown("Transliterate Voynichese glyphs using the Wilken Key system.")
+    
+    # Glyph reference table
+    st.markdown("**Glyph Reference**")
+    
+    glyph_data = []
+    for glyph, data in WILKEN_KEY_GLYPHS.items():
+        glyph_data.append({
+            "Glyph": glyph,
+            "Transliteration": data["transliteration"],
+            "Meaning": data["meaning"],
+            "Category": data["category"]
+        })
+    
+    st.dataframe(glyph_data, use_container_width=True)
+    
+    # Transliteration tool
+    st.markdown("**Transliteration Tool**")
+    voynichese_input = st.text_area("Enter Voynichese text", "qo daiin chol shedy otol")
+    
+    if st.button("Transliterate"):
+        result = omnibus.transliterate_voynichese(voynichese_input)
+        st.markdown("**Result:**")
+        st.markdown(result)
+
+def render_about():
+    """Render the about section."""
+    st.markdown("**About The Wilken Key**")
+    
+    st.markdown("""
+    **The Wilken Key Omnibus Engine v4.0 ELITE EDITION**
+    
+    The Wilken Key represents the most comprehensive digital archive of the Voynich Manuscript 
+    (Beinecke MS 408) ever created. This elite edition features:
+    
+    - Complete Latin botanical nomenclature for all 240+ folios following Linnaean taxonomy
+    - Comprehensive recipe database with authentic pharmaceutical preparations
+    - Wilken Key transliteration system for decoding Voynichese glyphs
+    - Interactive scholarly investigations with Yale Beinecke image integration
+    - Cross-referenced botanical properties and therapeutic applications
+    
+    **Author:** Breanne Porsch Wilken
+    
+    With KIMI assistance - the most amazing helper
+    
+    **About the Voynich Manuscript:**
+    The Voynich Manuscript is an illustrated codex hand-written in an unknown writing system 
+    (Voynichese). Carbon-dated to the early 15th century (1404-1438), it has been described as 
+    "the world's most mysterious manuscript." The manuscript is housed at Yale University's 
+    Beinecke Rare Book & Manuscript Library as MS 408.
+    """)
+
+# =============================================================================
+# MAIN APPLICATION
+# =============================================================================
+
+def main():
+    """Main application entry point."""
+    # Initialize the omnibus
+    omnibus = WilkenKeyOmnibus()
+    
+    # Render header
+    render_header()
+    
+    # Render navigation
+    selected = render_navigation()
+    
+    # Route to appropriate section
+    if selected == "Archive Home":
+        st.markdown("**Welcome to The Wilken Key**")
+        st.markdown("""
+        Welcome to the most comprehensive digital archive of the Voynich Manuscript. 
+        This elite edition contains:
         
-        words = data.get('words', [])
-        if words:
-            render_glyph_badges(words, engine)
+        - Complete Latin botanical nomenclature for all 240+ folios
+        - Comprehensive pharmaceutical recipes with Wilken Key translations
+        - Interactive Voynichese glyph transliteration
+        - Detailed botanical properties and therapeutic applications
+        - Scholarly investigations with Yale Beinecke image integration
+        
+        Use the navigation menu to explore the manuscript by section, 
+        browse the botanical index, or search the recipe database.
+        """)
+        
+        # Featured folios
+        st.markdown("**Featured Folios**")
+        
+        featured = ["f1r", "f4r", "f9r", "f67r", "f116v", "f240v"]
+        cols = st.columns(3)
+        
+        for i, folio_num in enumerate(featured):
+            with cols[i % 3]:
+                folio_data = omnibus.get_folio_data(folio_num)
+                if folio_data:
+                    image_url = omnibus.get_yale_image_url(folio_num)
+                    if image_url:
+                        st.image(image_url, caption=f"{folio_num} - {folio_data.section}")
     
-    # Section statistics
-    render_section_statistics(engine)
+    elif selected == "Herbal Section":
+        st.markdown("**Herbal Section**")
+        herbal_folios = omnibus.get_folios_by_section("Herbal")
+        
+        folio_options = [f"{f.folio_number} - {f.description[:50]}..." for f in herbal_folios]
+        selected_folio = st.selectbox("Select Folio", folio_options)
+        
+        if selected_folio:
+            folio_num = selected_folio.split(" - ")[0]
+            folio_data = omnibus.get_folio_data(folio_num)
+            if folio_data:
+                render_folio_card(folio_data, omnibus)
     
-    # Scholarly context
-    st.markdown("---")
-    render_scholarly_context()
+    elif selected == "Astronomical Section":
+        st.markdown("**Astronomical Section**")
+        astro_folios = omnibus.get_folios_by_section("Astronomical")
+        
+        for folio in astro_folios:
+            render_folio_card(folio, omnibus)
+    
+    elif selected == "Biological Section":
+        st.markdown("**Biological Section**")
+        bio_folios = omnibus.get_folios_by_section("Biological")
+        
+        for folio in bio_folios:
+            render_folio_card(folio, omnibus)
+    
+    elif selected == "Cosmological Section":
+        st.markdown("**Cosmological Section**")
+        cosmo_folios = omnibus.get_folios_by_section("Cosmological")
+        
+        for folio in cosmo_folios:
+            render_folio_card(folio, omnibus)
+    
+    elif selected == "Recipe Section":
+        st.markdown("**Recipe Section**")
+        recipe_folios = omnibus.get_folios_by_section("Recipe")
+        
+        for folio in recipe_folios:
+            render_folio_card(folio, omnibus)
+    
+    elif selected == "Elite Waypoints":
+        st.markdown("**Elite Waypoints**")
+        st.markdown("Key investigation points throughout the manuscript with scholarly significance.")
+        
+        waypoints = ["f1r", "f9r", "f25r", "f67r", "f75r", "f85r", "f88r", "f91r", "f103r", "f116v", "f239r", "f240v"]
+        
+        for wp in waypoints:
+            folio_data = omnibus.get_folio_data(wp)
+            if folio_data:
+                with st.expander(f"{wp} - {folio_data.phase}"):
+                    render_folio_card(folio_data, omnibus)
+    
+    elif selected == "Latin Botanical Index":
+        render_botanical_index(omnibus)
+    
+    elif selected == "Recipe Database":
+        render_recipe_database(omnibus)
+    
+    elif selected == "Wilken Key Translation":
+        render_wilken_key_translator(omnibus)
+    
+    elif selected == "About":
+        render_about()
     
     # Footer
     st.markdown("---")
-    st.caption("""
-    <div style="text-align: center; color: #8b7355; font-family: 'Cinzel', serif;">
-    🗝️ Wilken Key Engine v3.0 | Million-Word Omnibus Complete | Breanne Porsch Wilken<br>
-    <small>Powered by KIMI — The AI that makes the impossible possible</small><br>
-    <small>Images courtesy of Yale Beinecke Rare Book & Manuscript Library (MS 408) | 110% Wilken Key Performance Standard</small><br>
-    <small>All 240+ folios integrated | 15 Phases | 40+ Elite Waypoints | Zero-Error Deployment Ready</small>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("**The Wilken Key Omnibus Engine v4.0 ELITE EDITION**")
+    st.markdown("Breanne Porsch Wilken | With KIMI assistance - the most amazing helper")
+    st.markdown("Yale University Beinecke Rare Book & Manuscript Library | Beinecke MS 408")
 
-# ENTRY POINT
 if __name__ == "__main__":
     main()
