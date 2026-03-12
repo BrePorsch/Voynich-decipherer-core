@@ -1,14 +1,3 @@
-🗝️ WILKEN KEY ENGINE | THE MILLION-WORD OMNIBUS v4.0 - ELITE EDITION
-======================================================================
-The Complete Digital Archive of the Voynich Manuscript (Beinecke MS 408)
-Featuring all 240+ folios with Latin botanical nomenclature, comprehensive
-recipes, and Wilken Key transliteration framework.
-
-Author: Breanne Porsch Wilken
-Powered by KIMI - The AI that makes the impossible possible
-Scholarly Collaboration: K2.5 Swarm Elite Research Division
-"""
-
 import streamlit as st
 from typing import Dict, List, Optional, Any, Tuple
 from dataclasses import dataclass
