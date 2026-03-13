@@ -1,4 +1,892 @@
 # ═══════════════════════════════════════════════════════════════════════════════
+# WILKEN KEY ENGINE v5.0 - PART 1: IMPORTS, CONFIGURATION & LATIN PHARMACOPEIA
+# ═══════════════════════════════════════════════════════════════════════════════
+# The Ultimate Voynich Manuscript MS 408 Investigation Platform
+# Featuring: Complete 232 Folios | 105 Latin Terms | 30 Materia Medica
+# Planetary Correspondences | Seasonal Protocols | Interactive Tools
+# ═══════════════════════════════════════════════════════════════════════════════
+
+import streamlit as st
+import base64
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple, Any
+
+# ───────────────────────────────────────────────────────────────────────────────
+# SECTION 1A: APPLICATION CONFIGURATION
+# ───────────────────────────────────────────────────────────────────────────────
+
+# Yale Beinecke Library IIIF Image API Configuration
+YALE_IIIF_BASE = "https://images.beinecke.library.yale.edu/iiif/2/"
+BASE_YALE_ID = 1006076  # Base ID for f1r
+ROSETTA_SHIFT = 15      # Shift applied after folio 86
+
+# Application Metadata
+APP_TITLE = "Wilken Key Engine v5.0"
+APP_SUBTITLE = "Voynich Manuscript MS 408 - Complete Scholar Investigation"
+APP_VERSION = "5.0.0 (Ultimate Edition)"
+APP_AUTHOR = "Wilken Key Scholar Investigation"
+
+# Page Configuration
+st.set_page_config(
+    page_title=APP_TITLE,
+    page_icon="🔑",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'Get Help': 'https://beinecke.library.yale.edu/collections/highlights/voynich-manuscript',
+        'Report a bug': "mailto:support@wilkenkey.engine",
+        'About': f"{APP_TITLE} - {APP_SUBTITLE} v{APP_VERSION}"
+    }
+)
+
+# ───────────────────────────────────────────────────────────────────────────────
+# SECTION 1B: COMPLETE LATIN PHARMACOPEIA
+# ───────────────────────────────────────────────────────────────────────────────
+
+LATIN_PHARMACOPEIA = {
+    "preparations": {
+        "infusum": {
+            "latin": "Infusum",
+            "english": "Infusion",
+            "description": "A water-based preparation made by pouring boiling water over herbs and allowing them to steep. Used for delicate plant parts like flowers and leaves.",
+            "method": "Pour 1 cup boiling water over 1-2 teaspoons dried herb. Cover and steep 10-15 minutes. Strain and drink.",
+            "best_for": ["flowers", "leaves", "delicate_parts"],
+            "shelf_life": "24 hours refrigerated"
+        },
+        "decoctum": {
+            "latin": "Decoctum",
+            "english": "Decoction",
+            "description": "A water-based preparation made by simmering herbs in water. Used for tougher plant materials like roots, barks, and seeds.",
+            "method": "Simmer 1 tablespoon dried herb in 2 cups water for 15-20 minutes. Strain and drink.",
+            "best_for": ["roots", "barks", "seeds", "woody_parts"],
+            "shelf_life": "48 hours refrigerated"
+        },
+        "tinctura": {
+            "latin": "Tinctura",
+            "english": "Tincture",
+            "description": "An alcohol-based extraction that preserves and concentrates herbal properties. Made by macerating herbs in alcohol.",
+            "method": "Fill jar 1/3 with dried herb. Cover with 40-60% alcohol. Seal and shake daily for 4-6 weeks. Strain and bottle.",
+            "best_for": ["all_plant_parts", "resins", "gums"],
+            "shelf_life": "3-5 years"
+        },
+        "extractum": {
+            "latin": "Extractum",
+            "english": "Extract",
+            "description": "A concentrated preparation made by evaporating a tincture or decoction to a thick consistency.",
+            "method": "Reduce tincture or strong decoction by gentle heat until thick and syrupy. Store in airtight container.",
+            "best_for": ["concentrated_doses", "travel", "long_term_storage"],
+            "shelf_life": "1-2 years"
+        },
+        "oleum": {
+            "latin": "Oleum",
+            "english": "Oil Infusion",
+            "description": "Oil-based extraction of herbal properties, used for external applications and some internal uses.",
+            "method": "Fill jar with dried herb. Cover with carrier oil. Heat gently (solar or low heat) for 2-4 weeks. Strain.",
+            "best_for": ["external_use", "massage", "skin_conditions"],
+            "shelf_life": "6-12 months"
+        },
+        "unguentum": {
+            "latin": "Unguentum",
+            "english": "Ointment/Salve",
+            "description": "A semi-solid preparation for external application, made by combining herbal oils with beeswax.",
+            "method": "Melt 1 part beeswax with 4-8 parts herbal oil. Pour into containers while warm. Cool and seal.",
+            "best_for": ["wounds", "skin_conditions", "joint_pain", "external_ailments"],
+            "shelf_life": "1-2 years"
+        },
+        "pilula": {
+            "latin": "Pilula",
+            "english": "Pill",
+            "description": "Small round preparations for oral administration, made by combining powdered herbs with binding agents.",
+            "method": "Mix powdered herbs with honey, syrup, or mucilage. Form into small pills. Dry thoroughly.",
+            "best_for": ["convenient_dosing", "bitter_herbs", "travel"],
+            "shelf_life": "6-12 months"
+        },
+        "electuarium": {
+            "latin": "Electuarium",
+            "english": "Electuary",
+            "description": "A sweet medicinal paste made by mixing powdered herbs with honey or syrup.",
+            "method": "Gradually add powdered herbs to honey, mixing thoroughly until smooth paste forms.",
+            "best_for": ["children", "pleasant_taste", "soothing_preparations"],
+            "shelf_life": "6-12 months"
+        },
+        "syrupus": {
+            "latin": "Syrupus",
+            "english": "Syrup",
+            "description": "A sweet, viscous preparation made by combining herbal decoctions with sugar or honey.",
+            "method": "Combine strong decoction with equal parts sugar or honey. Heat gently until dissolved. Bottle.",
+            "best_for": ["coughs", "sore_throats", "children", "pleasant_administration"],
+            "shelf_life": "3-6 months refrigerated"
+        },
+        "cataplasma": {
+            "latin": "Cataplasma",
+            "english": "Poultice",
+            "description": "A soft, moist preparation applied externally to draw out infection, reduce inflammation, or soothe tissues.",
+            "method": "Mix powdered or macerated herb with hot water to form paste. Apply to cloth and place on affected area.",
+            "best_for": ["external_inflammation", "drawing", "soothing", "local_treatment"],
+            "shelf_life": "Use immediately"
+        },
+        "fomentatio": {
+            "latin": "Fomentatio",
+            "english": "Fomentation/Compress",
+            "description": "External application of hot herbal decoction using cloth soaked in the liquid.",
+            "method": "Soak clean cloth in hot herbal decoction. Wring out excess and apply to affected area.",
+            "best_for": ["pain", "inflammation", "circulation", "relaxation"],
+            "shelf_life": "Use immediately"
+        },
+        "gargarisma": {
+            "latin": "Gargarisma",
+            "english": "Gargle",
+            "description": "A liquid preparation for rinsing the mouth and throat.",
+            "method": "Prepare strong decoction or dilute tincture in warm water. Gargle and expel.",
+            "best_for": ["sore_throats", "mouth_infections", "oral_hygiene"],
+            "shelf_life": "24 hours"
+        },
+        "collyrium": {
+            "latin": "Collyrium",
+            "english": "Eye Wash",
+            "description": "A specially prepared sterile solution for eye irrigation.",
+            "method": "Prepare very weak infusion with sterile water. Strain through fine cloth. Use immediately.",
+            "best_for": ["eye_irritation", "eye_infections", "eye_strain"],
+            "shelf_life": "Use immediately"
+        },
+        "linimentum": {
+            "latin": "Linimentum",
+            "english": "Liniment",
+            "description": "A liquid or semi-liquid preparation for external application, usually containing rubbing alcohol or vinegar.",
+            "method": "Combine herbal tinctures with rubbing alcohol, vinegar, or oil. Apply and rub into skin.",
+            "best_for": ["muscle_pain", "joint_pain", "circulation", "sports_injuries"],
+            "shelf_life": "1-2 years"
+        },
+        "essentia": {
+            "latin": "Essentia",
+            "english": "Essence",
+            "description": "A highly concentrated preparation capturing the volatile principles of a plant.",
+            "method": "Steam distillation or expression of volatile oils. Store in dark, airtight bottles.",
+            "best_for": ["aromatherapy", "concentrated_therapy", "perfume"],
+            "shelf_life": "2-5 years"
+        },
+        "aqua": {
+            "latin": "Aqua",
+            "english": "Herbal Water/Hydrosol",
+            "description": "The aromatic water remaining after steam distillation of essential oils.",
+            "method": "Collect condensate from steam distillation. Separate from essential oil layer.",
+            "best_for": ["gentle_aromatherapy", "skin_care", "room_spray"],
+            "shelf_life": "6-12 months refrigerated"
+        },
+        "vinum": {
+            "latin": "Vinum",
+            "english": "Medicated Wine",
+            "description": "Wine infused with medicinal herbs for internal consumption.",
+            "method": "Steep herbs in wine for 2-4 weeks. Strain and bottle. Age improves quality.",
+            "best_for": ["digestion", "circulation", "tonic", "cardiac_remedies"],
+            "shelf_life": "2-5 years"
+        },
+        "acetum": {
+            "latin": "Acetum",
+            "english": "Herbal Vinegar",
+            "description": "Vinegar infused with herbs for culinary and medicinal use.",
+            "method": "Fill jar with herbs. Cover with apple cider vinegar. Steep 4-6 weeks. Strain.",
+            "best_for": ["mineral_extraction", "digestion", "food_preservation"],
+            "shelf_life": "1-2 years"
+        },
+        "mel": {
+            "latin": "Mel",
+            "english": "Medicated Honey",
+            "description": "Honey infused with herbs for soothing and antimicrobial applications.",
+            "method": "Gently warm honey with dried herbs. Steep 2-4 weeks. Strain if desired.",
+            "best_for": ["sore_throats", "wounds", "coughs", "children"],
+            "shelf_life": "Indefinite"
+        },
+        "pulvis": {
+            "latin": "Pulvis",
+            "english": "Powder",
+            "description": "Dried herb ground to fine powder for various applications.",
+            "method": "Dry herb thoroughly. Grind to fine powder using mortar and pestle or grinder. Sieve.",
+            "best_for": ["encapsulation", "sprinkling", "making_pills", "quick_use"],
+            "shelf_life": "1-2 years"
+        },
+        "capsula": {
+            "latin": "Capsula",
+            "english": "Capsule",
+            "description": "Powdered herb enclosed in gelatin or vegetable-based capsule.",
+            "method": "Fill empty capsules with powdered herb using capsule filling machine or by hand.",
+            "best_for": ["convenient_dosing", "taste_masking", "travel", "precise_dosing"],
+            "shelf_life": "1-2 years"
+        },
+        "suppositorium": {
+            "latin": "Suppositorium",
+            "english": "Suppository",
+            "description": "Solid preparation for rectal or vaginal insertion, melting at body temperature.",
+            "method": "Melt cocoa butter or coconut oil. Mix in powdered herbs. Pour into molds. Chill.",
+            "best_for": ["systemic_absorption", "local_treatment", "when_oral_not_possible"],
+            "shelf_life": "6-12 months refrigerated"
+        },
+        "trochiscus": {
+            "latin": "Trochiscus",
+            "english": "Lozenge/Pastille",
+            "description": "Hard, slow-dissolving preparation for oral administration, often for throat conditions.",
+            "method": "Mix powdered herbs with sugar, gum, and mucilage. Form into shapes. Dry thoroughly.",
+            "best_for": ["sore_throats", "coughs", "slow_release", "pleasant_taste"],
+            "shelf_life": "6-12 months"
+        },
+        "emplastrum": {
+            "latin": "Emplastrum",
+            "english": "Plaster",
+            "description": "Solid adhesive preparation applied to skin for prolonged contact.",
+            "method": "Mix powdered herbs with resin and wax base. Spread on cloth or leather backing.",
+            "best_for": ["prolonged_contact", "drawing", "protection", "support"],
+            "shelf_life": "1-2 years"
+        },
+        "conserva": {
+            "latin": "Conserva",
+            "english": "Conserve",
+            "description": "Fresh herb preserved in sugar, similar to jam.",
+            "method": "Pound fresh herb with sugar until smooth. Store in airtight jars.",
+            "best_for": ["preserving_fresh_herbs", "pleasant_taste", "children"],
+            "shelf_life": "6-12 months"
+        }
+    },
+    
+    "actions": {
+        "alterativa": {
+            "latin": "Alterativa",
+            "english": "Alterative",
+            "description": "Gradually restores proper function to the body, improving metabolism and promoting elimination of wastes. Used for chronic conditions.",
+            "examples": ["burdock", "dandelion", "red_clover", "sarsaparilla"],
+            "indications": ["chronic_skin_conditions", "arthritis", "autoimmune_conditions", "toxic_overload"]
+        },
+        "antipyretica": {
+            "latin": "Antipyretica",
+            "english": "Antipyretic/Febrifuge",
+            "description": "Reduces fever by promoting sweating, cooling the body, or addressing the underlying cause.",
+            "examples": ["yarrow", "elderflower", "peppermint", "willow_bark"],
+            "indications": ["fever", "heat_exhaustion", "infections_with_fever"]
+        },
+        "antispasmodica": {
+            "latin": "Antispasmodica",
+            "english": "Antispasmodic",
+            "description": "Relieves spasms, cramps, and involuntary muscle contractions in smooth and skeletal muscles.",
+            "examples": ["cramp_bark", "black_haw", "chamomile", "valerian", "passionflower"],
+            "indications": ["menstrual_cramps", "muscle_spasms", "asthma", "colic", "irritable_bowel"]
+        },
+        "astringentia": {
+            "latin": "Astringentia",
+            "english": "Astringent",
+            "description": "Tightens and tones tissues, reducing secretions and discharge. Acts on mucous membranes and skin.",
+            "examples": ["witch_hazel", "oak_bark", "yellow_dock", "plantain", "rose"],
+            "indications": ["diarrhea", "bleeding", "excessive_mucus", "loose_gums", "varicose_veins"]
+        },
+        "carminativa": {
+            "latin": "Carminativa",
+            "english": "Carminative",
+            "description": "Relieves flatulence and gas, soothes digestive tract, and promotes proper digestion.",
+            "examples": ["peppermint", "fennel", "ginger", "caraway", "dill", "cinnamon"],
+            "indications": ["gas", "bloating", "indigestion", "colic", "nausea"]
+        },
+        "demulcentia": {
+            "latin": "Demulcentia",
+            "english": "Demulcent",
+            "description": "Soothes and protects irritated mucous membranes with a coating of mucilage.",
+            "examples": ["marshmallow", "slippery_elm", "plantain", "licorice", "irish_moss"],
+            "indications": ["sore_throat", "gastritis", "dry_cough", "urinary_irritation", "IBS"]
+        },
+        "diaphoretica": {
+            "latin": "Diaphoretica",
+            "english": "Diaphoretic",
+            "description": "Promotes sweating, helping to eliminate toxins and reduce fever.",
+            "examples": ["yarrow", "elderflower", "ginger", "boneset", "peppermint"],
+            "indications": ["fever", "colds", "flu", "detoxification", "skin_conditions"]
+        },
+        "diuretica": {
+            "latin": "Diuretica",
+            "english": "Diuretic",
+            "description": "Increases urine production and flow, helping to eliminate excess fluid and waste.",
+            "examples": ["dandelion", "parsley", "juniper", "buchu", "corn_silk", "uva_ursi"],
+            "indications": ["edema", "UTI", "kidney_stones", "hypertension", "gout", "detox"]
+        },
+        "emmenagogica": {
+            "latin": "Emmenagogica",
+            "english": "Emmenagogue",
+            "description": "Promotes and regulates menstrual flow, often by stimulating blood flow to the pelvic area.",
+            "examples": ["pennyroyal", "rue", "sage", "mugwort", "blue_cohosh"],
+            "indications": ["delayed_menses", "scanty_menses", "menstrual_cramps", "PMS"],
+            "warning": "Contraindicated in pregnancy"
+        },
+        "expectorantia": {
+            "latin": "Expectorantia",
+            "english": "Expectorant",
+            "description": "Promotes the expulsion of mucus from the respiratory tract.",
+            "examples": ["mullein", "elecampane", "licorice", "ginger", "wild_cherry"],
+            "indications": ["cough", "congestion", "bronchitis", "chest_colds", "asthma"]
+        },
+        "hepatica": {
+            "latin": "Hepatica",
+            "english": "Hepatic",
+            "description": "Supports and strengthens liver function, promotes bile production and flow.",
+            "examples": ["dandelion", "milk_thistle", "yellow_dock", "gentian", "wormwood"],
+            "indications": ["liver_congestion", "poor_digestion", "skin_conditions", "jaundice", "gallstones"]
+        },
+        "nervina": {
+            "latin": "Nervina",
+            "english": "Nervine",
+            "description": "Acts on the nervous system to calm, strengthen, or restore function.",
+            "subtypes": {
+                "nervina_relaxantia": "Calming and sedating",
+                "nervina_stimulantia": "Stimulating and tonifying",
+                "nervina_tonica": "Strengthening and restorative"
+            },
+            "examples": ["valerian", "passionflower", "chamomile", "oats", "skullcap", "lemon_balm"],
+            "indications": ["anxiety", "insomnia", "nervous_tension", "stress", "nervous_exhaustion"]
+        },
+        "rubefacientia": {
+            "latin": "Rubefacientia",
+            "english": "Rubefacient",
+            "description": "Increases blood flow to the skin surface, causing redness and warmth when applied externally.",
+            "examples": ["cayenne", "mustard", "ginger", "black_pepper", "rosemary"],
+            "indications": ["muscle_pain", "joint_pain", "poor_circulation", "chest_congestion"],
+            "warning": "For external use only, may irritate sensitive skin"
+        },
+        "sedativa": {
+            "latin": "Sedativa",
+            "english": "Sedative",
+            "description": "Reduces nervous activity, promotes relaxation and sleep.",
+            "examples": ["valerian", "hops", "passionflower", "wild_lettuce", "jamaican_dogwood"],
+            "indications": ["insomnia", "anxiety", "nervous_tension", "muscle_spasms", "pain"]
+        },
+        "stomachica": {
+            "latin": "Stomachica",
+            "english": "Stomachic",
+            "description": "Strengthens and tones the stomach, improves digestion and appetite.",
+            "examples": ["gentian", "ginger", "bitter_orange", "wormwood", "angelica"],
+            "indications": ["poor_appetite", "indigestion", "weak_digestion", "nausea", "gas"]
+        },
+        "tonica": {
+            "latin": "Tonica",
+            "english": "Tonic",
+            "description": "Strengthens and invigorates the entire system or specific organs.",
+            "subtypes": {
+                "tonica_general": "Whole body tonic",
+                "tonica_cardiaca": "Heart tonic",
+                "tonica_digestiva": "Digestive tonic",
+                "tonica_nervosa": "Nerve tonic"
+            },
+            "examples": ["ginseng", "ashwagandha", "damiana", "hawthorn", "gentian"],
+            "indications": ["weakness", "convalescence", "fatigue", "depletion", "chronic_stress"]
+        },
+        "vulneraria": {
+            "latin": "Vulneraria",
+            "english": "Vulnerary",
+            "description": "Promotes healing of wounds and injuries when applied externally or taken internally.",
+            "examples": ["comfrey", "plantain", "calendula", "yarrow", "arnica", "gotu_kola"],
+            "indications": ["wounds", "cuts", "bruises", "sprains", "fractures", "ulcers"]
+        },
+        "amara": {
+            "latin": "Amara",
+            "english": "Bitter",
+            "description": "Stimulates digestive secretions and improves appetite through bitter taste receptors.",
+            "examples": ["gentian", "wormwood", "dandelion", "yellow_dock", "hops", "angostura"],
+            "indications": ["poor_appetite", "sluggish_digestion", "liver_congestion", "before_meals"]
+        },
+        "aromatica": {
+            "latin": "Aromatica",
+            "english": "Aromatic",
+            "description": "Contains volatile oils that are fragrant and often carminative, antiseptic, or stimulant.",
+            "examples": ["peppermint", "fennel", "lavender", "thyme", "rosemary", "cinnamon"],
+            "indications": ["digestion", "respiratory_conditions", "nervous_tension", "antiseptic_needs"]
+        },
+        "mucilaginosa": {
+            "latin": "Mucilaginosa",
+            "english": "Mucilaginous",
+            "description": "Contains gelatinous substances that soothe and protect irritated tissues.",
+            "examples": ["marshmallow", "slippery_elm", "comfrey", "plantain", "psyllium"],
+            "indications": ["irritated_tissues", "inflammation", "dry_conditions", "soothing_needed"]
+        },
+        "resolventia": {
+            "latin": "Resolventia",
+            "english": "Resolvent/Discutient",
+            "description": "Promotes the resolution of swellings, tumors, and hardened masses.",
+            "examples": ["poke_root", "figwort", "red_clover", "cleavers", "chickweed"],
+            "indications": ["swollen_glands", "tumors", "cysts", "lipomas", "hardened_masses"]
+        },
+        "refrigerantia": {
+            "latin": "Refrigerantia",
+            "english": "Refrigerant",
+            "description": "Cools the body and reduces fever, often by promoting sweating or direct cooling action.",
+            "examples": ["peppermint", "lemon_balm", "hibiscus", "chrysanthemum", "watermelon"],
+            "indications": ["fever", "heat_exhaustion", "hot_conditions", "summer_heat", "inflammation"]
+        },
+        "stimulantia": {
+            "latin": "Stimulantia",
+            "english": "Stimulant",
+            "description": "Increases physiological activity, energy, and alertness.",
+            "examples": ["coffee", "tea", "guarana", "kola", "ephedra", "prickly_ash"],
+            "indications": ["fatigue", "low_energy", "poor_circulation", "depression", "low_blood_pressure"]
+        },
+        "sudorifica": {
+            "latin": "Sudorifica",
+            "english": "Sudorific/Diaphoretic (strong)",
+            "description": "Promotes profuse sweating, stronger action than standard diaphoretics.",
+            "examples": ["jaborandi", "pilcarpus", "boneset", "pleurisy_root"],
+            "indications": ["high_fever", "rheumatic_conditions", "acute_infections", "detoxification"]
+        },
+        "antihelmintica": {
+            "latin": "Antihelmintica",
+            "english": "Anthelmintic/Vermifuge",
+            "description": "Expels parasitic worms from the digestive tract.",
+            "examples": ["wormwood", "black_walnut", "cloves", "pumpkin_seeds", "male_fern"],
+            "indications": ["intestinal_worms", "parasites", "pinworms", "roundworms", "tapeworms"]
+        },
+        "antiseptica": {
+            "latin": "Antiseptica",
+            "english": "Antiseptic",
+            "description": "Prevents or inhibits the growth of microorganisms, used externally and internally.",
+            "examples": ["thyme", "tea_tree", "echinacea", "goldenseal", "myrrh", "propolis"],
+            "indications": ["infections", "wounds", "sore_throat", "urinary_infections", "skin_conditions"]
+        },
+        "cholagoga": {
+            "latin": "Cholagoga",
+            "english": "Cholagogue",
+            "description": "Promotes the flow of bile from the gallbladder into the duodenum.",
+            "examples": ["dandelion", "boldo", "fringe_tree", "blue_flag", "greater_celandine"],
+            "indications": ["gallstones", "liver_congestion", "jaundice", "poor_fat_digestion"]
+        }
+    },
+    
+    "equipment": {
+        "mortarium": {
+            "latin": "Mortarium",
+            "english": "Mortar and Pestle",
+            "description": "Essential tool for grinding and powdering dried herbs. Made of stone, ceramic, wood, or metal.",
+            "uses": ["grinding", "powdering", "mixing", "crushing"],
+            "materials": ["marble", "granite", "ceramic", "wood", "brass", "iron"],
+            "care": "Clean thoroughly after each use. Avoid cross-contamination between toxic and non-toxic herbs."
+        },
+        "alembicus": {
+            "latin": "Alembicus",
+            "english": "Alembic/Still",
+            "description": "Apparatus for distillation, consisting of a vessel for heating, a condensing head, and a receiving vessel.",
+            "uses": ["distillation", "essential_oil_extraction", "hydrosol_production", "alcohol_purification"],
+            "components": ["cucurbit (heating_vessel)", "helm (head)", "beak (spout)", "receiver"],
+            "materials": ["copper", "glass", "stainless_steel"]
+        },
+        "retorta": {
+            "latin": "Retorta",
+            "english": "Retort",
+            "description": "Glass vessel with a long neck, used for distillation and chemical reactions.",
+            "uses": ["distillation", "sublimation", "dry_distillation", "chemical_reactions"],
+            "materials": ["glass", "ceramic"],
+            "care": "Handle with care. Heat gradually to prevent cracking."
+        },
+        "cucurbita": {
+            "latin": "Cucurbita",
+            "english": "Cucurbit",
+            "description": "The rounded vessel in a still that holds the material being distilled.",
+            "uses": ["holding_material", "heating", "distillation"],
+            "materials": ["copper", "glass", "ceramic"],
+            "capacity": "Various sizes from 1 pint to several gallons"
+        },
+        "pelicanus": {
+            "latin": "Pelicanus",
+            "english": "Pelican",
+            "description": "Vessel with a side arm that allows distilled liquid to return to the body, used for circulation.",
+            "uses": ["circulation", "continuous_distillation", "reflux"],
+            "materials": ["glass"],
+            "care": "Ensure proper sealing to prevent leakage."
+        },
+        "balneum_mariae": {
+            "latin": "Balneum Mariae",
+            "english": "Water Bath/Bain-Marie",
+            "description": "Double-boiler system for gentle heating using water as the heat transfer medium.",
+            "uses": ["gentle_heating", "temperature_control", "preventing_burning", "melting"],
+            "temperature_range": "Up to 100°C (212°F)",
+            "applications": ["making_ointments", "melting_beeswax", "gentle_extraction"]
+        },
+        "balneum_arenae": {
+            "latin": "Balneum Arena",
+            "english": "Sand Bath",
+            "description": "Heating system using sand as the heat transfer medium, providing higher temperatures than water bath.",
+            "uses": ["higher_temperature_heating", "even_heat_distribution", "drying"],
+            "temperature_range": "Up to 300°C (572°F)",
+            "applications": ["drying_herbs", "gentle_heating_above_water_temperature"]
+        },
+        "caldaria": {
+            "latin": "Caldaria",
+            "english": "Caldron/Cauldron",
+            "description": "Large metal pot for boiling, simmering, and preparing large quantities of preparations.",
+            "uses": ["boiling", "simmering", "decoction", "large_batch_preparation"],
+            "materials": ["cast_iron", "copper", "stainless_steel"],
+            "sizes": "From 1 gallon to 50+ gallons"
+        },
+        "olla": {
+            "latin": "Olla",
+            "english": "Pot/Vessel",
+            "description": "General-purpose cooking and preparation vessel.",
+            "uses": ["cooking", "simmering", "steeping", "general_preparation"],
+            "materials": ["ceramic", "clay", "copper", "iron", "enamel"],
+            "care": "Season cast iron. Avoid reactive metals with acidic preparations."
+        },
+        "patella": {
+            "latin": "Patella",
+            "english": "Shallow Pan/Dish",
+            "description": "Shallow vessel for evaporating liquids and drying preparations.",
+            "uses": ["evaporation", "drying", "crystallization", "calcination"],
+            "materials": ["ceramic", "porcelain", "glass", "copper"],
+            "care": "Use gentle heat to prevent cracking or burning."
+        },
+        "cribrum": {
+            "latin": "Cribrum",
+            "english": "Sieve/Strainer",
+            "description": "Perforated device for separating liquids from solids or grading particle sizes.",
+            "uses": ["straining", "sifting", "grading", "filtering"],
+            "types": ["fine_mesh", "coarse_mesh", "hair_sieve", "linen_strainer"],
+            "materials": ["metal", "hair", "linen", "silk"]
+        },
+        "phiala": {
+            "latin": "Phiala",
+            "english": "Bottle/Vial/Flask",
+            "description": "Container for storing liquid preparations.",
+            "uses": ["storage", "dispensing", "aging", "preservation"],
+            "types": ["dropper_bottle", "corked_bottle", "apothecary_jar", "decanter"],
+            "materials": ["glass", "ceramic", "crystal"],
+            "colors": ["clear", "amber", "blue", "green"]
+        },
+        "ampulla": {
+            "latin": "Ampulla",
+            "english": "Small Flask/Amphora",
+            "description": "Small vessel, often with two handles, for precious liquids.",
+            "uses": ["storing_precious_liquids", "travel", "dispensing"],
+            "materials": ["glass", "ceramic", "metal"],
+            "capacity": "1-8 ounces"
+        },
+        "urceolus": {
+            "latin": "Urceolus",
+            "english": "Pitcher/Jug",
+            "description": "Vessel with a spout for pouring liquids.",
+            "uses": ["pouring", "serving", "mixing", "steeping"],
+            "materials": ["ceramic", "glass", "metal", "stoneware"],
+            "features": ["spout", "handle", "lid"]
+        },
+        "trulla": {
+            "latin": "Trulla",
+            "english": "Ladle/Scoop",
+            "description": "Long-handled spoon for transferring liquids and semi-solids.",
+            "uses": ["transferring", "measuring", "stirring", "serving"],
+            "materials": ["wood", "metal", "ceramic"],
+            "sizes": "Various sizes for different applications"
+        },
+        "spatula": {
+            "latin": "Spatula",
+            "english": "Spatula",
+            "description": "Flat, flexible tool for mixing, spreading, and scraping.",
+            "uses": ["mixing", "spreading", "scraping", "folding"],
+            "materials": ["wood", "metal", "horn", "bone"],
+            "types": ["straight", "offset", "rounded", "pointed"]
+        },
+        "pistillum": {
+            "latin": "Pistillum",
+            "english": "Pestle",
+            "description": "Club-shaped tool used with mortar for grinding.",
+            "uses": ["grinding", "crushing", "mixing", "pounding"],
+            "materials": ["stone", "wood", "ceramic", "metal", "porcelain"],
+            "care": "Match material to mortar. Clean thoroughly between uses."
+        },
+        "colatorium": {
+            "latin": "Colatorium",
+            "english": "Strainer/Filter",
+            "description": "Device for separating solids from liquids, often conical in shape.",
+            "uses": ["filtering", "straining", "clarifying", "separating"],
+            "types": ["funnel_filter", "bag_filter", "press_filter"],
+            "materials": ["linen", "cotton", "paper", "metal_mesh"]
+        },
+        "torcular": {
+            "latin": "Torcular",
+            "english": "Press",
+            "description": "Device for extracting liquid by applying pressure to solid material.",
+            "uses": ["pressing", "juicing", "oil_extraction", "tincture_pressing"],
+            "types": ["screw_press", "lever_press", "hydraulic_press", "tincture_press"],
+            "materials": ["wood", "metal", "hydraulic"]
+        }
+    },
+    
+    "quality_tests": {
+        "probatio_coloris": {
+            "latin": "Probatio Coloris",
+            "english": "Color Test",
+            "description": "Visual examination of color to assess quality, freshness, and identity of herbal preparations.",
+            "method": "Observe color in natural light. Compare to standard reference. Note any discoloration or changes.",
+            "indicators": ["freshness", "identity", "oxidation", "degradation"],
+            "standards": "Should match expected color for the specific preparation"
+        },
+        "probatio_odoris": {
+            "latin": "Probatio Odoris",
+            "english": "Odor Test",
+            "description": "Assessment of aroma to verify identity, potency, and quality.",
+            "method": "Smell preparation at room temperature. Note character, intensity, and any off-odors.",
+            "indicators": ["identity", "potency", "volatility", "rancidity", "contamination"],
+            "standards": "Should have characteristic aroma without mustiness, rancidity, or off-odors"
+        },
+        "probatio_saporis": {
+            "latin": "Probatio Saporis",
+            "english": "Taste Test",
+            "description": "Careful tasting to verify identity and assess potency (for safe preparations only).",
+            "method": "Place small amount on tongue. Note immediate and after-taste. Spit if uncertain.",
+            "indicators": ["identity", "bitterness", "astringency", "sweetness", "acidity"],
+            "warning": "Only taste preparations known to be safe. Avoid tasting toxic herbs.",
+            "standards": "Should match expected taste profile"
+        },
+        "probatio_texturae": {
+            "latin": "Probatio Texturae",
+            "english": "Texture Test",
+            "description": "Physical examination of consistency and texture.",
+            "method": "Feel between fingers, observe flow characteristics, note any grittiness or separation.",
+            "indicators": ["proper_consistency", "homogeneity", "particle_size", "stability"],
+            "standards": "Should have appropriate texture for the preparation type"
+        },
+        "probatio_siccitatis": {
+            "latin": "Probatio Siccitatis",
+            "english": "Dryness Test",
+            "description": "Assessment of moisture content in dried herbs and preparations.",
+            "method": "Herbs should crumble when rubbed. Should not feel cool or damp to touch.",
+            "indicators": ["proper_drying", "storage_quality", "mold_risk"],
+            "standards": "Should be crisp and dry, not leathery or moist"
+        },
+        "probatio_claritatis": {
+            "latin": "Probatio Claritatis",
+            "english": "Clarity Test",
+            "description": "Visual inspection of liquid preparations for transparency and sediment.",
+            "method": "Hold up to light. Observe for cloudiness, particles, or sediment.",
+            "indicators": ["filtration_quality", "stability", "purity", "sedimentation"],
+            "standards": "Should be appropriately clear for the preparation type"
+        },
+        "probatio_consistentiae": {
+            "latin": "Probatio Consistentiae",
+            "english": "Consistency Test",
+            "description": "Assessment of viscosity and flow characteristics.",
+            "method": "Observe pouring, coating, and adherence properties.",
+            "indicators": ["proper_thickness", "flow_characteristics", "stability"],
+            "standards": "Should have appropriate consistency for intended use"
+        },
+        "probatio_integritatis": {
+            "latin": "Probatio Integritatis",
+            "english": "Integrity Test",
+            "description": "Overall assessment of preparation quality and wholeness.",
+            "method": "Comprehensive evaluation of all quality parameters together.",
+            "indicators": ["overall_quality", "suitability_for_use", "storage_life"],
+            "standards": "Should meet all quality criteria for the specific preparation"
+        },
+        "probatio_volatilitatis": {
+            "latin": "Probatio Volatilitatis",
+            "english": "Volatility Test",
+            "description": "Assessment of volatile oil content through aroma release.",
+            "method": "Crush or warm small sample. Assess intensity of aroma released.",
+            "indicators": ["volatile_oil_content", "freshness", "potency"],
+            "standards": "Should release characteristic aroma when stimulated"
+        },
+        "probatio_soluble": {
+            "latin": "Probatio Solubilis",
+            "english": "Solubility Test",
+            "description": "Testing how well a preparation dissolves in appropriate solvent.",
+            "method": "Add sample to solvent (water, alcohol, oil). Observe dissolution.",
+            "indicators": ["extraction_quality", "proper_preparation", "active_constituents"],
+            "standards": "Should dissolve appropriately for the preparation type"
+        }
+    },
+    
+    "combinations": {
+        "simplex": {
+            "latin": "Simplex",
+            "english": "Simple/Single Herb",
+            "description": "Preparation containing only one herb. Preferred for specific, targeted effects and for identifying herb actions.",
+            "advantages": ["clear_identification", "targeted_effects", "no_interactions", "easy_attribution"],
+            "examples": ["chamomile_tea", "pure_tincture", "single_herb_powder"],
+            "when_to_use": "When specific effect desired, for beginners, for testing new herbs"
+        },
+        "composita": {
+            "latin": "Composita",
+            "english": "Compound Formula",
+            "description": "Preparation containing multiple herbs combined for synergistic effects.",
+            "advantages": ["synergistic_effects", "multiple_actions", "balanced_formulation", "broader_application"],
+            "formulation_principles": ["primary_herb", "supporting_herbs", "catalyst", "harmonizer", "corrigent"],
+            "examples": ["digestive_bitters", "immune_formulas", "stress_remedies"],
+            "when_to_use": "For complex conditions, synergistic effects, balanced approach"
+        },
+        "species": {
+            "latin": "Species",
+            "english": "Species/Mixture",
+            "description": "A mixture of dried, powdered herbs intended for making infusions or decoctions.",
+            "preparation": "Mix powdered herbs in specified proportions. Store in airtight container.",
+            "use": "Add boiling water to powder, steep, and drink with sediment.",
+            "examples": ["digestive_species", "cold_species", "tonic_species"],
+            "advantages": ["convenient", "pre-mixed", "consistent_dosing"]
+        },
+        "species_odoratae": {
+            "latin": "Species Odoratae",
+            "english": "Aromatic Species",
+            "description": "Mixture of aromatic herbs, often used for pleasant flavor and carminative effects.",
+            "characteristics": ["pleasant_aroma", "carminative", "flavorful", "digestive"],
+            "common_ingredients": ["cinnamon", "ginger", "cloves", "cardamom", "fennel"],
+            "uses": ["digestion", "flavoring", "aromatic_waters", "pot_pourri"]
+        },
+        "species_amarae": {
+            "latin": "Species Amarae",
+            "english": "Bitter Species",
+            "description": "Mixture of bitter herbs for stimulating digestion and appetite.",
+            "characteristics": ["strongly_bitter", "digestive_stimulant", "tonic"],
+            "common_ingredients": ["gentian", "wormwood", "dandelion", "orange_peel", "ginger"],
+            "uses": ["before_meals", "poor_appetite", "sluggish_digestion", "liver_support"]
+        },
+        "species_pectorales": {
+            "latin": "Species Pectorales",
+            "english": "Pectoral Species",
+            "description": "Mixture of herbs for respiratory conditions and chest complaints.",
+            "characteristics": ["expectorant", "soothing", "anti-inflammatory", "respiratory_support"],
+            "common_ingredients": ["mullein", "coltsfoot", "licorice", "thyme", "elecampane"],
+            "uses": ["coughs", "bronchitis", "chest_colds", "asthma_support"]
+        },
+        "species_diureticae": {
+            "latin": "Species Diureticae",
+            "english": "Diuretic Species",
+            "description": "Mixture of herbs promoting urine flow and kidney function.",
+            "characteristics": ["diuretic", "kidney_support", "detoxifying"],
+            "common_ingredients": ["dandelion", "parsley", "juniper", "buchu", "uva_ursi"],
+            "uses": ["edema", "UTI", "kidney_stones", "detoxification", "gout"]
+        },
+        "species_antiscorbuticae": {
+            "latin": "Species Antiscorbuticae",
+            "english": "Antiscorbutic Species",
+            "description": "Mixture of herbs rich in vitamin C for preventing and treating scurvy.",
+            "characteristics": ["high_vitamin_C", "antioxidant", "preventive"],
+            "common_ingredients": ["rose_hips", "acerola", "parsley", "watercress", "nettles"],
+            "uses": ["scurvy_prevention", "immune_support", "general_tonic"]
+        },
+        "species_anodynae": {
+            "latin": "Species Anodynae",
+            "english": "Anodyne Species",
+            "description": "Mixture of pain-relieving herbs for discomfort and pain management.",
+            "characteristics": ["analgesic", "relaxing", "nervine", "comforting"],
+            "common_ingredients": ["valerian", "passionflower", "wild_lettuce", "jamaican_dogwood", "cramp_bark"],
+            "uses": ["pain", "cramps", "muscle_spasms", "nervous_tension", "insomnia"]
+        },
+        "species_catharticae": {
+            "latin": "Species Catharticae",
+            "english": "Cathartic Species",
+            "description": "Mixture of purgative herbs for promoting bowel evacuation.",
+            "characteristics": ["laxative", "purgative", "bowel_stimulating"],
+            "common_ingredients": ["senna", "cascara", "rhubarb", "aloes", "buckthorn"],
+            "uses": ["constipation", "bowel_cleansing", "detoxification"],
+            "warning": "Use with caution. Not for long-term use."
+        },
+        "species_tonicae": {
+            "latin": "Species Tonicae",
+            "english": "Tonic Species",
+            "description": "Mixture of strengthening and restorative herbs for general vitality.",
+            "characteristics": ["tonic", "adaptogenic", "nutritive", "restorative"],
+            "common_ingredients": ["ginseng", "astragalus", "ashwagandha", "damiana", "hawthorn"],
+            "uses": ["convalescence", "fatigue", "weakness", "general_debility", "stress"]
+        },
+        "species_antisepicae": {
+            "latin": "Species Antisepticae",
+            "english": "Antiseptic Species",
+            "description": "Mixture of antimicrobial herbs for preventing and treating infections.",
+            "characteristics": ["antimicrobial", "immune_supporting", "cleansing"],
+            "common_ingredients": ["echinacea", "goldenseal", "thyme", "myrrh", "propolis"],
+            "uses": ["infections", "wounds", "immune_support", "preventive"]
+        },
+        "species_emmenagogae": {
+            "latin": "Species Emmenagogae",
+            "english": "Emmenagogue Species",
+            "description": "Mixture of herbs promoting menstrual flow and regulating cycles.",
+            "characteristics": ["emmenagogue", "uterine_tonic", "regulating"],
+            "common_ingredients": ["pennyroyal", "rue", "sage", "mugwort", "blue_cohosh"],
+            "uses": ["delayed_menses", "scanty_menses", "menstrual_regulation"],
+            "warning": "Contraindicated in pregnancy"
+        }
+    },
+    
+    "dosage_forms": {
+        "tabletta": {
+            "latin": "Tabletta",
+            "english": "Tablet",
+            "description": "Solid unit dose form made by compressing powdered herbs or extracts.",
+            "advantages": ["convenient", "portable", "precise_dosing", "taste_masking"],
+            "disadvantages": ["requires_equipment", "may_contain_excipients", "slower_absorption"],
+            "typical_sizes": "200mg - 1000mg"
+        },
+        "capsula_dura": {
+            "latin": "Capsula Dura",
+            "english": "Hard Capsule",
+            "description": "Two-piece gelatin or vegetable cellulose capsule containing powders or granules.",
+            "advantages": ["tasteless", "easy_swallowing", "portable", "versatile"],
+            "disadvantages": ["animal_gelatin", "moisture_sensitive", "size_limitations"],
+            "typical_sizes": "Size 000 (1.37ml) to Size 5 (0.13ml)"
+        },
+        "capsula_mollis": {
+            "latin": "Capsula Mollis",
+            "english": "Soft Capsule",
+            "description": "One-piece gelatin capsule containing liquids or semi-solids.",
+            "advantages": ["liquid_content", "easy_swallowing", "taste_masking", "good_absorption"],
+            "disadvantages": ["animal_gelatin", "shorter_shelf_life", "temperature_sensitive"],
+            "typical_contents": "oils, liquid_extracts, soft_extracts"
+        },
+        "pilula_cocta": {
+            "latin": "Pilula Cocta",
+            "english": "Coated Pill",
+            "description": "Pill with sugar or other coating for taste masking and appearance.",
+            "advantages": ["taste_masking", "attractive", "easier_swallowing", "protective"],
+            "disadvantages": ["more_complex_preparation", "added_sugar", "slower_disintegration"],
+            "coating_types": ["sugar", "chocolate", "silver", "gold", "enteric"]
+        },
+        "granulatum": {
+            "latin": "Granulatum",
+            "english": "Granules",
+            "description": "Small, free-flowing particles containing herbal extracts or powders.",
+            "advantages": ["easy_dissolving", "pleasant_texture", "versatile", "stable"],
+            "disadvantages": ["requires_processing", "may_contain_sugar", "dosing_precision"],
+            "uses": ["suspensions", "effervescent_preparations", "direct_consumption"]
+        },
+        "pulvis_inhalans": {
+            "latin": "Pulvis Inhalans",
+            "english": "Inhalation Powder",
+            "description": "Fine powder intended for inhalation into the respiratory tract.",
+            "advantages": ["direct_delivery", "rapid_onset", "local_action", "systemic_absorption"],
+            "disadvantages": ["requires_device", "irritation_risk", "dosing_challenges"],
+            "uses": ["respiratory_conditions", "nasal_congestion", "asthma"]
+        },
+        "emplastrum_medicatum": {
+            "latin": "Emplastrum Medicatum",
+            "english": "Medicated Plaster",
+            "description": "Adhesive preparation containing herbs for prolonged skin contact.",
+            "advantages": ["prolonged_action", "targeted_delivery", "convenient", "protective"],
+            "disadvantages": ["skin_irritation", "adhesive_issues", "removal_discomfort"],
+            "uses": ["pain_relief", "inflammation", "support", "protection"]
+        },
+        "collutorium": {
+            "latin": "Collutorium",
+            "english": "Mouthwash",
+            "description": "Liquid preparation for rinsing the oral cavity.",
+            "advantages": ["local_action", "refreshing", "easy_use", "pleasant"],
+            "disadvantages": ["temporary_contact", "swallowing_risk", "alcohol_content"],
+            "uses": ["oral_hygiene", "gum_health", "fresh_breath", "mouth_infections"]
+        },
+        "guttae": {
+            "latin": "Guttae",
+            "english": "Drops",
+            "description": "Liquid preparation administered by drops for precise dosing.",
+            "advantages": ["precise_dosing", "flexible", "rapid_absorption", "versatile"],
+            "disadvantages": ["dosing_variability", "spillage_risk", "measurement_needed"],
+            "types": ["eye_drops", "ear_drops", "nasal_drops", "oral_drops"]
+        },
+        "aerosolum": {
+            "latin": "Aerosolum",
+            "english": "Aerosol",
+            "description": "Fine mist or spray containing herbal preparations.",
+            "advantages": ["fine_dispersion", "deep_penetration", "rapid_onset", "convenient"],
+            "disadvantages": ["requires_propellant", "environmental_concerns", "equipment_needed"],
+            "uses": ["respiratory_delivery", "topical_application", "room_dispersion"]
+        }
+    }
+}
+# ═══════════════════════════════════════════════════════════════════════════════
 # WILKEN KEY ENGINE v5.0 - PART 2: COMPLETE MATERIA MEDICA
 # ═══════════════════════════════════════════════════════════════════════════════
 # 30 documented medicinal plants with full details including:
