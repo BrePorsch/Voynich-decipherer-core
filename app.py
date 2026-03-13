@@ -1,11 +1,3 @@
-# ═══════════════════════════════════════════════════════════════════════════════
-# WILKEN KEY ENGINE v5.0 - PART 1: IMPORTS, CONFIGURATION & LATIN PHARMACOPEIA
-# ═══════════════════════════════════════════════════════════════════════════════
-# The Ultimate Voynich Manuscript MS 408 Investigation Platform
-# Featuring: Complete 232 Folios | 105 Latin Terms | 30 Materia Medica
-# Planetary Correspondences | Seasonal Protocols | Interactive Tools
-# ═══════════════════════════════════════════════════════════════════════════════
-
 import streamlit as st
 import base64
 from datetime import datetime
